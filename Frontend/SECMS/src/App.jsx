@@ -1,25 +1,21 @@
 import { useEffect, useState } from "react";
-import './App.css'
+import { pingBackend } from "./api/testService"
 
 function App() {
   const [message, setMessage] = useState("Connecting...");
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/ping")
-      .then(response => response.text())
+    pingBackend()
       .then(data => setMessage(data))
-      .catch(error => {
-        console.error("Error:", error);
-        setMessage("Connection failed");
-      });
+      .catch(() => setMessage("Connection failed"));
   }, []);
 
   return (
     <div style={{ padding: "40px" }}>
-      <h1>Spring Boot + React</h1>
+      <h1>Spring Boot + React (Axios)</h1>
       <h2>{message}</h2>
     </div>
   );
 }
 
-export default App
+export default App;
