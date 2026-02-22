@@ -1,221 +1,130 @@
-🚀 Spring Boot + React (Axios) Starter Project
+# 🚀 Spring Boot + React (Axios) Starter Project
 
-A simple full-stack starter application built with:
+A streamlined full-stack starter application designed for scalability and clean separation of concerns.
 
-Backend: Spring Boot 3 (Java 17, Maven)
+## 🏗 Project Structure
 
-Frontend: React (Vite + SWC)
 
-HTTP Client: Axios
-
-Database: H2 (In-Memory)
-
-This project demonstrates a clean, layered architecture and a working frontend ↔ backend connection.
-
-🏗 Project Structure
+```text
 project-root/
 │
-├── backend/
-│   ├── controller/
-│   ├── service/
-│   ├── repository/
-│   ├── entity/
-│   └── config/
+├── backend/                # Spring Boot Application
+│   ├── controller/         # REST Endpoints
+│   ├── service/            # Business Logic
+│   ├── repository/         # Data Access Layer (JPA)
+│   ├── entity/             # Database Models
+│   └── config/             # CORS & Security Configs
 │
-└── frontend/
+└── frontend/               # React (Vite + SWC)
     ├── src/
-    │   ├── api/
-    │   ├── App.jsx
-    │   └── main.jsx
-    └── .env
+    │   ├── api/            # Axios Configuration & Services
+    │   ├── App.jsx         # Main UI Component
+    │   └── main.jsx        # Entry Point
+    └── .env                # Environment Variables
+```
+### ⚙️ Tech Stack
 
+| Component | Technology |
+| :--- | :--- |
+| **Backend** | Java 17, Spring Boot 3.x, Spring Data JPA, Maven |
+| **Frontend** | React (Vite + SWC), Axios, Node 18 LTS |
+| **Database** | H2 (In-Memory) |
 
-⚙️ Tech Stack
-Backend
+---
 
-Java 17
+### 🔌 Features Implemented
 
-Spring Boot 3.x
+* **RESTful API:** Clean `GET` and `POST` implementations.
+* **Layered Architecture:** Strict separation of `Controller → Service → Repository`.
 
-Spring Data JPA
+* **Persistent Storage:** H2 in-memory database for rapid development.
+* **API Abstraction:** Centralized Axios instance with environment-based configuration.
+* **Dev-Ready:** Pre-configured CORS and `.env` support.
 
-H2 Database
+---
 
-Maven
+### 🗄 Backend API Endpoints
 
-Frontend
+**Base URL:** `http://localhost:8080`
 
-React (Vite + SWC)
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `GET` | `/api/users` | Fetch all users |
+| `POST` | `/api/users` | Create a new user |
 
-Axios
-
-Node 18 LTS
-
-🔌 Features Implemented
-
-REST API (GET, POST)
-
-Layered architecture (Controller → Service → Repository)
-
-H2 in-memory database
-
-Axios-based API layer in frontend
-
-Environment-based backend URL configuration
-
-Basic Create + Read operations
-
-🗄 Backend API Endpoints
-Base URL
-http://localhost:8080
-Get All Users
-GET /api/users
-Create User
-POST /api/users
-Request Body Example
+**Request Body Example (POST):**
+```json
 {
-  "name": "John",
+  "name": "John Doe",
   "email": "john@example.com"
 }
-▶️ How To Run The Project
-1️⃣ Run Backend
-Navigate to backend directory:
+```
 
-Mac / Linux
+### ▶️ Getting Started
 
+#### 1. Run Backend
+Navigate to the `backend` directory:
+
+**Mac / Linux:**
+```bash
 ./mvnw spring-boot:run
+```
 
-Windows
+**Windows:**
 
-mvnw.cmd spring-boot:run
+**PowerShell**
+```powershell
+.\mvnw.cmd spring-boot:run
+```
+#### 2. Run Frontend
+Navigate to the frontend directory:
 
-Backend runs at:
-
-http://localhost:8080
-
-2️⃣ Run Frontend
-
-Navigate to frontend directory:
-
+**Bash**
+```bash
 npm install
 npm run dev
+```
 
-Frontend runs at:
+Frontend URL: http://localhost:5173
 
-http://localhost:5173
+Backend URL: http://localhost:8080
 
-🧪 H2 Database Console
+### 🧪 Database Administration (H2 Console)
+The H2 console is enabled by default for development debugging.
 
-Enabled for development.
+* **URL:** http://localhost:8080/h2-console
+* **JDBC URL:** `jdbc:h2:mem:testdb`
+* **User:** `sa`
+* **Password:** (leave blank)
 
-Access:
+---
 
-http://localhost:8080/h2-console
-Configuration
+### 🌍 Environment Configuration
+The frontend uses Vite's environment handling to prevent hardcoded URLs.
 
-JDBC URL:
-
-jdbc:h2:mem:testdb
-
-Username:
-
-sa
-
-Password:
-
-(empty)
-📂 Backend Architecture
-Entity
-
-Represents database table.
-
-Repository
-
-Extends JpaRepository for database operations.
-
-Service
-
-Contains business logic layer.
-
-Controller
-
-Exposes REST endpoints.
-
-This separation ensures:
-
-Scalability
-
-Maintainability
-
-Clean architecture
-
-📂 Frontend Architecture
-api/axiosConfig.js
-
-Central Axios configuration with:
-
-Base URL
-
-JSON headers
-
-Timeout
-
-api/userService.js
-
-Service layer for API calls.
-
-App.jsx
-
-UI layer consuming service methods.
-
-This prevents direct HTTP calls inside components and improves maintainability.
-
-🌍 Environment Configuration
-
-Frontend .env file:
-
+**.env file:**
+```env
 VITE_API_URL=http://localhost:8080
+```
 
-Axios configuration:
+**api/axiosConfig.js:**
 
-baseURL: import.meta.env.VITE_API_URL
+```javascript
+import axios from 'axios';
 
-This allows easy switching between:
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL,
+  timeout: 5000,
+  headers: { 'Content-Type': 'application/json' }
+});
 
-Development
+export default api;
+```
+### 🔮 Future Roadmap
 
-Staging
-
-Production
-
-🔮 Future Improvements
-
-Add DTO layer (separate Entity from API model)
-
-Add validation (@Valid, @NotBlank)
-
-Add global exception handling
-
-Implement full CRUD (Update, Delete)
-
-Add PostgreSQL
-
-Add JWT Authentication
-
-Dockerize application
-
-Serve React build from Spring Boot
-
-🎯 Purpose
-
-This project serves as a clean foundation for building scalable full-stack applications using Spring Boot and React.
-
-It demonstrates:
-
-Proper project layering
-
-Clean frontend API abstraction
-
-Real backend ↔ frontend communication
-
-Production-ready structure
+- [ ] **DTO Layer:** Decouple Entities from API Models.
+- [ ] **Validation:** Add `@Valid` and `@NotBlank` constraints.
+- [ ] **Global Handling:** Implement `@ControllerAdvice` for consistent error responses.
+- [ ] **Full CRUD:** Complete Update and Delete operations.
+- [ ] **Security:** Implement JWT Authentication.
+- [ ] **Docker:** Containerize both services for easy deployment.
