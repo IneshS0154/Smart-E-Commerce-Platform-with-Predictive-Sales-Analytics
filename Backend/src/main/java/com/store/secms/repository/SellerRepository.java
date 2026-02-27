@@ -1,9 +1,6 @@
 package com.store.secms.repository;
 
 
-
-
-
 import com.store.secms.entity.Seller;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;

@@ -12,9 +12,16 @@ public class Seller {
     private Long id;
 
     private String storeName;
-    private String username;
     private String email;
     private String phoneNumber;
     private String address;
-    private String password; // Note: For production, this must be hashed (e.g., BCrypt)
+
+    @Column(nullable = false)
+    private String status = "ACTIVE";
+
+    @Transient
+    private String username;
+
+    @Transient
+    private String password;
 }

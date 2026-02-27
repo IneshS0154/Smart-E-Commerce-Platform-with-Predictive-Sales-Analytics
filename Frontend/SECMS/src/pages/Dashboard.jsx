@@ -6,12 +6,10 @@ export default function Dashboard() {
     const [seller, setSeller] = useState(null);
 
     useEffect(() => {
-        // Retrieve the logged-in user from local storage
         const storedSeller = localStorage.getItem('seller');
         if (storedSeller) {
             setSeller(JSON.parse(storedSeller));
         } else {
-            // Redirect to login if not authenticated
             navigate('/login');
         }
     }, [navigate]);
@@ -21,21 +19,62 @@ export default function Dashboard() {
         navigate('/login');
     };
 
-    if (!seller) return <div>Loading...</div>;
+    if (!seller) {
+        return <div className="loading-shell">Loading your dashboard…</div>;
+    }
 
     return (
-        <div style={{ padding: '20px' }}>
-            <h2>Welcome to your Dashboard, {seller.storeName}!</h2>
-            <div style={{ border: '1px solid #ccc', padding: '15px', marginTop: '20px' }}>
-                <h3>Store Profile</h3>
-                <p><strong>Username:</strong> {seller.username}</p>
-                <p><strong>Email:</strong> {seller.email}</p>
-                <p><strong>Phone:</strong> {seller.phoneNumber}</p>
-                <p><strong>Address:</strong> {seller.address}</p>
+        <div className="dashboard-page">
+            <div className="dashboard-shell">
+                <header className="dashboard-header">
+                    <div className="dashboard-store">
+                        <h2>Welcome back, {seller.storeName}</h2>
+                        <span>Here&apos;s a quick overview of your store and predictive insights.</span>
+                    </div>
+                    <div className="dashboard-actions">
+                        <span className="badge-soft">Models · Healthy</span>
+                        <button className="btn btn-ghost" type="button">
+                            View analytics
+                        </button>
+                        <button className="btn btn-primary" type="button" onClick={handleLogout}>
+                            Logout
+                        </button>
+                    </div>
+                </header>
+
+                <section className="dashboard-grid">
+                    <div className="dashboard-panel">
+                        <div className="panel-heading">
+                            <h3>Store profile</h3>
+                            <span>Core information used to tailor your predictions.</span>
+                        </div>
+
+                        <div className="profile-grid">
+                            <div className="profile-item">
+                                <strong>Store name</strong>
+                                <span>{seller.storeName}</span>
+                            </div>
+                            <div className="profile-item">
+                                <strong>Username</strong>
+                                <span>{seller.username}</span>
+                            </div>
+                            <div className="profile-item">
+                                <strong>Email</strong>
+                                <span>{seller.email}</span>
+                            </div>
+                            <div className="profile-item">
+                                <strong>Phone</strong>
+                                <span>{seller.phoneNumber}</span>
+                            </div>
+                            <div className="profile-item">
+                                <strong>Address</strong>
+                                <span>{seller.address}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </section>
             </div>
-            <button onClick={handleLogout} style={{ marginTop: '20px', padding: '10px' }}>
-                Logout
-            </button>
         </div>
     );
 }
