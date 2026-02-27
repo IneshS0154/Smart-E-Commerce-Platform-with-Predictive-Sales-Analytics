@@ -1,21 +1,20 @@
-import { useEffect, useState } from "react";
-import { pingBackend } from "./api/testService"
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
+import Register from './pages/Register';
+import Login from './pages/Login';
+import Dashboard from './pages/Dashboard';
 
 function App() {
-  const [message, setMessage] = useState("Connecting...");
-
-  useEffect(() => {
-    pingBackend()
-      .then(data => setMessage(data))
-      .catch(() => setMessage("Connection failed"));
-  }, []);
-
-  return (
-    <div style={{ padding: "40px" }}>
-      <h1>Spring Boot + React (Axios)</h1>
-      <h2>{message}</h2>
-    </div>
-  );
+    return (
+        <Router>
+            <Routes>
+                <Route path="/" element={<Login />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+            </Routes>
+        </Router>
+    );
 }
 
 export default App;
