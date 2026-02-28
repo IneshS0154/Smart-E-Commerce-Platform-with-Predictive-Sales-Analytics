@@ -1,0 +1,106 @@
+.footer {
+  border-top: 1px solid #e0e0e0;
+  padding-top: 52px;
+  overflow: hidden;
+}
+
+/* ── 4-column link grid ── */
+.footer__columns {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  padding: 0 40px 52px;
+}
+
+/* col 1: left-aligned (default) */
+.footer__col:first-child {
+  text-align: left;
+}
+
+/* cols 2-4: right-aligned */
+.footer__col:not(:first-child) {
+  text-align: right;
+}
+
+.footer__col-heading {
+  display: block;
+  font-family: 'Grift', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #999999;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+/* spacer so col 4 (no heading) aligns links with the others */
+.footer__col:last-child .footer__col-list {
+  margin-top: 36px;
+}
+
+.footer__col-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.footer__link {
+  font-family: 'Grift', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: #1a1a1a;
+  transition: opacity 0.2s ease;
+}
+
+.footer__link:hover {
+  opacity: 0.5;
+}
+
+/* ── Bottom bar ── */
+.footer__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #e0e0e0;
+  padding: 20px 40px;
+}
+
+.footer__socials,
+.footer__legal {
+  display: flex;
+  gap: 28px;
+}
+
+.footer__social-link {
+  font-family: 'Grift', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: #1a1a1a;
+  transition: opacity 0.2s ease;
+}
+
+.footer__social-link:hover {
+  opacity: 0.5;
+}
+
+.footer__copyright {
+  font-family: 'Grift', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: #888888;
+}
+
+/* ── Giant brand text ── */
+.footer__brand {
+  font-family: 'Grift', sans-serif;
+  font-size: clamp(6rem, 19.5vw, 22rem);
+  font-weight: 900;
+  color: #1a1a1a;
+  line-height: 0.85;
+  letter-spacing: -0.02em;
+  text-align: center;
+  width: 100%;
+  display: block;
+  user-select: none;
+}
