@@ -1,0 +1,56 @@
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  height: 72px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e8e8e8;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.navbar__left,
+.navbar__right {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+  flex: 1;
+}
+
+.navbar__right {
+  justify-content: flex-end;
+}
+
+.navbar__left a,
+.navbar__right a {
+  font-family: 'Biondi Sans Bk', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: #1a1a1a;
+  letter-spacing: 0.04em;
+  text-transform: capitalize;
+  transition: opacity 0.2s ease;
+}
+
+.navbar__left a:hover,
+.navbar__right a:hover {
+  opacity: 0.55;
+}
+
+.navbar__brand {
+  font-family: 'Biondi Sans Bk', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 400;
+  color: #1a1a1a;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.navbar__bag {
+  font-weight: 500 !important;
+  text-decoration: underline !important;
+  text-underline-offset: 3px;
+}

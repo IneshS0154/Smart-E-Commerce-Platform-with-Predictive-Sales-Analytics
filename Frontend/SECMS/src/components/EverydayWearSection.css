@@ -1,0 +1,91 @@
+.everyday {
+  padding: 60px 40px 60px;
+}
+
+/* ── Header ── */
+.everyday__header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+.everyday__title {
+  font-family: 'Grift', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+.everyday__view-all {
+  font-family: 'Grift', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: #1a1a1a;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  white-space: nowrap;
+  transition: opacity 0.2s ease;
+}
+
+.everyday__view-all:hover {
+  opacity: 0.55;
+}
+
+/* ── 4-col grid ── */
+.everyday__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+/* ── Shared cell base ── */
+.everyday__cell {
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+}
+
+/* ── Image cell ── */
+.everyday__cell--image {
+  background-color: #e0e0e0;
+}
+
+.everyday__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+}
+
+.everyday__image-placeholder {
+  width: 100%;
+  height: 100%;
+  background-color: #e0e0e0;
+}
+
+/* ── Placeholder cells ── */
+.everyday__cell--dark {
+  background-color: #2a2a2a;
+}
+
+.everyday__cell--light {
+  background-color: #d6d6d6;
+}
+
+/* ── Text cell ── */
+.everyday__cell--text {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-bottom: 28px;
+  background-color: #ffffff;
+}
+
+.everyday__cell--text p {
+  font-family: 'Grift', sans-serif;
+  font-size: clamp(1.8rem, 3vw, 2.8rem);
+  font-weight: 900;
+  color: #1a1a1a;
+  line-height: 1.2;
+}
