@@ -1,0 +1,230 @@
+/* Dashboard layout and components matching Anywear admin design */
+
+.dashboard-root {
+  min-height: 100vh;
+  display: flex;
+  background-color: #f3f4f6;
+}
+
+.dashboard-sidebar {
+  width: 240px;
+  background-color: #ffffff;
+  border-right: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  padding: 16px 16px 12px;
+}
+
+.sidebar-brand {
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 999px;
+  font-size: 14px;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.sidebar-link--active {
+  background-color: #111827;
+  color: #ffffff;
+}
+
+.sidebar-link span {
+  font-size: 13px;
+}
+
+.sidebar-footer {
+  margin-top: 24px;
+  padding-top: 12px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.dashboard-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  height: 64px;
+  border-bottom: 1px solid #e5e7eb;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+}
+
+.topbar-title {
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.topbar-user {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid #e5e7eb;
+  cursor: pointer;
+}
+
+.topbar-user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background-color: #d4d4d8;
+}
+
+.topbar-user-name {
+  font-size: 13px;
+}
+
+.topbar-user-role {
+  font-size: 11px;
+  color: #6b7280;
+}
+
+.dashboard-content {
+  padding: 24px 24px 24px;
+}
+
+.content-heading {
+  margin-bottom: 20px;
+}
+
+.content-heading h2 {
+  margin: 0 0 6px;
+  font-size: 20px;
+}
+
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 900px) {
+  .dashboard-root {
+    flex-direction: column;
+  }
+
+  .dashboard-sidebar {
+    width: 100%;
+    flex-direction: row;
+    overflow-x: auto;
+  }
+
+  .kpi-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.kpi-card {
+  background-color: #ffffff;
+  border-radius: 18px;
+  border: 1px solid #e5e7eb;
+  padding: 14px 16px;
+}
+
+.kpi-label {
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 8px;
+}
+
+.kpi-value {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.kpi-sub {
+  margin-top: 4px;
+  font-size: 11px;
+  color: #16a34a;
+}
+
+.transactions-card {
+  margin-top: 8px;
+  background-color: #ffffff;
+  border-radius: 18px;
+  border: 1px solid #e5e7eb;
+  padding: 16px 16px 12px;
+}
+
+.transactions-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.transactions-header h3 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.transactions-header span {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.transactions-filter {
+  font-size: 11px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid #e5e7eb;
+  background-color: #f9fafb;
+}
+
+.transactions-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.transactions-table th,
+.transactions-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+}
+
+.transactions-table th {
+  font-weight: 500;
+}
+
+.transactions-table tr:last-child td {
+  border-bottom: none;
+}
+
+.loading-shell {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f3f4f6;
+  color: #4b5563;
+  font-size: 14px;
+}
+
