@@ -16,7 +16,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/sellers")
-@CrossOrigin(origins = "http://localhost:5174") // Default Vite port
+@CrossOrigin(origins = "http://localhost:5173") // Default Vite port
 public class SellerController {
 
     @Autowired
