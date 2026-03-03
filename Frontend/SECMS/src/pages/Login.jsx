@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/axiosConfig';
+import '../styles/AuthLayout.css';
 
 export default function Login() {
     const navigate = useNavigate();
     const [credentials, setCredentials] = useState({ email: '', password: '' });
+    const [rememberMe, setRememberMe] = useState(false);
     const [submitting, setSubmitting] = useState(false);
 
     const handleChange = (e) => {
@@ -17,6 +19,11 @@ export default function Login() {
         try {
             const response = await api.post('/login', credentials);
             localStorage.setItem('seller', JSON.stringify(response.data));
+            if (rememberMe) {
+                localStorage.setItem('rememberSellerLogin', 'true');
+            } else {
+                localStorage.removeItem('rememberSellerLogin');
+            }
             navigate('/dashboard');
         } catch (error) {
             alert('Login failed. Please check your credentials.');
@@ -32,75 +39,77 @@ export default function Login() {
     return (
         <div className="auth-page">
             <div className="auth-shell">
-                <section className="auth-card">
-                    <div className="auth-card-inner">
-                        <header className="auth-header">
-                            <div className="auth-brand">
-                                <div className="brand-mark">S</div>
-                                <div>
-                                    <div className="brand-text-main">Smart E‑Commerce Console</div>
-                                    <div className="brand-text-sub">Seller login · Secure access</div>
-                                </div>
-                            </div>
-                            <div className="auth-pill">Predictive sales active</div>
-                        </header>
+                <div className="auth-hero auth-hero--login" />
+                <section className="auth-panel">
+                    <header className="auth-brand-bar">ANYWEAR</header>
 
-                        <div className="auth-title-block">
-                            <h1>Welcome back, seller</h1>
-                            <p>Sign in to view your store performance and manage your catalogue.</p>
+                    <div className="auth-heading-block">
+                        <h1 className="auth-heading">
+                            <span>WELCOME</span>
+                            <span>BACK!</span>
+                        </h1>
+                        <p className="auth-subtitle">Sign in to continue to your account.</p>
+                    </div>
+
+                    <form className="auth-form" onSubmit={handleSubmit}>
+                        <div className="field">
+                            <label htmlFor="email">Username or Email</label>
+                            <div className="input-shell">
+                                <input
+                                    id="email"
+                                    name="email"
+                                    type="text"
+                                    placeholder="Enter your username"
+                                    value={credentials.email}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </div>
                         </div>
 
-                        <form className="auth-form" onSubmit={handleSubmit}>
-                            <div className="field">
-                                <label htmlFor="email">Work email</label>
-                                <div className="input-shell">
-                                    <span className="input-prefix">@</span>
-                                    <input
-                                        id="email"
-                                        name="email"
-                                        type="email"
-                                        placeholder="you@store.com"
-                                        value={credentials.email}
-                                        onChange={handleChange}
-                                        required
-                                    />
-                                </div>
+                        <div className="field">
+                            <label htmlFor="password">Password</label>
+                            <div className="input-shell">
+                                <input
+                                    id="password"
+                                    name="password"
+                                    type="password"
+                                    placeholder="Enter your password"
+                                    value={credentials.password}
+                                    onChange={handleChange}
+                                    required
+                                />
                             </div>
+                        </div>
 
-                            <div className="field">
-                                <label htmlFor="password">Password</label>
-                                <div className="input-shell">
-                                    <span className="input-prefix">••</span>
-                                    <input
-                                        id="password"
-                                        name="password"
-                                        type="password"
-                                        placeholder="Enter your password"
-                                        value={credentials.password}
-                                        onChange={handleChange}
-                                        required
-                                    />
-                                </div>
-                                <div className="helper-text">
-                                    Use the same credentials you registered with your store.
-                                </div>
-                            </div>
+                        <div className="auth-utility-row">
+                            <label className="checkbox-label">
+                                <input
+                                    type="checkbox"
+                                    checked={rememberMe}
+                                    onChange={(e) => setRememberMe(e.target.checked)}
+                                />
+                                Remember me
+                            </label>
+                            <button type="button" className="text-button">
+                                Forgot Password?
+                            </button>
+                        </div>
 
-                            <div className="auth-actions">
-                                <div className="auth-links">
-                                    <span>New here? </span>
-                                    <button type="button" onClick={goToRegister}>
-                                        Create a seller account
-                                    </button>
-                                </div>
-                                <button className="btn btn-primary" type="submit" disabled={submitting}>
-                                    {submitting ? 'Signing in…' : 'Sign in'}
-                                </button>
-                            </div>
-                        </form>
+                        <div className="auth-submit">
+                            <button className="btn btn-primary" type="submit" disabled={submitting}>
+                                {submitting ? 'Signing in…' : 'SIGN IN'}
+                            </button>
+                        </div>
+                    </form>
+
+                    <div className="auth-footer">
+                        <span>New here?</span>
+                        <button type="button" onClick={goToRegister}>
+                            Sign Up
+                        </button>
                     </div>
                 </section>
-
             </div>
         </div>
     );
