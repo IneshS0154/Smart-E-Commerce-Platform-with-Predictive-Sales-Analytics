@@ -18,13 +18,20 @@ export default function Login() {
         setSubmitting(true);
         try {
             const response = await api.post('/login', credentials);
-            localStorage.setItem('seller', JSON.stringify(response.data));
-            if (rememberMe) {
-                localStorage.setItem('rememberSellerLogin', 'true');
+            const data = response.data;          // { role, data/username/id }
+
+            if (data.role === 'ADMIN') {
+                localStorage.setItem('admin', JSON.stringify(data));
+                navigate('/Admindashboard');    // your admin route
             } else {
-                localStorage.removeItem('rememberSellerLogin');
+                localStorage.setItem('seller', JSON.stringify(data.data));
+                if (rememberMe) {
+                    localStorage.setItem('rememberSellerLogin', 'true');
+                } else {
+                    localStorage.removeItem('rememberSellerLogin');
+                }
+                navigate('/dashboard');
             }
-            navigate('/dashboard');
         } catch (error) {
             alert('Login failed. Please check your credentials.');
         } finally {
