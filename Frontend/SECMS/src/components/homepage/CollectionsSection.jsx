@@ -1,8 +1,8 @@
 import './CollectionsSection.css';
 
 // Replace nulls with imports once you have the collection images
-import menImg from '../assets/images/men-collection.png';
-import womenImg from '../assets/images/women-collection.png';
+import menImg from '../../assets/images/men-collection.png';
+import womenImg from '../../assets/images/women-collection.png';
 const collections = [
   { key: 'men',   label: ['Men', 'Collection'],   image: menImg },
   { key: 'women', label: ['Women', 'Collection'], image: womenImg },

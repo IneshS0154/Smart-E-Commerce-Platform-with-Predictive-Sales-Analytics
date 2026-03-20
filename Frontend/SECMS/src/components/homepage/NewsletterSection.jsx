@@ -2,7 +2,7 @@ import { useState } from 'react';
 import './NewsletterSection.css';
 
 // Replace null with import once you have the image
-import promoImg from '../assets/images/newsletter-promo.png';
+import promoImg from '../../assets/images/newsletter-promo.png';
 const promoImage = promoImg;
 
 function NewsletterSection() {

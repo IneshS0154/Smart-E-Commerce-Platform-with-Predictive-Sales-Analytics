@@ -1,8 +1,8 @@
 import './NewArrivalsSection.css';
 
-import prod1 from '../assets/images/NewArrivals/1.webp';
-import prod2 from '../assets/images/NewArrivals/2.webp';
-import prod3 from '../assets/images/NewArrivals/3.webp';
+import prod1 from '../../assets/images/NewArrivals/1.webp';
+import prod2 from '../../assets/images/NewArrivals/2.webp';
+import prod3 from '../../assets/images/NewArrivals/3.webp';
 const products = [
   {
     id: 1,
