@@ -17,7 +17,7 @@ public class Seller {
     private String address;
 
     @Column(nullable = false)
-    private String status = "ACTIVE";
+    private String status = "PENDING";
 
     @Transient
     private String username;
