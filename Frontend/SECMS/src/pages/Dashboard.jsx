@@ -2,6 +2,12 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Dashboard.css';
 
+const navItems = [
+    { label: "Dashboard", icon: "📊" },
+    { label: "Profile", icon: "👤" },
+    { label: "Settings", icon: "⚙️" },
+];
+
 export default function Dashboard() {
     const navigate = useNavigate();
     const [seller, setSeller] = useState(null);
@@ -20,8 +26,12 @@ export default function Dashboard() {
         navigate('/login');
     };
 
-    const goToProfile = () => {
-        navigate('/profile');
+    const handleNavClick = (label) => {
+        if (label === 'Dashboard') {
+            navigate('/dashboard');
+        } else if (label === 'Profile') {
+            navigate('/profile');
+        }
     };
 
     if (!seller) {
@@ -31,34 +41,47 @@ export default function Dashboard() {
     const initials = seller.username ? seller.username.charAt(0).toUpperCase() : 'A';
 
     return (
-        <div className="dashboard-root">
+        <div className="dashboard-layout">
+            {/* Sidebar */}
             <aside className="dashboard-sidebar">
-                <div className="sidebar-brand">ANYWEAR</div>
+                <div className="sidebar-brand">
+                    <span className="brand-icon">◫</span>
+                    <span className="brand-name">ANYWEAR</span>
+                </div>
                 <nav className="sidebar-nav">
-                    <button type="button" className="sidebar-link sidebar-link--active">
-                        <span>Overview</span>
-                    </button>
-                    <button type="button" className="sidebar-link" onClick={goToProfile}>
-                        <span>Profile</span>
-                    </button>
+                    {navItems.map(item => (
+                        <button
+                            key={item.label}
+                            className={`nav-item ${item.label === 'Dashboard' ? 'nav-item--active' : ''}`}
+                            onClick={() => handleNavClick(item.label)}
+                        >
+                            <span className="nav-icon">{item.icon}</span>
+                            <span>{item.label}</span>
+                        </button>
+                    ))}
                 </nav>
                 <div className="sidebar-footer">
-                    <button type="button" className="sidebar-link" onClick={handleLogout}>
-                        <span>Settings</span>
+                    <button
+                        className="nav-item"
+                        onClick={handleLogout}
+                    >
+                        <span className="nav-icon">🚪</span>
+                        <span>Logout</span>
                     </button>
                 </div>
             </aside>
 
+            {/* Main Content */}
             <div className="dashboard-main">
-                <header className="topbar">
-                    <div className="topbar-title">Supplier Dashboard</div>
-                    <button type="button" className="topbar-user" onClick={goToProfile}>
-                        <div className="topbar-user-avatar" />
-                        <div>
-                            <div className="topbar-user-name">{seller.username}</div>
-                            <div className="topbar-user-role">supplier</div>
+                <header className="dashboard-topbar">
+                    <h1 className="topbar-title">Supplier Dashboard</h1>
+                    <div className="topbar-user">
+                        <div className="user-avatar">{initials}</div>
+                        <div className="user-info">
+                            <span className="user-name">{seller.username}</span>
+                            <span className="user-role">supplier</span>
                         </div>
-                    </button>
+                    </div>
                 </header>
 
                 <main className="dashboard-content">
