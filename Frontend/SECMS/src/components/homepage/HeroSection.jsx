@@ -1,6 +1,6 @@
 import './HeroSection.css';
-import hero1 from '../assets/images/hero1.jpeg';
-import hero2 from '../assets/images/hero2.jpg';
+import hero1 from '../../assets/images/hero1.jpeg';
+import hero2 from '../../assets/images/hero2.jpg';
 
 function HeroSection() {
   return (

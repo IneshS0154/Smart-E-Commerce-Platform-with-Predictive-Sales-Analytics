@@ -1,14 +1,14 @@
 import './EverydayWearSection.css';
 
 // Replace nulls with image imports once you have the images
-import img1 from '../assets/images/EverydayWear/1.webp';
-import img2 from '../assets/images/EverydayWear/2.webp';
-import img3 from '../assets/images/EverydayWear/3.webp';
-import img4 from '../assets/images/EverydayWear/4.webp';
-import img5 from '../assets/images/EverydayWear/5.webp';
-import img6 from '../assets/images/EverydayWear/6.webp';
-import img7 from '../assets/images/EverydayWear/7.webp';
-import img8 from '../assets/images/EverydayWear/8.avif';
+import img1 from '../../assets/images/EverydayWear/1.webp';
+import img2 from '../../assets/images/EverydayWear/2.webp';
+import img3 from '../../assets/images/EverydayWear/3.webp';
+import img4 from '../../assets/images/EverydayWear/4.webp';
+import img5 from '../../assets/images/EverydayWear/5.webp';
+import img6 from '../../assets/images/EverydayWear/6.webp';
+import img7 from '../../assets/images/EverydayWear/7.webp';
+import img8 from '../../assets/images/EverydayWear/8.avif';
 
 const gridItems = [
   { type: 'image', image: img1, alt: 'Everyday wear 1' },

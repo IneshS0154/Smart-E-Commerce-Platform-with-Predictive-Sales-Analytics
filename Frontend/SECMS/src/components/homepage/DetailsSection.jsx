@@ -1,5 +1,5 @@
 import './DetailsSection.css';
-import detailsImg from '../assets/images/details.png';
+import detailsImg from '../../assets/images/details.png';
 
 function DetailsSection() {
   return (
