@@ -16,6 +16,7 @@ function Navbar() {
 
       <div className="navbar__right">
         <Link to="/login">Account</Link>
+        <Link to="/signin">Supplier</Link>
         <a href="#">Search</a>
         <a href="#">Cart</a>
         <a href="#" className="navbar__bag">BAG 0</a>
