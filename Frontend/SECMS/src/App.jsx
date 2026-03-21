@@ -1,7 +1,13 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import Login from './components/auth/Login';
 import SignUp from './components/auth/SignUp';
+import Register from './components/supplierLogin/Register';
+import SignIn from './components/supplierLogin/SignIn';
+import Dashboard from './components/supplier/Dashboard';
+import Profile from './components/supplier/Profile';
+import Supplierdashboard from './components/Admin/Supplierdashboard.jsx';
+import Admindashboard from './components/Admin/Admindashboard.jsx';
 
 function App() {
   return (
@@ -10,6 +16,12 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
+          <Route path="/signin" element={<SignIn />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/admindashboard" element={<Admindashboard/>} />
+          <Route path="/supplierdashboard" element={<Supplierdashboard />} />
       </Routes>
     </BrowserRouter>
   );
