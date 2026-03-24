@@ -1,19 +1,9 @@
-import { useEffect, useState } from "react";
-import { pingBackend } from "./api/testService"
+import DiscountManagement from "./pages/DiscountManagement";
 
 function App() {
-  const [message, setMessage] = useState("Connecting...");
-
-  useEffect(() => {
-    pingBackend()
-      .then(data => setMessage(data))
-      .catch(() => setMessage("Connection failed"));
-  }, []);
-
   return (
-    <div style={{ padding: "40px" }}>
-      <h1>Spring Boot + React (Axios)</h1>
-      <h2>{message}</h2>
+    <div className="container">
+      <DiscountManagement />
     </div>
   );
 }
