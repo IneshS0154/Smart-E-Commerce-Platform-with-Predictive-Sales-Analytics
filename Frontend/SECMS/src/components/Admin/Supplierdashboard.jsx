@@ -34,7 +34,7 @@ export default function Supplierdashboard({ activeNav: activeNavProp, onNavChang
     const [editSupplier, setEditSupplier] = useState(null);
     const [suppliers, setSuppliers] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [newSupplier, setNewSupplier] = useState({ storeName: "", username: "", email: "", phoneNumber: "", address: "", password: "" });
+    const [newSupplier, setNewSupplier] = useState({ storeName: "", username: "", email: "", phoneNumber: "", address: "", password: "", status: "PENDING" });
 
     const fetchSellers = async () => {
         setLoading(true);
@@ -90,7 +90,7 @@ export default function Supplierdashboard({ activeNav: activeNavProp, onNavChang
             const response = await fetch("http://localhost:8080/api/sellers/register", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(newSupplier)
+                body: JSON.stringify({ ...newSupplier, status: "PENDING" })
             });
 
             if (!response.ok) {
@@ -103,7 +103,7 @@ export default function Supplierdashboard({ activeNav: activeNavProp, onNavChang
             // Add new supplier to the list instantly, using the same format as fetched data.
             // Refresh list from server to ensure the supplier list is consistent
             await fetchSellers();
-            setNewSupplier({ storeName: "", username: "", email: "", phoneNumber: "", address: "", password: "" });
+            setNewSupplier({ storeName: "", username: "", email: "", phoneNumber: "", address: "", password: "", status: "PENDING" });
             setShowModal(false);
             alert("Supplier added successfully");
         } catch (error) {

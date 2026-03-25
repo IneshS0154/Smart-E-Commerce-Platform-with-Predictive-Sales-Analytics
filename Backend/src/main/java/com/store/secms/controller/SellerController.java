@@ -37,6 +37,9 @@ public class SellerController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerSeller(@RequestBody Seller seller) {
+        if (seller.getStatus() == null || seller.getStatus().trim().isEmpty()) {
+            seller.setStatus("PENDING");
+        }
         if (sellerRepository.findByEmail(seller.getEmail()).isPresent()) {
             return ResponseEntity.badRequest().body("Email already exists");
         }
@@ -48,6 +51,8 @@ public class SellerController {
         sellerLogin.setSeller(savedSeller);
         sellerLoginRepository.save(sellerLogin);
 
+        // Avoid echoing transient password back to clients
+        savedSeller.setPassword(null);
         return ResponseEntity.ok(savedSeller);
     }
 
