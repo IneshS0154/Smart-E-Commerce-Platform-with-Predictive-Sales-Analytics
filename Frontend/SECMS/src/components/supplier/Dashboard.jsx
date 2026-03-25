@@ -123,44 +123,44 @@ export default function Dashboard() {
 
                         <table className="transactions-table">
                             <thead>
-                                <tr>
-                                    <th>PO ID</th>
-                                    <th>Retailer</th>
-                                    <th>Order Date</th>
-                                    <th>Expected Delivery</th>
-                                    <th>Items</th>
-                                    <th>Value</th>
-                                    <th>Status</th>
-                                </tr>
+                            <tr>
+                                <th>PO ID</th>
+                                <th>Retailer</th>
+                                <th>Order Date</th>
+                                <th>Expected Delivery</th>
+                                <th>Items</th>
+                                <th>Value</th>
+                                <th>Status</th>
+                            </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>#PO-7842</td>
-                                    <td>Urban Streetwear</td>
-                                    <td>02/03/26</td>
-                                    <td>09/03/26</td>
-                                    <td>42</td>
-                                    <td>LKR 185,900</td>
-                                    <td>In transit</td>
-                                </tr>
-                                <tr>
-                                    <td>#PO-7839</td>
-                                    <td>Metro Fashion</td>
-                                    <td>01/03/26</td>
-                                    <td>06/03/26</td>
-                                    <td>27</td>
-                                    <td>LKR 92,450</td>
-                                    <td>Packed</td>
-                                </tr>
-                                <tr>
-                                    <td>#PO-7833</td>
-                                    <td>Anywear Flagship</td>
-                                    <td>28/02/26</td>
-                                    <td>03/03/26</td>
-                                    <td>35</td>
-                                    <td>LKR 124,300</td>
-                                    <td>Delivered</td>
-                                </tr>
+                            <tr>
+                                <td>#PO-7842</td>
+                                <td>Urban Streetwear</td>
+                                <td>02/03/26</td>
+                                <td>09/03/26</td>
+                                <td>42</td>
+                                <td>LKR 185,900</td>
+                                <td>In transit</td>
+                            </tr>
+                            <tr>
+                                <td>#PO-7839</td>
+                                <td>Metro Fashion</td>
+                                <td>01/03/26</td>
+                                <td>06/03/26</td>
+                                <td>27</td>
+                                <td>LKR 92,450</td>
+                                <td>Packed</td>
+                            </tr>
+                            <tr>
+                                <td>#PO-7833</td>
+                                <td>Anywear Flagship</td>
+                                <td>28/02/26</td>
+                                <td>03/03/26</td>
+                                <td>35</td>
+                                <td>LKR 124,300</td>
+                                <td>Delivered</td>
+                            </tr>
                             </tbody>
                         </table>
                     </section>
