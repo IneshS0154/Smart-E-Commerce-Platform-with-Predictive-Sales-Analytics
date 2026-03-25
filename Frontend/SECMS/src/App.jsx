@@ -1,25 +1,25 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
-import Register from './pages/Register';
-import Login from './pages/Login';
-import Dashboard from './pages/Dashboard';
-import Profile from './pages/Profile';
-import Supplierdashboard from './pages/Supplierdashboard.jsx';
-import Admindashboard from './pages/Admindashboard.jsx';
+import Register from './components/supplierLogin/Register';
+import SignIn from './components/supplierLogin/SignIn';
+import Dashboard from './components/supplier/Dashboard';
+import Profile from './components/supplier/Profile';
+import Supplierdashboard from './components/Admin/Supplierdashboard.jsx';
+import Admindashboard from './components/Admin/Admindashboard.jsx';
 
 function App() {
     return (
-        <Router>
+        <BrowserRouter>
             <Routes>
-                <Route path="/" element={<Login />} />
-                <Route path="/login" element={<Login />} />
+                <Route path="/" element={<SignIn />} />
+                <Route path="/signin" element={<SignIn />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/admindashboard" element={<Admindashboard/>} />
                 <Route path="/supplierdashboard" element={<Supplierdashboard />} />
             </Routes>
-        </Router>
+        </BrowserRouter>
     );
 }
 
