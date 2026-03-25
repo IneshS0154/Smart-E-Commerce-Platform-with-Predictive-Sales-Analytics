@@ -1,10 +1,14 @@
 package com.store.secms.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Entity
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
 @Table(name = "seller_login")
 public class SellerLogin {
 
@@ -22,4 +26,3 @@ public class SellerLogin {
     @JoinColumn(name = "seller_id", nullable = false, unique = true)
     private Seller seller;
 }
-
