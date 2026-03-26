@@ -1,0 +1,276 @@
+.womens {
+  padding: 80px 40px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 100%);
+}
+
+/* Section header */
+.womens__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 48px;
+  gap: 40px;
+}
+
+.womens__header-content {
+  flex: 1;
+}
+
+.womens__title {
+  font-family: 'Grift', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 12px 0;
+  letter-spacing: -0.5px;
+}
+
+.womens__subtitle {
+  font-family: 'NORD', sans-serif;
+  font-size: 1rem;
+  font-weight: 300;
+  color: #666;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.womens__view-all {
+  font-family: 'Grift', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  display: inline-block;
+  white-space: nowrap;
+  padding-top: 8px;
+}
+
+.womens__view-all:hover {
+  transform: translateX(4px);
+}
+
+/* Grid layout */
+.womens__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+/* Card styling */
+.womens__card {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e0e0e0;
+}
+
+.womens__card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  transform: translateY(-4px);
+}
+
+.womens__card--featured {
+  grid-column: span 2;
+}
+
+.womens__card--featured .womens__card-image-wrap {
+  aspect-ratio: 2 / 1;
+}
+
+.womens__card-image-wrap {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background-color: #e8e8e8;
+  position: relative;
+}
+
+.womens__card-image-placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #f9f9f9 0%, #f0f0f0 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  font-size: 14px;
+  font-family: 'Grift', sans-serif;
+  font-weight: 500;
+  border: 2px dashed #d0d0d0;
+}
+
+.womens__card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.womens__card:hover .womens__card-image {
+  transform: scale(1.05);
+}
+
+.womens__card-content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: white;
+  min-height: 100px;
+  flex: 1;
+}
+
+.womens__card-title {
+  font-family: 'Grift', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 6px 0;
+  line-height: 1.3;
+}
+
+.womens__card-subtitle {
+  font-family: 'NORD', sans-serif;
+  font-size: 0.85rem;
+  color: #999;
+  margin: 0 0 14px 0;
+  font-weight: 300;
+}
+
+.womens__card-link {
+  font-family: 'Grift', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  background: none;
+  border: 1px solid #ddd;
+  padding: 10px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.womens__card-link:hover {
+  border-color: #1a1a1a;
+  background: #f9f9f9;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .womens {
+    padding: 60px 32px;
+  }
+
+  .womens__title {
+    font-size: 2rem;
+  }
+
+  .womens__grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .womens__card--featured {
+    grid-column: span 1;
+  }
+
+  .womens__header {
+    margin-bottom: 36px;
+    gap: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .womens {
+    padding: 48px 24px;
+  }
+
+  .womens__header {
+    flex-direction: column;
+    margin-bottom: 28px;
+    gap: 16px;
+  }
+
+  .womens__title {
+    font-size: 1.75rem;
+  }
+
+  .womens__view-all {
+    font-size: 0.9rem;
+  }
+
+  .womens__grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .womens__card-title {
+    font-size: 0.95rem;
+  }
+
+  .womens__card-subtitle {
+    font-size: 0.75rem;
+    margin-bottom: 10px;
+  }
+
+  .womens__card-link {
+    font-size: 0.8rem;
+    padding: 8px 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .womens {
+    padding: 36px 16px;
+  }
+
+  .womens__header {
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .womens__title {
+    font-size: 1.5rem;
+  }
+
+  .womens__subtitle {
+    font-size: 0.9rem;
+  }
+
+  .womens__view-all {
+    font-size: 0.8rem;
+  }
+
+  .womens__grid {
+    gap: 10px;
+  }
+
+  .womens__card-content {
+    padding: 16px;
+    min-height: 80px;
+  }
+
+  .womens__card-title {
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+  }
+
+  .womens__card-subtitle {
+    font-size: 0.7rem;
+    margin-bottom: 8px;
+  }
+
+  .womens__card-link {
+    font-size: 0.75rem;
+    padding: 6px 10px;
+  }
+}

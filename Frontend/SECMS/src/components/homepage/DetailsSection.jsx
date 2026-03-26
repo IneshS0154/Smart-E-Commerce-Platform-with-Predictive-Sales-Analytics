@@ -1,10 +1,13 @@
 import './DetailsSection.css';
+import useScrollAnimation from '../../hooks/useScrollAnimation';
 import detailsImg from '../../assets/images/details.png';
 
 function DetailsSection() {
+  const imageRef = useScrollAnimation('fadeInLeft');
+  const textRef = useScrollAnimation('fadeInRight');
   return (
     <section className="details">
-      <div className="details__image-wrap">
+      <div className="details__image-wrap" ref={imageRef}>
         <img
           className="details__image"
           src={detailsImg}
@@ -12,7 +15,7 @@ function DetailsSection() {
         />
       </div>
 
-      <div className="details__footer">
+      <div className="details__footer" ref={textRef}>
         <span className="details__label">Details that Speak</span>
         <p className="details__text">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod

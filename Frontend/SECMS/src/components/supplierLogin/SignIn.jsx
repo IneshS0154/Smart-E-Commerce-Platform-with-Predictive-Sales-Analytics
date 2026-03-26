@@ -1,0 +1,143 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import api from '../../api/axiosConfig.js';
+import SellerLoginImage from '../../assets/images/seller_auth/login.jpg';
+import '../supplierLogin/Auth.css';
+
+export default function Login() {
+    const navigate = useNavigate();
+    const [credentials, setCredentials] = useState({ email: '', password: '' });
+    const [rememberMe, setRememberMe] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+
+    const handleChange = (e) => {
+        setCredentials({ ...credentials, [e.target.name]: e.target.value });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setSubmitting(true);
+        setErrorMessage('');
+        try {
+            const response = await api.post('/sellers/login', credentials);
+            const data = response.data;          // { role, data/username/id }
+
+            if (data.role === 'ADMIN') {
+                alert('Admin logins must use the Account login page. Please go to /login.');
+                return;
+            }
+
+            if (data.role !== 'SELLER' || !data.data) {
+                setErrorMessage('Unexpected login response. Please try again.');
+                return;
+            }
+
+            localStorage.setItem('seller', JSON.stringify(data.data));
+            localStorage.removeItem('admin');
+            localStorage.removeItem('customer');
+            localStorage.removeItem('customerToken');
+            localStorage.removeItem('customerUsername');
+            localStorage.removeItem('customerEmail');
+            if (rememberMe) {
+                localStorage.setItem('rememberSellerLogin', 'true');
+            } else {
+                localStorage.removeItem('rememberSellerLogin');
+            }
+            navigate('/dashboard', { replace: true });
+        } catch (error) {
+            const backendMessage = error?.response?.data?.message || error?.response?.data;
+            setErrorMessage(typeof backendMessage === 'string' ? backendMessage : 'Login failed. Please check your credentials.');
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
+    const goToRegister = () => {
+        navigate('/register');
+    };
+
+    return (
+        <div className="supplier-auth-container">
+            <div className="back-link-container">
+                <button type="button" className="back-to-home" onClick={() => navigate('/')}>
+                    ← Back to Home
+                </button>
+            </div>
+
+            <div className="supplier-auth-content">
+                <div className="supplier-auth-form-wrapper">
+                    <h1 className="supplier-auth-title">Sign In</h1>
+                    <p className="supplier-auth-subtitle">Welcome back to ANYWEAR (Supplier).</p>
+
+                    {errorMessage ? (
+                        <div style={{ color: '#dc2626', backgroundColor: '#fee2e2', padding: '10px', borderRadius: '6px', marginBottom: '12px', fontSize: '14px' }}>
+                            {errorMessage}
+                        </div>
+                    ) : null}
+
+                    <div className="form-frame">
+                        <form onSubmit={handleSubmit} className="supplier-auth-form" noValidate>
+                            <div className="form-group">
+                                <label htmlFor="login-username">Email</label>
+                                <input
+                                    id="login-username"
+                                    type="text"
+                                    value={credentials.email}
+                                    onChange={handleChange}
+                                    placeholder="Enter your email"
+                                    name="email"
+                                    autoComplete="username"
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label htmlFor="login-password">Password</label>
+                                <input
+                                    id="login-password"
+                                    type="password"
+                                    value={credentials.password}
+                                    onChange={handleChange}
+                                    placeholder="Enter your password"
+                                    name="password"
+                                    autoComplete="current-password"
+                                />
+                            </div>
+
+                            <div className="remember-forgot-wrapper">
+                                <label className="remember-label">
+                                    <input
+                                        type="checkbox"
+                                        checked={rememberMe}
+                                        onChange={(e) => setRememberMe(e.target.checked)}
+                                    />
+                                    <span>Remember me</span>
+                                </label>
+                                <a href="#" className="forgot-password">Forgot Password?</a>
+                            </div>
+
+                            <button type="submit" className="supplier-auth-button" disabled={submitting}>
+                                {submitting ? 'Signing in...' : 'Sign In'}
+                            </button>
+                        </form>
+
+                        <div className="supplier-auth-toggle">
+                            <p>
+                                New here?{' '}
+                                <span className="toggle-link" onClick={goToRegister}>
+                                    Sign Up
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="supplier-auth-image-wrapper">
+                    <div className="supplier-auth-image-placeholder">
+                        <img src={SellerLoginImage} alt="Seller Login" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}

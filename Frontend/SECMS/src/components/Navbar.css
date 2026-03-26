@@ -54,3 +54,64 @@
   text-decoration: underline !important;
   text-underline-offset: 3px;
 }
+
+.navbar__profile {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.navbar__profile-button {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: 1px solid #e8e8e8;
+  background: #ffffff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s ease;
+}
+
+.navbar__profile-button:hover {
+  opacity: 0.7;
+}
+
+.navbar__profile-initial {
+  font-family: 'Biondi Sans Bk', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  text-transform: uppercase;
+}
+
+.navbar__profile-menu {
+  position: absolute;
+  top: 52px;
+  right: 0;
+  background: #ffffff;
+  border: 1px solid #e8e8e8;
+  border-radius: 10px;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.08);
+  padding: 6px;
+  min-width: 160px;
+  z-index: 200;
+}
+
+.navbar__profile-item {
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: transparent;
+  padding: 10px 12px;
+  cursor: pointer;
+  font-family: 'Biondi Sans Bk', sans-serif;
+  font-size: 0.875rem;
+  color: #1a1a1a;
+  transition: background-color 0.15s ease;
+}
+
+.navbar__profile-item:hover {
+  background-color: #f4f4f4;
+}

@@ -1,0 +1,66 @@
+.page-transition {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.page-transition__overlay {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f5f5f5 0%, #ffffff 100%);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   🎯 ANIMATION SIZE CONTROL - VALUES TO ADJUST:
+   ═══════════════════════════════════════════════════════════════
+   
+   Desktop (width & height):
+   - CURRENT: 400px x 400px
+   - MAKE BIGGER: Increase both values (e.g., 500px, 600px)
+   - MAKE SMALLER: Decrease both values (e.g., 300px, 350px)
+   - ADJUST BOTH TO SAME VALUE to keep it square
+   
+   Example sizes:
+   - 250px = Small
+   - 350px = Medium
+   - 400px = Large (current)
+   - 500px = Extra Large
+   - 600px = Huge
+═══════════════════════════════════════════════════════════════ */
+
+.page-transition__animation {
+  width: 600px;           /* ← ADJUST THIS for Desktop width */
+  height: 600px;          /* ← ADJUST THIS for Desktop height */
+  object-fit: contain;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Tablet size (768px and below)
+   - CURRENT: 320px x 320px
+   - These should be ~80% of desktop size
+═══════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .page-transition__animation {
+    width: 320px;         /* ← ADJUST THIS for Tablet width */
+    height: 320px;        /* ← ADJUST THIS for Tablet height */
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Mobile size (480px and below)
+   - CURRENT: 250px x 250px
+   - These should be ~60% of desktop size
+═══════════════════════════════════════════════════════════════ */
+@media (max-width: 480px) {
+  .page-transition__animation {
+    width: 250px;         /* ← ADJUST THIS for Mobile width */
+    height: 250px;        /* ← ADJUST THIS for Mobile height */
+  }
+}

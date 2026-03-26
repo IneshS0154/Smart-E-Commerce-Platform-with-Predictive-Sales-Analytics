@@ -1,4 +1,5 @@
 import './EverydayWearSection.css';
+import useScrollAnimation from '../../hooks/useScrollAnimation';
 
 // Replace nulls with image imports once you have the images
 import img1 from '../../assets/images/EverydayWear/1.webp';
@@ -26,9 +27,10 @@ const gridItems = [
 ];
 
 function EverydayWearSection() {
+  const headerRef = useScrollAnimation('fadeInUp');
   return (
     <section className="everyday">
-      <div className="everyday__header">
+      <div className="everyday__header" ref={headerRef}>
         <h2 className="everyday__title">For Your Everyday Wear</h2>
         <a href="#" className="everyday__view-all">View All</a>
       </div>

@@ -1,8 +1,11 @@
 import './HeroSection.css';
+import useScrollAnimation from '../../hooks/useScrollAnimation';
 import hero1 from '../../assets/images/hero1.jpeg';
 import hero2 from '../../assets/images/hero2.jpg';
 
 function HeroSection() {
+  const titleRef = useScrollAnimation('slideUp');
+  const buttonRef = useScrollAnimation('fadeInUp');
   return (
     <section className="hero">
       <div className="hero__panel hero__panel--left">
@@ -24,10 +27,10 @@ function HeroSection() {
       </div>
 
       <div className="hero__overlay">
-        <h1 className="hero__title">
+        <h1 className="hero__title" ref={titleRef}>
           Wear it everywhere, anywhere
         </h1>
-        <button className="hero__cta">Shop Now</button>
+        <button className="hero__cta" ref={buttonRef}>Shop Now</button>
       </div>
     </section>
   );

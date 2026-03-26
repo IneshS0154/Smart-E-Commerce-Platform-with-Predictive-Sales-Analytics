@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import './NewsletterSection.css';
+import useScrollAnimation from '../../hooks/useScrollAnimation';
 
 // Replace null with import once you have the image
 import promoImg from '../../assets/images/newsletter-promo.png';
 const promoImage = promoImg;
 
 function NewsletterSection() {
+  const contentRef = useScrollAnimation('fadeInRight');
   const [email, setEmail] = useState('');
 
   const handleSubscribe = (e) => {
@@ -24,7 +26,7 @@ function NewsletterSection() {
         )}
       </div>
 
-      <div className="newsletter__content">
+      <div className="newsletter__content" ref={contentRef}>
         <h2 className="newsletter__title">The First Round is on US!</h2>
         <p className="newsletter__body">
           Be the first to experience new collections, exclusive offers and the

@@ -1,4 +1,5 @@
 import './CollectionsSection.css';
+import useScrollAnimation from '../../hooks/useScrollAnimation';
 
 // Replace nulls with imports once you have the collection images
 import menImg from '../../assets/images/men-collection.png';
@@ -9,10 +10,18 @@ const collections = [
 ];
 
 function CollectionsSection() {
+  const menRef = useScrollAnimation('scaleIn');
+  const womenRef = useScrollAnimation('scaleIn');
+  
+  const refs = {
+    men: menRef,
+    women: womenRef,
+  };
+  
   return (
     <section className="collections">
       {collections.map(({ key, label, image }) => (
-        <div key={key} className="collections__card">
+        <div key={key} className="collections__card" ref={refs[key]}>
           {image ? (
             <img className="collections__image" src={image} alt={label.join(' ')} />
           ) : (
