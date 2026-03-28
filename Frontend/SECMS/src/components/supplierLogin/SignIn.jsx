@@ -21,7 +21,9 @@ export default function Login() {
         setErrorMessage('');
         try {
             const response = await api.post('/sellers/login', credentials);
-            const data = response.data;          // { role, data/username/id }
+            const data = response.data;
+            
+            console.log('Login response:', data);  // Debug log
 
             if (data.role === 'ADMIN') {
                 alert('Admin logins must use the Account login page. Please go to /login.');
@@ -29,12 +31,15 @@ export default function Login() {
             }
 
             if (data.role !== 'SELLER' || !data.data) {
+                console.error('Invalid response format:', { role: data.role, hasData: !!data.data });
                 setErrorMessage('Unexpected login response. Please try again.');
                 return;
             }
 
             localStorage.setItem('seller', JSON.stringify(data.data));
+            localStorage.setItem('sellerToken', data.token || '');
             localStorage.removeItem('admin');
+            localStorage.removeItem('adminToken');
             localStorage.removeItem('customer');
             localStorage.removeItem('customerToken');
             localStorage.removeItem('customerUsername');
@@ -46,8 +51,20 @@ export default function Login() {
             }
             navigate('/dashboard', { replace: true });
         } catch (error) {
-            const backendMessage = error?.response?.data?.message || error?.response?.data;
-            setErrorMessage(typeof backendMessage === 'string' ? backendMessage : 'Login failed. Please check your credentials.');
+            console.error('Login error caught:', error);
+            console.error('Error response:', error?.response?.data);
+            
+            // Handle error responses with status codes
+            if (error?.response?.status === 401 || error?.response?.status === 403) {
+                const errorData = error.response.data;
+                const message = errorData?.message || errorData || 'Invalid email or password';
+                setErrorMessage(typeof message === 'string' ? message : 'Login failed. Please try again.');
+            } else if (error?.response?.data) {
+                const backendMessage = error.response.data?.message || error.response.data;
+                setErrorMessage(typeof backendMessage === 'string' ? backendMessage : 'Login failed. Please check your credentials.');
+            } else {
+                setErrorMessage('Unable to connect to server. Please try again.');
+            }
         } finally {
             setSubmitting(false);
         }

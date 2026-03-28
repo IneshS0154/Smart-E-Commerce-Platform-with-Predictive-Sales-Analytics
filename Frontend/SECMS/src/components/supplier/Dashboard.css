@@ -403,6 +403,46 @@ body {
     font-size: 14px;
 }
 
+/* ══════════════════════════════════════════
+   TAB TRANSITION
+   key={activeTab} causes React to remount
+   .dash-tab-content on every switch.
+═══════════════════════════════════════════ */
+@keyframes dashTabIn {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dash-tab-content {
+    animation: dashTabIn 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+/* Stagger KPI cards on Dashboard overview */
+.kpi-card {
+    animation: dashTabIn 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+.kpi-card:nth-child(1) { animation-delay: 0.04s; }
+.kpi-card:nth-child(2) { animation-delay: 0.09s; }
+.kpi-card:nth-child(3) { animation-delay: 0.14s; }
+.kpi-card:nth-child(4) { animation-delay: 0.19s; }
+
+/* Transactions card slides in after KPI cards */
+.transactions-card {
+    animation: dashTabIn 0.3s 0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+/* ── Sidebar nav active transitions ── */
+.nav-item {
+    transition: background 0.16s ease, color 0.16s ease, transform 0.1s ease;
+}
+.nav-item:active { transform: scale(0.97); }
+
 /* ── Responsive ── */
 @media (max-width: 1024px) {
     .dashboard-content {

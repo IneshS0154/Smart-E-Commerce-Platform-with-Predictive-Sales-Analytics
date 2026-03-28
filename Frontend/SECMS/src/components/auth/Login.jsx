@@ -22,10 +22,12 @@ export default function Login() {
             });
             if (res.data?.role === 'ADMIN') {
                 localStorage.setItem('admin', JSON.stringify(res.data));
+                localStorage.setItem('adminToken', res.data.token || '');
                 localStorage.removeItem('customer');
                 localStorage.removeItem('customerToken');
                 localStorage.removeItem('customerUsername');
                 localStorage.removeItem('seller');
+                localStorage.removeItem('sellerToken');
                 navigate('/admindashboard');
                 return true;
             }
@@ -62,7 +64,9 @@ export default function Login() {
                 localStorage.setItem('customerToken', data.token || '');
                 localStorage.setItem('customerUsername', data.username || usernameVal);
                 localStorage.removeItem('admin');
+                localStorage.removeItem('adminToken');
                 localStorage.removeItem('seller');
+                localStorage.removeItem('sellerToken');
                 if (rememberVal) localStorage.setItem('rememberCustomerLogin', 'true');
                 else localStorage.removeItem('rememberCustomerLogin');
                 setLoading(false);
@@ -73,7 +77,9 @@ export default function Login() {
 
             if (data.role === 'SELLER') {
                 localStorage.setItem('seller', JSON.stringify(data));
+                localStorage.setItem('sellerToken', data.token || '');
                 localStorage.removeItem('admin');
+                localStorage.removeItem('adminToken');
                 localStorage.removeItem('customer');
                 localStorage.removeItem('customerToken');
                 localStorage.removeItem('customerUsername');

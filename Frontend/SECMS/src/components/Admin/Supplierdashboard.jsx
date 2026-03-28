@@ -3,11 +3,11 @@ import { useNavigate } from "react-router-dom";
 import './Supplierdashboard.css';
 
 const navItems = [
-    { label: "Overview"},
-    { label: "Users"},
-    { label: "Suppliers"},
-    { label: "Payments"},
-    { label: "Reviews"},
+    { label: "Overview" },
+    { label: "Users" },
+    { label: "Suppliers" },
+    { label: "Payments" },
+    { label: "Reviews" },
 ];
 
 // ← Accept activeNav and onNavChange as props so the parent (AdminOverview)
@@ -124,7 +124,7 @@ export default function Supplierdashboard({ activeNav: activeNavProp, onNavChang
                     s.sellerId === sellerId ? { ...s, status: "Deactivated" } : s
                 );
                 setSuppliers(updatedSuppliers);
-                alert("Seller deactivated successfully");
+                // alert("Seller deactivated successfully");
             } else {
                 alert("Failed to deactivate seller");
             }
@@ -146,7 +146,7 @@ export default function Supplierdashboard({ activeNav: activeNavProp, onNavChang
                     s.sellerId === sellerId ? { ...s, status: "Active" } : s
                 );
                 setSuppliers(updatedSuppliers);
-                alert("Seller activated successfully");
+                // alert("Seller activated successfully");
             } else {
                 alert("Failed to activate seller");
             }
@@ -168,7 +168,7 @@ export default function Supplierdashboard({ activeNav: activeNavProp, onNavChang
                     s.sellerId === sellerId ? { ...s, status: "Active" } : s
                 );
                 setSuppliers(updatedSuppliers);
-                alert("Seller approved successfully");
+                // alert("Seller approved successfully");
             } else {
                 alert("Failed to approve seller");
             }
@@ -369,91 +369,91 @@ export default function Supplierdashboard({ activeNav: activeNavProp, onNavChang
                             </div>
                             <table className="supplier-table">
                                 <thead>
-                                <tr>
-                                    <th>Supplier ID</th>
-                                    <th>Store Name</th>
-                                    <th>Email</th>
-                                    <th>Phone Number</th>
-                                    <th>Address</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                </tr>
+                                    <tr>
+                                        <th>Supplier ID</th>
+                                        <th>Store Name</th>
+                                        <th>Email</th>
+                                        <th>Phone Number</th>
+                                        <th>Address</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
                                 </thead>
                                 <tbody>
-                                {loading ? (
-                                    <tr><td colSpan="7" style={{ textAlign: 'center', padding: '20px' }}>Loading...</td></tr>
-                                ) : filtered.length === 0 ? (
-                                    <tr><td colSpan="7" style={{ textAlign: 'center', padding: '20px' }}>No suppliers found</td></tr>
-                                ) : (
-                                    filtered.map(s => (
-                                        <tr key={s.id}>
-                                            <td>{s.id}</td>
-                                            <td>{s.storeName}</td>
-                                            <td>{s.email}</td>
-                                            <td>{s.phoneNumber}</td>
-                                            <td>{s.address}</td>
-                                            <td>
-                                    <span className={`status-badge status-badge--${s.status.toLowerCase()}`}>
-                                      {s.status === "Active" && "✔ "}
-                                        {s.status === "Deactivated" && "⊗ "}
-                                        {s.status === "Rejected" && "✕ "}
-                                        {s.status === "Pending" && "⏳ "}
-                                        {s.status}
-                                    </span>
-                                            </td>
-                                            <td>
-                                                <div className="action-group">
-                                                    <button
-                                                        onClick={() => handleViewSupplier(s)}
-                                                        className="action-btn action-btn-view"
-                                                    >
-                                                        View
-                                                    </button>
-                                                    <button
-                                                        onClick={() => handleEditSupplier(s)}
-                                                        className="action-btn action-btn-edit"
-                                                    >
-                                                        Edit
-                                                    </button>
-                                                </div>
-                                                <div className="action-group action-group-secondary">
-                                                    {s.status === "Pending" && (
-                                                        <>
-                                                            <button
-                                                                onClick={() => handleApprove(s.sellerId)}
-                                                                className="action-btn action-btn-approve"
-                                                            >
-                                                                Approve
-                                                            </button>
-                                                            <button
-                                                                onClick={() => handleReject(s.sellerId)}
-                                                                className="action-btn action-btn-reject"
-                                                            >
-                                                                Reject
-                                                            </button>
-                                                        </>
-                                                    )}
-                                                    {s.status === "Active" && (
+                                    {loading ? (
+                                        <tr><td colSpan="7" style={{ textAlign: 'center', padding: '20px' }}>Loading...</td></tr>
+                                    ) : filtered.length === 0 ? (
+                                        <tr><td colSpan="7" style={{ textAlign: 'center', padding: '20px' }}>No suppliers found</td></tr>
+                                    ) : (
+                                        filtered.map(s => (
+                                            <tr key={s.id}>
+                                                <td>{s.id}</td>
+                                                <td>{s.storeName}</td>
+                                                <td>{s.email}</td>
+                                                <td>{s.phoneNumber}</td>
+                                                <td>{s.address}</td>
+                                                <td>
+                                                    <span className={`status-badge status-badge--${s.status.toLowerCase()}`}>
+                                                        {s.status === "Active" && "✔ "}
+                                                        {s.status === "Deactivated" && "⊗ "}
+                                                        {s.status === "Rejected" && "✕ "}
+                                                        {s.status === "Pending" && "⏳ "}
+                                                        {s.status}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <div className="action-group">
                                                         <button
-                                                            onClick={() => handleDeactivate(s.sellerId)}
-                                                            className="action-btn action-btn-deactivate"
+                                                            onClick={() => handleViewSupplier(s)}
+                                                            className="action-btn action-btn-view"
                                                         >
-                                                            Deactivate
+                                                            View
                                                         </button>
-                                                    )}
-                                                    {s.status === "Deactivated" && (
                                                         <button
-                                                            onClick={() => handleActivate(s.sellerId)}
-                                                            className="action-btn action-btn-activate"
+                                                            onClick={() => handleEditSupplier(s)}
+                                                            className="action-btn action-btn-edit"
                                                         >
-                                                            Activate
+                                                            Edit
                                                         </button>
-                                                    )}
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))
-                                )}
+                                                    </div>
+                                                    <div className="action-group action-group-secondary">
+                                                        {s.status === "Pending" && (
+                                                            <>
+                                                                <button
+                                                                    onClick={() => handleApprove(s.sellerId)}
+                                                                    className="action-btn action-btn-approve"
+                                                                >
+                                                                    Approve
+                                                                </button>
+                                                                <button
+                                                                    onClick={() => handleReject(s.sellerId)}
+                                                                    className="action-btn action-btn-reject"
+                                                                >
+                                                                    Reject
+                                                                </button>
+                                                            </>
+                                                        )}
+                                                        {s.status === "Active" && (
+                                                            <button
+                                                                onClick={() => handleDeactivate(s.sellerId)}
+                                                                className="action-btn action-btn-deactivate"
+                                                            >
+                                                                Deactivate
+                                                            </button>
+                                                        )}
+                                                        {s.status === "Deactivated" && (
+                                                            <button
+                                                                onClick={() => handleActivate(s.sellerId)}
+                                                                className="action-btn action-btn-activate"
+                                                            >
+                                                                Activate
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    )}
                                 </tbody>
                             </table>
                         </div>

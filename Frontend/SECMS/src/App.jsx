@@ -21,6 +21,7 @@ import WomensFormalCollection from './components/Women_s/catalogue/WomensFormalC
 import WomensSportsActive from './components/Women_s/catalogue/WomensSportsActive';
 import WomensOuterwearJackets from './components/Women_s/catalogue/WomensOuterwearJackets';
 import WomensPartyEveningWear from './components/Women_s/catalogue/WomensPartyEveningWear';
+import ProductDetails from './components/ProductDetails';
 
 function ProtectedRoute({ children, allowedRoles }) {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -87,6 +88,7 @@ function App() {
                 <Route path="/womens-sports-active" element={<WomensSportsActive />} />
                 <Route path="/womens-outerwear-jackets" element={<WomensOuterwearJackets />} />
                 <Route path="/womens-party-evening-wear" element={<WomensPartyEveningWear />} />
+                <Route path="/product/:productId" element={<ProductDetails />} />
                 <Route
                     path="/dashboard"
                     element={

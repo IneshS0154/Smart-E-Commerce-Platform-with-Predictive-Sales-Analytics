@@ -2,106 +2,73 @@ import './WomensSection.css';
 import { Link } from 'react-router-dom';
 import useScrollAnimation from '../../hooks/useScrollAnimation';
 
-// Placeholder images - replace with actual women's clothing images
-// import img1 from '../../assets/images/women/1.webp';
-// import img2 from '../../assets/images/women/2.webp';
-// import img3 from '../../assets/images/women/3.webp';
-// import img4 from '../../assets/images/women/4.webp';
+import CasualWear from '../../assets/images/Cat/Women/Casual_Wear.webp';
+import Formal from '../../assets/images/Cat/Women/Formal_Collection.webp';
+import SportsActive from '../../assets/images/Cat/Women/Sports_Active.webp';
+import Outerwear from '../../assets/images/Cat/Women/Outerwear_Jackets.webp';
+import PartyEvening from '../../assets/images/Cat/Women/Party_Evening_Wear.webp';
 
-const womensCollections = [
-  {
-    id: 1,
-    title: 'Casual Wear',
-    subtitle: 'Everyday comfort',
-    image: null,
-    featured: true,
-    path: '/womens-casual-wear'
-  },
-  {
-    id: 2,
-    title: 'Formal Collection',
-    subtitle: 'Elegant styles',
-    image: null,
-    featured: false,
-    path: '/womens-formal-collection'
-  },
-  {
-    id: 3,
-    title: 'Sports & Active',
-    subtitle: 'Athletic performance',
-    image: null,
-    featured: false,
-    path: '/womens-sports-active'
-  },
-  {
-    id: 4,
-    title: 'Outerwear & Jackets',
-    subtitle: 'Versatile layers',
-    image: null,
-    featured: true,
-    path: '/womens-outerwear-jackets'
-  },
-  {
-    id: 5,
-    title: 'Party & Evening Wear',
-    subtitle: 'Special occasions',
-    image: null,
-    featured: true,
-    path: '/womens-party-evening-wear'
-  },
+const top3 = [
+  { id: 1, label: 'Casual Wear', tag: 'Everyday Essentials', image: CasualWear, path: '/womens-casual-wear', pos: 'center top' },
+  { id: 2, label: 'Formal Collection', tag: 'Elegant Styles', image: Formal, path: '/womens-formal-collection', pos: 'center top' },
+  { id: 3, label: 'Sports & Active', tag: 'Athletic Performance', image: SportsActive, path: '/womens-sports-active', pos: 'center top' },
 ];
 
-function WomensSection() {
-  const headerRef = useScrollAnimation('fadeInUp');
+const bottom2 = [
+  { id: 4, label: 'Outerwear & Jackets', tag: 'Versatile Layers', image: Outerwear, path: '/womens-outerwear-jackets', pos: 'center top' },
+  { id: 5, label: 'Party & Evening Wear', tag: 'Special Occasions', image: PartyEvening, path: '/womens-party-evening-wear', pos: 'center center' },
+];
+
+function WCard({ item, size }) {
   return (
-    <section id="womens-section" className="womens">
-      <div className="womens__header" ref={headerRef}>
-        <div className="womens__header-content">
-          <h2 className="womens__title">Women's Collection</h2>
-          <p className="womens__subtitle">Discover premium fashion tailored for you</p>
-        </div>
-        <a href="#" className="womens__view-all">Explore All →</a>
+    <Link to={item.path} className={`ws__card ws__card--${size}`}>
+      <img
+        src={item.image}
+        alt={item.label}
+        className="ws__card-img"
+        style={{ objectPosition: item.pos }}
+      />
+      <div className="ws__card-body">
+        <span className="ws__card-tag">{item.tag}</span>
+        <h3 className="ws__card-label">Shop {item.label}</h3>
       </div>
-
-      <div className="womens__grid">
-        {womensCollections.map((collection, index) => {
-          const cardContent = (
-            <>
-              <div className="womens__card-image-wrap">
-                {collection.image ? (
-                  <img
-                    className="womens__card-image"
-                    src={collection.image}
-                    alt={collection.title}
-                  />
-                ) : (
-                  <div className="womens__card-image-placeholder">
-                    <span>Image</span>
-                  </div>
-                )}
-              </div>
-              <div className="womens__card-content">
-                <h3 className="womens__card-title">{collection.title}</h3>
-                <p className="womens__card-subtitle">{collection.subtitle}</p>
-                <button className="womens__card-link">Shop Now →</button>
-              </div>
-            </>
-          );
-
-          return (
-            <Link
-              key={collection.id}
-              to={collection.path}
-              className={`womens__card ${collection.featured ? 'womens__card--featured' : ''}`}
-              style={{ textDecoration: 'none', color: 'inherit' }}
-            >
-              {cardContent}
-            </Link>
-          );
-        })}
-      </div>
-    </section>
+    </Link>
   );
 }
 
-export default WomensSection;
+export default function WomensSection() {
+  const headerRef = useScrollAnimation('fadeInUp');
+
+  return (
+    <section id="womens-section" className="ws">
+
+      {/* ── Header ── */}
+      <div className="ws__header" ref={headerRef}>
+        <div className="ws__header-left">
+          <span className="ws__eyebrow">Curated for her</span>
+          <h2 className="ws__title">Women's Collection</h2>
+        </div>
+        <div className="ws__header-right">
+          {/* <p className="ws__subtitle">
+            Discover five worlds of style — effortlessly elevated,
+            crafted for every chapter of your day.
+          </p> */}
+          <Link to="/womens-casual-wear" className="ws__view-all">
+            Explore All <span className="ws__arrow">→</span>
+          </Link>
+        </div>
+      </div>
+
+      {/* ── Top row: 3 equal cards ── */}
+      <div className="ws__row ws__row--top">
+        {top3.map(item => <WCard key={item.id} item={item} size="top" />)}
+      </div>
+
+      {/* ── Bottom row: 2 wide cards ── */}
+      <div className="ws__row ws__row--bottom">
+        {bottom2.map(item => <WCard key={item.id} item={item} size="bottom" />)}
+      </div>
+
+    </section>
+  );
+}

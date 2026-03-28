@@ -1,116 +1,62 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import Navbar from '../../Navbar';
 import Footer from '../../Footer';
 import './WomensSportsActive.css';
 
-const sportsActiveProducts = [
-  {
-    id: 1,
-    name: 'Performance Running Shoes',
-    price: 119.99,
-    originalPrice: 199.99,
-    rating: 4.8,
-    reviews: 267,
-    image: null,
-    category: 'Shoes'
-  },
-  {
-    id: 2,
-    name: 'High-Support Sports Bra',
-    price: 69.99,
-    originalPrice: 119.99,
-    rating: 4.9,
-    reviews: 234,
-    image: null,
-    category: 'Tops'
-  },
-  {
-    id: 3,
-    name: 'Athletic Leggings',
-    price: 79.99,
-    originalPrice: 139.99,
-    rating: 4.7,
-    reviews: 189,
-    image: null,
-    category: 'Bottoms'
-  },
-  {
-    id: 4,
-    name: 'Moisture-Wicking Tank',
-    price: 44.99,
-    originalPrice: 74.99,
-    rating: 4.6,
-    reviews: 145,
-    image: null,
-    category: 'Tops'
-  },
-  {
-    id: 5,
-    name: 'Yoga & Gym Shorts',
-    price: 54.99,
-    originalPrice: 89.99,
-    rating: 4.7,
-    reviews: 178,
-    image: null,
-    category: 'Bottoms'
-  },
-  {
-    id: 6,
-    name: 'Athletic Training Jacket',
-    price: 109.99,
-    originalPrice: 179.99,
-    rating: 4.6,
-    reviews: 112,
-    image: null,
-    category: 'Jackets'
-  },
-  {
-    id: 7,
-    name: 'Sports Socks Pack',
-    price: 29.99,
-    originalPrice: 49.99,
-    rating: 4.5,
-    reviews: 98,
-    image: null,
-    category: 'Accessories'
-  },
-  {
-    id: 8,
-    name: 'Fitness Watch',
-    price: 199.99,
-    originalPrice: 349.99,
-    rating: 4.8,
-    reviews: 167,
-    image: null,
-    category: 'Accessories'
-  },
-];
-
 function WomensSportsActive() {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [sortBy, setSortBy] = useState('featured');
+  const [priceRange, setPriceRange] = useState([0, 99999]);
+
+  // Fetch products from API
   useEffect(() => {
     window.scrollTo(0, 0);
+    fetchProducts();
   }, []);
 
-  const [sortBy, setSortBy] = useState('featured');
-  const [priceRange, setPriceRange] = useState([0, 400]);
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const fetchProducts = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const response = await fetch('/api/products/catalogue/FEMALE/SPORTS_ACTIVE');
+      if (response.ok) {
+        const data = await response.json();
+        setProducts(data);
+        if (data.length > 0) {
+          const maxP = Math.ceil(Math.max(...data.map(p => parseFloat(p.price) || 0)));
+          setPriceRange([0, maxP > 0 ? maxP : 99999]);
+        }
+      } else {
+        setError('Failed to load products');
+      }
+    } catch (err) {
+      console.error('Error fetching products:', err);
+      setError('Error loading products');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  const categories = ['Shoes', 'Tops', 'Bottoms', 'Jackets', 'Accessories'];
-
-  const filteredProducts = sportsActiveProducts.filter(product => {
-    const inPriceRange = product.price >= priceRange[0] && product.price <= priceRange[1];
-    const inCategory = !selectedCategory || product.category === selectedCategory;
-    return inPriceRange && inCategory;
+  const filteredProducts = products.filter(product => {
+    const productPrice = product.price ? parseInt(product.price) : 0;
+    const inPriceRange = productPrice >= priceRange[0] && productPrice <= priceRange[1];
+    return inPriceRange;
   });
 
   const sortedProducts = [...filteredProducts].sort((a, b) => {
+    const priceA = a.price ? parseInt(a.price) : 0;
+    const priceB = b.price ? parseInt(b.price) : 0;
+
     switch (sortBy) {
       case 'price-low':
-        return a.price - b.price;
+        return priceA - priceB;
       case 'price-high':
-        return b.price - a.price;
+        return priceB - priceA;
       case 'rating':
-        return b.rating - a.rating;
+        return (b.rating || 0) - (a.rating || 0);
       case 'newest':
         return b.id - a.id;
       default:
@@ -126,27 +72,29 @@ function WomensSportsActive() {
           <div className="catalogue__breadcrumb">
             <a href="/">Home</a>
             <span>/</span>
-            <a href="/#womens-section">Women</a>
+            <a href="/#women-section">Women</a>
             <span>/</span>
             <span>Sports & Active</span>
           </div>
           <h1 className="catalogue__title">Women's Sports & Active</h1>
-          <p className="catalogue__subtitle">Performance and style for active lifestyles</p>
+          <p className="catalogue__subtitle">High-performance activewear for every workout</p>
         </div>
 
         <div className="catalogue__container">
+          {/* Sidebar Filters */}
           <aside className="catalogue__sidebar">
             <div className="filter-group">
               <h3 className="filter-group__title">Filter</h3>
             </div>
 
+            {/* Price Filter */}
             <div className="filter-group">
               <h4 className="filter-group__title">Price Range</h4>
               <div className="filter-group__content">
                 <input
                   type="range"
                   min="0"
-                  max="400"
+                  max={priceRange[1]}
                   value={priceRange[1]}
                   onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value)])}
                   className="price-slider"
@@ -158,30 +106,7 @@ function WomensSportsActive() {
               </div>
             </div>
 
-            <div className="filter-group">
-              <h4 className="filter-group__title">Category</h4>
-              <div className="filter-group__content">
-                <label className="filter-checkbox">
-                  <input
-                    type="checkbox"
-                    checked={!selectedCategory}
-                    onChange={() => setSelectedCategory(null)}
-                  />
-                  <span>All Categories</span>
-                </label>
-                {categories.map((cat) => (
-                  <label key={cat} className="filter-checkbox">
-                    <input
-                      type="checkbox"
-                      checked={selectedCategory === cat}
-                      onChange={() => setSelectedCategory(selectedCategory === cat ? null : cat)}
-                    />
-                    <span>{cat}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-
+            {/* Rating Filter */}
             <div className="filter-group">
               <h4 className="filter-group__title">Rating</h4>
               <div className="filter-group__content">
@@ -195,7 +120,9 @@ function WomensSportsActive() {
             </div>
           </aside>
 
+          {/* Main Content */}
           <section className="catalogue__main">
+            {/* Sort Options */}
             <div className="catalogue__toolbar">
               <div className="sort-container">
                 <label htmlFor="sort">Sort by:</label>
@@ -217,39 +144,51 @@ function WomensSportsActive() {
               </div>
             </div>
 
-            <div className="product-grid">
-              {sortedProducts.map((product) => (
-                <div key={product.id} className="product-card">
-                  <div className="product-card__image-wrap">
-                    <div className="product-card__image-placeholder">
-                      <span>Image</span>
-                    </div>
-                    {product.originalPrice > product.price && (
-                      <div className="product-card__badge">
-                        -{Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}%
-                      </div>
-                    )}
-                  </div>
-                  <div className="product-card__content">
-                    <h3 className="product-card__name">{product.name}</h3>
-                    <div className="product-card__rating">
-                      <span className="stars">★★★★☆</span>
-                      <span className="rating-value">{product.rating}</span>
-                      <span className="reviews">({product.reviews})</span>
-                    </div>
-                    <div className="product-card__price">
-                      <span className="price">Rs.{product.price}</span>
-                      {product.originalPrice > product.price && (
-                        <span className="original-price">Rs.{product.originalPrice}</span>
+            {/* Loading State */}
+            {loading && <div className="loading-message">Loading products...</div>}
+
+            {/* Error State */}
+            {error && <div className="error-message">{error}</div>}
+
+            {/* Product Grid */}
+            {!loading && !error && (
+              <div className="product-grid">
+                {sortedProducts.map((product) => (
+                  <Link key={product.id} to={`/product/${product.id}`} className="product-card" style={{ textDecoration: "none", color: "inherit" }}>
+                    <div className="product-card__image-wrap">
+                      {product.mainImagePath ? (
+                        <img
+                          src={product.mainImagePath}
+                          alt={product.productName}
+                          className="product-card__image"
+                        />
+                      ) : (
+                        <div className="product-card__image-placeholder">
+                          <span>No Image</span>
+                        </div>
                       )}
                     </div>
-                    <button className="product-card__btn">Add to Cart</button>
-                  </div>
-                </div>
-              ))}
-            </div>
+                    <div className="product-card__content">
+                      <h3 className="product-card__name">{product.productName}</h3>
+                      <div className="product-card__rating">
+                        <span className="stars">★★★★☆</span>
+                        <span className="rating-value">4.5</span>
+                        <span className="reviews">(32)</span>
+                      </div>
+                      <div className="product-card__price">
+                        <span className="price">Rs.{product.price}</span>
+                      </div>
+                      {product.sellerName && (
+                        <p className="product-card__seller">By: {product.sellerName}</p>
+                      )}
+                      <button className="product-card__btn">Add to Cart</button>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
 
-            {sortedProducts.length === 0 && (
+            {!loading && !error && sortedProducts.length === 0 && (
               <div className="no-products">
                 <p>No products found matching your filters.</p>
               </div>

@@ -3,7 +3,7 @@ import './NewsletterSection.css';
 import useScrollAnimation from '../../hooks/useScrollAnimation';
 
 // Replace null with import once you have the image
-import promoImg from '../../assets/images/newsletter-promo.png';
+import promoImg from '../../assets/images/newsletter.png';
 const promoImage = promoImg;
 
 function NewsletterSection() {
