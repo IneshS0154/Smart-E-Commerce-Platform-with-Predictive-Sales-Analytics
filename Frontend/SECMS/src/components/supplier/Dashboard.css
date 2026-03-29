@@ -1,6 +1,54 @@
 /* Dashboard layout and components matching Anywear admin design */
 
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Syne:wght@600;700;800&display=swap');
+@font-face {
+  font-family: 'NORD';
+  src: url('../../assets/fonts/NORD-Regular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'NORD';
+  src: url('../../assets/fonts/NORD-Bold.otf') format('opentype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'NORD';
+  src: url('../../assets/fonts/NORD-Light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Grift';
+  src: url('../../assets/fonts/Grift-Regular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Grift';
+  src: url('../../assets/fonts/Grift-Bold.otf') format('opentype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Grift';
+  src: url('../../assets/fonts/Grift-SemiBold.otf') format('opentype');
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Grift';
+  src: url('../../assets/fonts/Grift-Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+}
+
 
 :root {
     --bg: #f4f4f2;
@@ -31,7 +79,8 @@ body {
 /* ── Layout ── */
 .dashboard-layout {
     display: flex;
-    min-height: 100vh;
+    height: 100vh;
+    overflow: hidden;
 }
 
 /* ── Sidebar ── */
@@ -50,12 +99,14 @@ body {
 }
 
 .sidebar-brand {
+    font-family: 'NORD', sans-serif;
     display: flex;
     align-items: center;
     gap: 10px;
     padding: 22px 24px;
     border-bottom: 1px solid var(--border);
     margin-bottom: 16px;
+    margin-left: 10px;
 }
 
 .brand-icon {
@@ -64,10 +115,10 @@ body {
 }
 
 .brand-name {
-    font-family: 'Syne', sans-serif;
-    font-size: 16px;
-    font-weight: 800;
-    letter-spacing: 0.06em;
+    font-family: 'Grift', sans-serif;
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.1em;
 }
 
 .sidebar-nav {
@@ -128,6 +179,8 @@ body {
     display: flex;
     flex-direction: column;
     background: var(--bg);
+    height: 100vh;
+    overflow: hidden;
 }
 
 /* ── Topbar ── */
@@ -144,7 +197,7 @@ body {
 }
 
 .topbar-title {
-    font-family: 'Syne', sans-serif;
+    font-family: 'Grift', sans-serif;
     font-size: 20px;
     font-weight: 700;
     color: var(--text-primary);
@@ -209,7 +262,7 @@ body {
 
 .content-heading h2 {
     margin: 0;
-    font-family: 'Syne', sans-serif;
+    font-family: 'Grift', sans-serif;
     font-size: 24px;
     font-weight: 700;
     color: var(--text-primary);
@@ -274,7 +327,7 @@ body {
 
 .transactions-header h3 {
     margin: 0;
-    font-family: 'Syne', sans-serif;
+    font-family: 'Grift ', sans-serif;
     font-size: 18px;
     font-weight: 700;
     color: var(--text-primary);
@@ -352,6 +405,46 @@ body {
     color: var(--text-secondary);
     font-size: 14px;
 }
+
+/* ══════════════════════════════════════════
+   TAB TRANSITION
+   key={activeTab} causes React to remount
+   .dash-tab-content on every switch.
+═══════════════════════════════════════════ */
+@keyframes dashTabIn {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dash-tab-content {
+    animation: dashTabIn 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+/* Stagger KPI cards on Dashboard overview */
+.kpi-card {
+    animation: dashTabIn 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+.kpi-card:nth-child(1) { animation-delay: 0.04s; }
+.kpi-card:nth-child(2) { animation-delay: 0.09s; }
+.kpi-card:nth-child(3) { animation-delay: 0.14s; }
+.kpi-card:nth-child(4) { animation-delay: 0.19s; }
+
+/* Transactions card slides in after KPI cards */
+.transactions-card {
+    animation: dashTabIn 0.3s 0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+/* ── Sidebar nav active transitions ── */
+.nav-item {
+    transition: background 0.16s ease, color 0.16s ease, transform 0.1s ease;
+}
+.nav-item:active { transform: scale(0.97); }
 
 /* ── Responsive ── */
 @media (max-width: 1024px) {

@@ -1,6 +1,54 @@
 
+@font-face {
+  font-family: 'NORD';
+  src: url('../../assets/fonts/NORD-Regular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
 
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Syne:wght@600;700;800&display=swap');
+@font-face {
+  font-family: 'NORD';
+  src: url('../../assets/fonts/NORD-Bold.otf') format('opentype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'NORD';
+  src: url('../../assets/fonts/NORD-Light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Grift';
+  src: url('../../assets/fonts/Grift-Regular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Grift';
+  src: url('../../assets/fonts/Grift-Bold.otf') format('opentype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Grift';
+  src: url('../../assets/fonts/Grift-SemiBold.otf') format('opentype');
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Grift';
+  src: url('../../assets/fonts/Grift-Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+
 
 :root {
     --bg: #f4f4f2;
@@ -61,7 +109,7 @@ body {
 }
 
 .brand-name {
-    font-family: 'Syne', sans-serif;
+    font-family: 'Grift', sans-serif;
     font-size: 16px;
     font-weight: 800;
     letter-spacing: 0.06em;
@@ -139,7 +187,7 @@ body {
 }
 
 .topbar-title {
-    font-family: 'Syne', sans-serif;
+    font-family: 'Grift', sans-serif;
     font-size: 20px;
     font-weight: 700;
 }
@@ -189,7 +237,7 @@ body {
 }
 
 .section-title {
-    font-family: 'Syne', sans-serif;
+    font-family: 'Grift', sans-serif;
     font-size: 22px;
     font-weight: 700;
 }
@@ -238,7 +286,7 @@ body {
 .stat-label--pending { color: var(--pending-amber); }
 
 .stat-value {
-    font-family: 'Syne', sans-serif;
+    font-family: 'Grift', sans-serif;
     font-size: 42px;
     font-weight: 700;
     line-height: 1;
@@ -248,7 +296,7 @@ body {
 .table-section {}
 
 .table-title {
-    font-family: 'Syne', sans-serif;
+    font-family: 'Grift', sans-serif;
     font-size: 17px;
     font-weight: 700;
     margin-bottom: 16px;
@@ -416,7 +464,7 @@ body {
 }
 
 .modal-title {
-    font-family: 'Syne', sans-serif;
+    font-family: 'Grift', sans-serif;
     font-size: 20px;
     font-weight: 700;
     margin-bottom: 24px;

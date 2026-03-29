@@ -1,69 +1,99 @@
+import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import './EverydayWearSection.css';
+import useScrollAnimation from '../../hooks/useScrollAnimation';
 
-// Replace nulls with image imports once you have the images
-import img1 from '../../assets/images/EverydayWear/1.webp';
-import img2 from '../../assets/images/EverydayWear/2.webp';
-import img3 from '../../assets/images/EverydayWear/3.webp';
-import img4 from '../../assets/images/EverydayWear/4.webp';
-import img5 from '../../assets/images/EverydayWear/5.webp';
-import img6 from '../../assets/images/EverydayWear/6.webp';
-import img7 from '../../assets/images/EverydayWear/7.webp';
-import img8 from '../../assets/images/EverydayWear/8.avif';
-
-const gridItems = [
-  { type: 'image', image: img1, alt: 'Everyday wear 1' },
-  { type: 'image', image: img2, alt: 'Everyday wear 2' },
-  { type: 'image', image: img3, alt: 'Everyday wear 3' },
-  { type: 'placeholder-dark' },
-  { type: 'placeholder-light' },
-  { type: 'image', image: img4, alt: 'Everyday wear 4' },
-  { type: 'image', image: img5, alt: 'Everyday wear 5' },
-  { type: 'image', image: img6, alt: 'Everyday wear 6' },
-  { type: 'text' },
-  { type: 'image', image: img7, alt: 'Everyday wear 7' },
-  { type: 'placeholder-light' },
-  { type: 'image', image: img8, alt: 'Everyday wear 8' },
-];
+// Fisher-Yates shuffle algorithm
+function shuffleArray(array) {
+  const newArr = [...array];
+  for (let i = newArr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [newArr[i], newArr[j]] = [newArr[j], newArr[i]];
+  }
+  return newArr;
+}
 
 function EverydayWearSection() {
+  const headerRef = useScrollAnimation('fadeInUp');
+  const [randomProducts, setRandomProducts] = useState([]);
+
+  useEffect(() => {
+    // Fetch a batch of products so we can select some randomly
+    fetch('/api/products/new-arrivals?limit=50')
+      .then(r => r.ok ? r.json() : [])
+      .then(data => {
+        if (Array.isArray(data) && data.length > 0) {
+          const shuffled = shuffleArray(data);
+          // We need up to 8 products for the image edge cases
+          setRandomProducts(shuffled.slice(0, 8));
+        }
+      })
+      .catch(err => console.error("Could not fetch products for everyday grid", err));
+  }, []);
+
+  const renderCell = (index, cellType, productIndex) => {
+    if (cellType === 'text') {
+      return (
+        <div key={index} className="everyday__cell everyday__cell--text">
+          <p>Choose it</p>
+          <p>Pair it</p>
+          <p>Wear it</p>
+        </div>
+      );
+    }
+    if (cellType === 'placeholder-dark') {
+      return <div key={index} className="everyday__cell everyday__cell--dark" />;
+    }
+    if (cellType === 'placeholder-light') {
+      return <div key={index} className="everyday__cell everyday__cell--light" />;
+    }
+
+    // It's an image cell
+    const p = randomProducts[productIndex];
+    if (!p) {
+      // Show skeleton loader while fetching
+      return (
+        <div key={index} className="everyday__cell everyday__cell--image">
+          <div className="everyday__image-placeholder shimmer-bg" />
+        </div>
+      );
+    }
+
+    return (
+      <Link key={index} to={`/product/${p.id}`} className="everyday__cell everyday__cell--image everyday__cell--link">
+        {p.mainImagePath ? (
+          <img className="everyday__image" src={p.mainImagePath} alt={p.productName} loading="lazy" />
+        ) : (
+          <div className="everyday__image-placeholder">No Image</div>
+        )}
+        <div className="everyday__cell-overlay">
+          <span className="everyday__cell-overlay-text">View</span>
+        </div>
+      </Link>
+    );
+  };
+
   return (
     <section className="everyday">
-      <div className="everyday__header">
+      <div className="everyday__header" ref={headerRef}>
         <h2 className="everyday__title">For Your Everyday Wear</h2>
-        <a href="#" className="everyday__view-all">View All</a>
+        <Link to="/shop" className="everyday__view-all">View All</Link>
       </div>
 
       <div className="everyday__grid">
-        {gridItems.map((item, i) => {
-          if (item.type === 'text') {
-            return (
-              <div key={i} className="everyday__cell everyday__cell--text">
-                <p>Choose it</p>
-                <p>Pair it</p>
-                <p>Wear it</p>
-              </div>
-            );
-          }
-          if (item.type === 'placeholder-dark') {
-            return <div key={i} className="everyday__cell everyday__cell--dark" />;
-          }
-          if (item.type === 'placeholder-light') {
-            return <div key={i} className="everyday__cell everyday__cell--light" />;
-          }
-          return (
-            <div key={i} className="everyday__cell everyday__cell--image">
-              {item.image ? (
-                <img
-                  className="everyday__image"
-                  src={item.image}
-                  alt={item.alt}
-                />
-              ) : (
-                <div className="everyday__image-placeholder" />
-              )}
-            </div>
-          );
-        })}
+        {/* We explicitly map the grid pattern instead of a flat list to keep the layout exact */}
+        {renderCell(0, 'image', 0)}
+        {renderCell(1, 'image', 1)}
+        {renderCell(2, 'image', 2)}
+        {renderCell(3, 'placeholder-dark', null)}
+        {renderCell(4, 'placeholder-light', null)}
+        {renderCell(5, 'image', 3)}
+        {renderCell(6, 'image', 4)}
+        {renderCell(7, 'image', 5)}
+        {renderCell(8, 'text', null)}
+        {renderCell(9, 'image', 6)}
+        {renderCell(10, 'placeholder-light', null)}
+        {renderCell(11, 'image', 7)}
       </div>
     </section>
   );

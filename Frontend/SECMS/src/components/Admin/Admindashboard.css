@@ -1,4 +1,51 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Syne:wght@600;700;800&display=swap');
+@font-face {
+  font-family: 'NORD';
+  src: url('../../assets/fonts/NORD-Regular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'NORD';
+  src: url('../../assets/fonts/NORD-Bold.otf') format('opentype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'NORD';
+  src: url('../../assets/fonts/NORD-Light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Grift';
+  src: url('../../assets/fonts/Grift-Regular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Grift';
+  src: url('../../assets/fonts/Grift-Bold.otf') format('opentype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Grift';
+  src: url('../../assets/fonts/Grift-SemiBold.otf') format('opentype');
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Grift';
+  src: url('../../assets/fonts/Grift-Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+}
 
 :root {
     --ov-bg: #f4f4f2;
@@ -56,10 +103,11 @@ body {
 .ov-brand-icon { font-size: 22px; }
 
 .ov-brand-name {
-    font-family: 'Syne', sans-serif;
+    font-family: 'Grift', sans-serif;
     font-size: 16px;
     font-weight: 800;
     letter-spacing: 0.06em;
+    margin-left: 10px;
 }
 
 .ov-nav {
@@ -133,7 +181,7 @@ body {
 }
 
 .ov-topbar-title {
-    font-family: 'Syne', sans-serif;
+    font-family: 'Grift', sans-serif;
     font-size: 20px;
     font-weight: 700;
 }
@@ -202,9 +250,9 @@ body {
 }
 
 .ov-section-title {
-    font-family: 'Syne', sans-serif;
+    font-family: 'Grift', sans-serif;
     font-size: 22px;
-    font-weight: 700;
+    font-weight: 500;
     margin-bottom: 24px;
 }
 
@@ -231,7 +279,7 @@ body {
 }
 
 .ov-stat-value {
-    font-family: 'Syne', sans-serif;
+    font-family: 'Grift', sans-serif;
     font-size: 36px;
     font-weight: 700;
     line-height: 1;
@@ -329,6 +377,7 @@ body {
 .ov-sort-chevron {
     font-size: 16px;
     line-height: 1;
+    margin-bottom: 8px;
 }
 
 .ov-sort-dropdown {

@@ -10,6 +10,7 @@
   flex: 1;
   display: grid;
   grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  align-items: start;
 }
 
 .auth-shell--reverse {
@@ -21,6 +22,7 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
+  height: fit-content;
 }
 
 .auth-brand-bar {
@@ -167,18 +169,12 @@
 
 .auth-hero {
   position: relative;
-  min-height: 100vh;
   background-size: cover;
   background-position: center;
+  height: 100%;
+  min-height: auto;
 }
 
-.auth-hero--login {
-  background-image: url('https://images.pexels.com/photos/7691089/pexels-photo-7691089.jpeg?auto=compress&cs=tinysrgb&w=1200');
-}
-
-.auth-hero--register {
-  background-image: url('https://images.pexels.com/photos/6311579/pexels-photo-6311579.jpeg?auto=compress&cs=tinysrgb&w=1200');
-}
 
 @media (max-width: 900px) {
   .auth-shell {

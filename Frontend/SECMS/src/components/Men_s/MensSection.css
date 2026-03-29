@@ -1,0 +1,278 @@
+/* ═══════════════════════════════════════════════════
+   MensSection.css  — 2-top + 3-bottom editorial grid
+   Fonts: 'Grift' (headings) · 'NORD' (body)
+═══════════════════════════════════════════════════ */
+
+.ms {
+  padding: 96px 48px;
+  background: #f7f5f2;
+  /* slightly cooler neutral to differentiate from Women's */
+}
+
+/* ── Section header ── */
+.ms__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 40px;
+  margin-bottom: 32px;
+}
+
+.ms__eyebrow {
+  display: block;
+  font-family: 'NORD', sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #8c8c8c;
+  margin-bottom: 8px;
+}
+
+.ms__title {
+  font-family: 'Grift', sans-serif;
+  font-size: clamp(2.2rem, 4vw, 3.4rem);
+  font-weight: 700;
+  color: #1a1a1a;
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+  margin: 0;
+}
+
+.ms__header-right {
+  max-width: 340px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.ms__subtitle {
+  font-family: 'NORD', sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  color: #6b6b6b;
+  line-height: 1.75;
+  margin-bottom: 16px;
+}
+
+.ms__view-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Grift', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: #1a1a1a;
+  text-decoration: none;
+  border-bottom: 1.5px solid #1a1a1a;
+  padding-bottom: 2px;
+  transition: gap 0.2s ease, opacity 0.2s;
+}
+
+.ms__view-all:hover {
+  gap: 14px;
+  opacity: 0.7;
+}
+
+.ms__arrow {
+  transition: transform 0.2s;
+}
+
+.ms__view-all:hover .ms__arrow {
+  transform: translateX(4px);
+}
+
+/* ── Grid rows ── */
+.ms__row {
+  display: grid;
+  gap: 10px;
+}
+
+.ms__row--top {
+  grid-template-columns: repeat(2, 1fr);
+  margin-bottom: 10px;
+}
+
+.ms__row--bottom {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* ── Card base ── */
+.ms__card {
+  position: relative;
+  display: block;
+  text-decoration: none;
+  overflow: hidden;
+  border-radius: 6px;
+  background: #111;
+  cursor: pointer;
+}
+
+.ms__card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.65s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    opacity 0.35s ease;
+}
+
+.ms__card:hover .ms__card-img {
+  transform: scale(1.05);
+  opacity: 0.85;
+}
+
+/* ── Card heights ── */
+.ms__card--top {
+  height: 480px;
+}
+
+.ms__card--bottom {
+  height: 380px;
+}
+
+/* ── Permanent bottom gradient ── */
+.ms__card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top,
+      rgba(8, 8, 8, 0.82) 0%,
+      rgba(8, 8, 8, 0.22) 42%,
+      transparent 70%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ── Card text body ── */
+.ms__card-body {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 24px 26px;
+  z-index: 2;
+}
+
+.ms__card-tag {
+  display: block;
+  font-family: 'NORD', sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  margin-bottom: 6px;
+  transform: translateY(4px);
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.ms__card:hover .ms__card-tag {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.ms__card-label {
+  font-family: 'Grift', sans-serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  line-height: 1.15;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  transition: letter-spacing 0.3s ease;
+}
+
+.ms__card:hover .ms__card-label {
+  letter-spacing: 0.05em;
+}
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .ms {
+    padding: 72px 32px;
+  }
+
+  .ms__card--top {
+    height: 380px;
+  }
+
+  .ms__card--bottom {
+    height: 300px;
+  }
+}
+
+@media (max-width: 768px) {
+  .ms {
+    padding: 56px 20px;
+  }
+
+  .ms__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+
+  .ms__header-right {
+    text-align: left;
+    max-width: 100%;
+  }
+
+  .ms__row--top {
+    grid-template-columns: 1fr;
+  }
+
+  .ms__row--bottom {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  /* 3rd bottom card spans full width on tablet */
+  .ms__row--bottom .ms__card:last-child {
+    grid-column: span 2;
+  }
+
+  .ms__card--top {
+    height: 320px;
+  }
+
+  .ms__card--bottom {
+    height: 260px;
+  }
+
+  .ms__card-tag {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 480px) {
+  .ms {
+    padding: 40px 16px;
+  }
+
+  .ms__row {
+    gap: 8px;
+  }
+
+  .ms__row--bottom {
+    grid-template-columns: 1fr;
+  }
+
+  .ms__row--bottom .ms__card:last-child {
+    grid-column: span 1;
+  }
+
+  .ms__card--top {
+    height: 280px;
+  }
+
+  .ms__card--bottom {
+    height: 240px;
+  }
+
+  .ms__card-label {
+    font-size: 1.1rem;
+  }
+}

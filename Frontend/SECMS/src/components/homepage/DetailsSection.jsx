@@ -1,18 +1,25 @@
 import './DetailsSection.css';
-import detailsImg from '../../assets/images/details.png';
+import useScrollAnimation from '../../hooks/useScrollAnimation';
+import detailsVideo from '../../assets/videos/anywear.mp4';
 
 function DetailsSection() {
+  const imageRef = useScrollAnimation('fadeInLeft');
+  const textRef = useScrollAnimation('fadeInRight');
   return (
     <section className="details">
-      <div className="details__image-wrap">
-        <img
+      <div className="details__image-wrap" ref={imageRef}>
+        <video
           className="details__image"
-          src={detailsImg}
-          alt="Fabric detail"
-        />
+          autoPlay
+          loop
+          muted
+          playsInline
+        >
+          <source src={detailsVideo} type="video/mp4" />
+        </video>
       </div>
 
-      <div className="details__footer">
+      <div className="details__footer" ref={textRef}>
         <span className="details__label">Details that Speak</span>
         <p className="details__text">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod

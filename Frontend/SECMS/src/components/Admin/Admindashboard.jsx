@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import './Admindashboard.css';
-import Supplierdashboard from './Supplierdashboard'; // ← import the supplier dashboard
+import Supplierdashboard from './Supplierdashboard';
+import Userdashboard from './Userdashboard';
 
 const transactionsData = [
     { id: "#TRX-2659", customerId: "#C569", date: "2/03/26", productId: "#PID-569", supplierId: "#SUP-25", amount: "LKR 1,599", status: "Completed" },
@@ -13,11 +14,11 @@ const transactionsData = [
 ];
 
 const navItems = [
-    { label: "Overview", icon: "📊" },
-    { label: "Users", icon: "👤" },
-    { label: "Suppliers", icon: "🏭" },
-    { label: "Payments", icon: "💳" },
-    { label: "Reviews", icon: "💬" },
+    { label: "Overview"},
+    { label: "Users"},
+    { label: "Suppliers"},
+    { label: "Payments"},
+    { label: "Reviews"},
 ];
 
 const sortOptions = ["Most Recent", "Oldest First", "Highest Amount", "Lowest Amount"];
@@ -40,8 +41,10 @@ export default function AdminOverview() {
         navigate("/");
     };
 
-    // ← If Suppliers tab is active, render Supplierdashboard and pass setActiveNav so
-    //   its sidebar clicks can also update the parent's activeNav state.
+    if (activeNav === "Users") {
+        return <Userdashboard activeNav={activeNav} onNavChange={setActiveNav} />;
+    }
+
     if (activeNav === "Suppliers") {
         return <Supplierdashboard activeNav={activeNav} onNavChange={setActiveNav} />;
     }
@@ -64,7 +67,6 @@ export default function AdminOverview() {
             {/* Sidebar */}
             <aside className="ov-sidebar">
                 <div className="ov-brand">
-                    <span className="ov-brand-icon">◫</span>
                     <span className="ov-brand-name">ANYWEAR</span>
                 </div>
                 <nav className="ov-nav">
@@ -81,7 +83,6 @@ export default function AdminOverview() {
                 </nav>
                 <div className="ov-sidebar-footer">
                     <button className="ov-nav-item">
-                        <span className="ov-nav-icon">⚙️</span>
                         <span>Settings</span>
                     </button>
                 </div>
@@ -177,7 +178,6 @@ export default function AdminOverview() {
                             </div>
                             <div className="ov-table-actions">
                                 <div className="ov-search-box">
-                                    <span>🔍</span>
                                     <input
                                         className="ov-search-input"
                                         placeholder="Search"
@@ -187,7 +187,7 @@ export default function AdminOverview() {
                                 </div>
                                 <div className="ov-sort-wrapper">
                                     <button className="ov-sort-btn" onClick={() => setShowSort(!showSort)}>
-                                        {sortBy} <span className="ov-sort-chevron">⌄</span>
+                                        {sortBy} <span className="ov-sort-chevron">&#8964;</span>
                                     </button>
                                     {showSort && (
                                         <div className="ov-sort-dropdown">

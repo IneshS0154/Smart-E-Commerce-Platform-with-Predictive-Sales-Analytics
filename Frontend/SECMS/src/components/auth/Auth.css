@@ -85,7 +85,7 @@
 .auth-content {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 5rem;
+  gap: 1rem;
   max-width: 1200px;
   width: 100%;
   align-items: stretch;
@@ -99,6 +99,8 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  text-align: center;
+  height: 100%;
 }
 
 .auth-title {
@@ -107,6 +109,7 @@
   color: #1a1a1a;
   margin: 0 0 0.5rem 0;
   font-family: 'Grift', sans-serif;
+  text-align: left;
 }
 
 .auth-subtitle {
@@ -115,6 +118,23 @@
   margin: 0 0 2rem 0;
   font-family: 'NORD', sans-serif;
   font-weight: 300;
+  text-align: left;
+}
+
+.auth-image-placeholder {
+  max-height: 615px; /* adjust to your liking */
+}
+
+.form-frame {
+  border: 1px solid #ffffff;
+  border-radius: 8px;
+  padding: 1rem;
+  background: #ffffff;
+  margin-top: 1.5rem;
+  margin-right: 1rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 .auth-form {
@@ -144,6 +164,7 @@
   font-weight: 600;
   color: #1a1a1a;
   font-family: 'Grift', sans-serif;
+  text-align: left;
 }
 
 .form-group input[type="text"],
@@ -172,13 +193,38 @@
   color: #666;
   text-decoration: none;
   transition: color 0.3s ease;
-  align-self: flex-end;
   font-family: 'Grift', sans-serif;
 }
 
 .forgot-password:hover {
   color: #1a1a1a;
   text-decoration: underline;
+}
+
+.remember-forgot-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.remember-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 400;
+  cursor: pointer;
+  font-family: 'Grift', sans-serif;
+}
+
+.remember-label input[type="checkbox"] {
+  width: 1rem;
+  height: 1rem;
+  cursor: pointer;
+  accent-color: #1a1a1a;
+  flex-shrink: 0;
 }
 
 .form-group.checkbox {
@@ -277,11 +323,13 @@
   font-size: 0.9rem;
   color: #666;
   font-family: 'Grift', sans-serif;
+  text-align: center;
 }
 
 .auth-toggle p {
   margin: 0;
   font-family: 'Grift', sans-serif;
+  text-align: center;
 }
 
 .toggle-link {
@@ -300,8 +348,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: auto;
-  min-height: 100%;
+  height: 100%;
+  min-height: auto;
 }
 
 .auth-image-placeholder {
@@ -320,7 +368,37 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  max-height: 100%;
 }
+
+
+.signup-image-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: auto;
+}
+
+.signup-image-placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #f0f0f0 0%, #e8e8e8 100%);
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+}
+
+.signup-image-placeholder img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  max-height: 100%;
+}
+
 
 /* Responsive Design */
 @media (max-width: 768px) {

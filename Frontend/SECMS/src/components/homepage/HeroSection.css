@@ -5,28 +5,15 @@
   overflow: hidden;
 }
 
-/* ── Panels ── */
-.hero__panel {
-  flex: 1;
-  height: 100%;
-  overflow: hidden;
-}
-
-.hero__panel--left {
-  background-color: #2e2e2e;
-}
-
-.hero__panel--right {
-  background-color: #d9d9d9;
-}
-
-.hero__image {
-  opacity: 0.95;
+/* ── Fullscreen Video Background ── */
+.hero__video {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center top;
-  display: block;
+  z-index: 0;
 }
 
 /* ── Centered overlay ── */
@@ -39,6 +26,7 @@
   justify-content: center;
   gap: 40px;
   pointer-events: none;
+  z-index: 1;
 }
 
 .hero__title {
@@ -56,6 +44,8 @@
 
 .hero__cta {
   pointer-events: all;
+  display: inline-block;
+  text-decoration: none;
   background-color: #ffffff;
   color: #1a1a1a;
   border: none;
