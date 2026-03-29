@@ -1,204 +1,170 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import useScrollAnimation from '../../hooks/useScrollAnimation';
 import './NewArrivalsSection.css';
 
-import prod1 from '../../assets/images/NewArrivals/1.webp';
-import prod2 from '../../assets/images/NewArrivals/2.webp';
-import prod3 from '../../assets/images/NewArrivals/3.webp';
+// ── Helpers ─────────────────────────────────────────────────────
+const fmtPrice = (p) =>
+  p ? `Rs. ${parseFloat(p).toLocaleString('en-IN', { minimumFractionDigits: 2 })}` : '—';
 
-const newArrivalProducts = [
-  {
-    id: 1,
-    name: 'GridForm Relaxed Textured T-Shirt',
-    price: 49.99,
-    originalPrice: 79.99,
-    rating: 4.7,
-    reviews: 124,
-    colors: 7,
-    image: prod1,
-    category: 'Men',
-    type: 'Casual Wear'
-  },
-  {
-    id: 2,
-    name: 'OpenForm Top',
-    price: 59.99,
-    originalPrice: 99.99,
-    rating: 4.8,
-    reviews: 89,
-    colors: 2,
-    image: prod2,
-    category: 'Men',
-    type: 'Casual Tops'
-  },
-  {
-    id: 3,
-    name: 'Cortéz Textured Knit Polo',
-    price: 64.99,
-    originalPrice: 109.99,
-    rating: 4.6,
-    reviews: 156,
-    colors: 7,
-    image: prod3,
-    category: 'Women',
-    type: 'Casual Wear'
-  },
-  {
-    id: 4,
-    name: 'Premium Cotton Blend Shirt',
-    price: 69.99,
-    originalPrice: 119.99,
-    rating: 4.9,
-    reviews: 203,
-    colors: 5,
-    image: prod1,
-    category: 'Men',
-    type: 'Formal'
-  },
-  {
-    id: 5,
-    name: 'Modern Athleisure Jacket',
-    price: 89.99,
-    originalPrice: 149.99,
-    rating: 4.7,
-    reviews: 178,
-    colors: 4,
-    image: prod2,
-    category: 'Women',
-    type: 'Active Wear'
-  },
-  {
-    id: 6,
-    name: 'Classic Comfort Hoodie',
-    price: 59.99,
-    originalPrice: 99.99,
-    rating: 4.8,
-    reviews: 267,
-    colors: 6,
-    image: prod3,
-    category: 'Men',
-    type: 'Casual Wear'
-  },
-];
+const fmtCategory = (s) =>
+  s ? s.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase()) : '';
 
+// Gender badge colours
+const genderStyle = (g) =>
+  g === 'MALE'
+    ? { bg: '#eef0ff', color: '#4f46e5', label: "Men's" }
+    : { bg: '#fdf2f8', color: '#db2777', label: "Women's" };
+
+// ── Skeleton card placeholder ──────────────────────────────────
+function SkeletonCard() {
+  return (
+    <div className="na-card na-card--skeleton">
+      <div className="na-card__img-wrap na-skeleton" />
+      <div className="na-card__body">
+        <div className="na-skeleton na-skeleton--line" style={{ width: '60%', height: 10 }} />
+        <div className="na-skeleton na-skeleton--line" style={{ width: '90%', height: 14, marginTop: 8 }} />
+        <div className="na-skeleton na-skeleton--line" style={{ width: '40%', height: 10, marginTop: 8 }} />
+        <div className="na-skeleton na-skeleton--line" style={{ width: '55%', height: 12, marginTop: 16 }} />
+        <div className="na-skeleton na-skeleton--btn" />
+      </div>
+    </div>
+  );
+}
+
+// ── Product card ───────────────────────────────────────────────
+function ProductCard({ product }) {
+  const gs = genderStyle(product.gender);
+  const colorsCount = product.colors?.length ?? 0;
+
+  return (
+    <Link to={`/product/${product.id}`} className="na-card" style={{ textDecoration: 'none', color: 'inherit' }}>
+      {/* Image */}
+      <div className="na-card__img-wrap">
+        {product.mainImagePath ? (
+          <img
+            className="na-card__img"
+            src={product.mainImagePath}
+            alt={product.productName}
+            loading="lazy"
+          />
+        ) : (
+          <div className="na-card__img-placeholder">No Image</div>
+        )}
+        {/* Gender badge */}
+        <span
+          className="na-card__gender-badge"
+          style={{ background: gs.bg, color: gs.color }}
+        >
+          {gs.label}
+        </span>
+        {/* "New" tag */}
+        <span className="na-card__new-tag">NEW</span>
+      </div>
+
+      {/* Info */}
+      <div className="na-card__body">
+        <p className="na-card__category">{fmtCategory(product.category)}</p>
+        <h3 className="na-card__name">{product.productName}</h3>
+
+        {colorsCount > 0 && (
+          <p className="na-card__meta">{colorsCount} colour{colorsCount !== 1 ? 's' : ''} available</p>
+        )}
+
+        <div className="na-card__bottom">
+          <span className="na-card__price">
+            {product.price ? fmtPrice(product.price) : 'Price TBC'}
+          </span>
+          <button className="na-card__btn" onClick={e => e.preventDefault()}>Add to Bag</button>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
+// ── Main section ───────────────────────────────────────────────
 function NewArrivalsSection() {
   const headerRef = useScrollAnimation('fadeInUp');
-  const [sortBy, setSortBy] = useState('newest');
-  const [selectedCategory, setSelectedCategory] = useState(null);
 
-  const categories = ['Men', 'Women'];
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [activeGender, setActiveGender] = useState('ALL'); // ALL | MALE | FEMALE
 
-  const filteredProducts = newArrivalProducts.filter(product => {
-    return !selectedCategory || product.category === selectedCategory;
-  });
+  useEffect(() => {
+    const controller = new AbortController();
+    setLoading(true);
+    setError('');
 
-  const sortedProducts = [...filteredProducts].sort((a, b) => {
-    switch (sortBy) {
-      case 'price-low':
-        return a.price - b.price;
-      case 'price-high':
-        return b.price - a.price;
-      case 'rating':
-        return b.rating - a.rating;
-      case 'newest':
-      default:
-        return b.id - a.id;
-    }
-  });
+    fetch('/api/products/new-arrivals?limit=3', { signal: controller.signal })
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then((data) => {
+        setProducts(Array.isArray(data) ? data : []);
+        setLoading(false);
+      })
+      .catch((err) => {
+        if (err.name !== 'AbortError') {
+          setError('Could not load arrivals.');
+          setLoading(false);
+        }
+      });
+
+    return () => controller.abort();
+  }, []);
+
+  const displayed = products.filter(
+    (p) => activeGender === 'ALL' || p.gender === activeGender
+  );
+
+  const menCount = products.filter((p) => p.gender === 'MALE').length;
+  const womenCount = products.filter((p) => p.gender === 'FEMALE').length;
 
   return (
     <section className="arrivals">
+      {/* ── Header ── */}
       <div className="arrivals__header" ref={headerRef}>
         <h2 className="arrivals__title">NEW ARRIVALS, NEW JOURNEYS.</h2>
-        <a href="#" className="arrivals__view-all">View All</a>
+        <a href="/shop" className="arrivals__view-all">View All</a>
       </div>
 
-      <div className="arrivals__controls">
-        <div className="arrivals__filters">
-          <label className="arrivals__filter-label">
-            <input
-              type="checkbox"
-              checked={!selectedCategory}
-              onChange={() => setSelectedCategory(null)}
-            />
-            <span>All</span>
-          </label>
-          {categories.map((cat) => (
-            <label key={cat} className="arrivals__filter-label">
-              <input
-                type="checkbox"
-                checked={selectedCategory === cat}
-                onChange={() => setSelectedCategory(selectedCategory === cat ? null : cat)}
-              />
-              <span>{cat}</span>
-            </label>
+      {/* ── Gender filter tabs ── */}
+      {!loading && !error && products.length > 0 && (
+        <div className="na-tabs">
+          {[
+            { key: 'ALL', label: 'All', count: products.length },
+            { key: 'MALE', label: "Men's", count: menCount },
+            { key: 'FEMALE', label: "Women's", count: womenCount },
+          ].map(({ key, label, count }) => (
+            <button
+              key={key}
+              className={`na-tab ${activeGender === key ? 'na-tab--active' : ''}`}
+              onClick={() => setActiveGender(key)}
+            >
+              {label}
+              <span className="na-tab__count">{count}</span>
+            </button>
           ))}
         </div>
-
-        <div className="arrivals__sort">
-          <label htmlFor="sort-select">Sort:</label>
-          <select
-            id="sort-select"
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="arrivals__sort-select"
-          >
-            <option value="newest">Newest</option>
-            <option value="price-low">Price: Low to High</option>
-            <option value="price-high">Price: High to Low</option>
-            <option value="rating">Highest Rated</option>
-          </select>
-        </div>
-      </div>
-
-      <div className="arrivals__grid">
-        {sortedProducts.map((product) => (
-          <div key={product.id} className="arrivals__product-card product-card">
-            <div className="product-card__image-wrap">
-              {product.image ? (
-                <img
-                  className="product-card__image"
-                  src={product.image}
-                  alt={product.name}
-                />
-              ) : (
-                <div className="product-card__image-placeholder">
-                  <span>Image</span>
-                </div>
-              )}
-              {product.originalPrice > product.price && (
-                <div className="product-card__badge">
-                  -{Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}%
-                </div>
-              )}
-            </div>
-            <div className="product-card__content">
-              <h3 className="product-card__name">{product.name}</h3>
-              <div className="product-card__rating">
-                <span className="stars">★★★★☆</span>
-                <span className="rating-value">{product.rating}</span>
-                <span className="reviews">({product.reviews})</span>
-              </div>
-              <div className="product-card__meta">
-                <span className="product-card__colors">{product.colors} Colors Available</span>
-              </div>
-              <div className="product-card__price">
-                <span className="price">Rs.{product.price}</span>
-                {product.originalPrice > product.price && (
-                  <span className="original-price">Rs.{product.originalPrice}</span>
-                )}
-              </div>
-              <button className="product-card__btn">Add to Cart</button>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {sortedProducts.length === 0 && (
-        <div className="arrivals__no-products">
-          <p>No products found</p>
-        </div>
       )}
+
+      {/* ── Grid ── */}
+      <div className="arrivals__grid">
+        {loading ? (
+          // Skeleton placeholders — 6 total
+          Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)
+        ) : error ? (
+          <p className="na-error">{error}</p>
+        ) : displayed.length === 0 ? (
+          <p className="na-empty">No products found.</p>
+        ) : (
+          displayed.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))
+        )}
+      </div>
     </section>
   );
 }

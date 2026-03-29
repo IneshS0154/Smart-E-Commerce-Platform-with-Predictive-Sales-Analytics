@@ -18,7 +18,7 @@ public class ProductImage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JsonBackReference
+    @JsonBackReference("product-images")
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;

@@ -266,4 +266,21 @@ public class ProductService {
                 product.getUpdatedAt()
         );
     }
+
+    /**
+     * Returns the newest `limit` products for each gender, combined into one list.
+     * Order: MALE products first (newest-first), then FEMALE products (newest-first).
+     */
+    public List<ProductResponse> getNewArrivals(int limitPerGender) {
+        org.springframework.data.domain.Pageable pageable =
+                org.springframework.data.domain.PageRequest.of(0, limitPerGender);
+
+        List<Product> males   = productRepository.findByGenderOrderByCreatedAtDesc(ProductGender.MALE,   pageable);
+        List<Product> females = productRepository.findByGenderOrderByCreatedAtDesc(ProductGender.FEMALE, pageable);
+
+        List<ProductResponse> result = new ArrayList<>();
+        males.forEach(p   -> result.add(convertToResponse(p)));
+        females.forEach(p -> result.add(convertToResponse(p)));
+        return result;
+    }
 }

@@ -33,6 +33,38 @@ function Navbar() {
     return () => document.removeEventListener('mousedown', handleDocumentMouseDown);
   }, [menuOpen]);
 
+  const [isHidden, setIsHidden] = useState(false);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      // Always show if near the top (e.g., elastic scrolling past 0 or just resting at top)
+      if (currentScrollY <= 80) {
+        setIsHidden(false);
+      } 
+      // Scrolling DOWN by more than 5px -> Hide
+      else if (currentScrollY > lastScrollY.current + 5) {
+        setIsHidden(true);
+        setMenuOpen(false); // auto-close user menu
+      } 
+      // Scrolling UP by more than 5px -> Show
+      else if (currentScrollY < lastScrollY.current - 5) {
+        setIsHidden(false);
+      }
+      
+      // Update the accumulated scroll position
+      lastScrollY.current = currentScrollY;
+    };
+
+    // Set initial
+    lastScrollY.current = window.scrollY;
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   const handleGoToProfile = () => {
     setMenuOpen(false);
     navigate('/customer-dashboard');
@@ -72,9 +104,9 @@ function Navbar() {
   };
 
   return (
-    <nav className="navbar">
+    <nav className={`navbar ${isHidden ? 'navbar--hidden' : ''}`}>
       <div className="navbar__left">
-        <a href="#">Shop</a>
+        <Link to="/shop">Shop</Link>
         <a href="#" onClick={handleMenClick}>Men</a>
         <a href="#" onClick={handleWomenClick}>Women</a>
       </div>

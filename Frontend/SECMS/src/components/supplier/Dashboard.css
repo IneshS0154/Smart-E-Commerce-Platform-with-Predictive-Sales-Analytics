@@ -79,7 +79,8 @@ body {
 /* ── Layout ── */
 .dashboard-layout {
     display: flex;
-    min-height: 100vh;
+    height: 100vh;
+    overflow: hidden;
 }
 
 /* ── Sidebar ── */
@@ -178,6 +179,8 @@ body {
     display: flex;
     flex-direction: column;
     background: var(--bg);
+    height: 100vh;
+    overflow: hidden;
 }
 
 /* ── Topbar ── */

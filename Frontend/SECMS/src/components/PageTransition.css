@@ -65,3 +65,39 @@
     height: 750px;        /* ← ADJUST THIS for Mobile height */
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   LIGHTWEIGHT TRANSITION — for all non-Lottie routes
+   A thin bar sweeps across the top + the page fades-slides up
+═══════════════════════════════════════════════════════════════ */
+
+/* Top progress bar */
+.pt-bar {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2.5px;
+  width: 100%;
+  z-index: 9998;
+  background: linear-gradient(90deg, #1a1a1a 0%, #555 60%, transparent 100%);
+  transform-origin: left center;
+  animation: ptBarSweep 0.70s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  pointer-events: none;
+}
+
+@keyframes ptBarSweep {
+  0%   { transform: scaleX(0); opacity: 1; }
+  80%  { transform: scaleX(1); opacity: 1; }
+  100% { transform: scaleX(1); opacity: 0; }
+}
+
+/* Page content fade-up (applied via injected <style> tag) */
+@keyframes ptFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

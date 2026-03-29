@@ -79,7 +79,7 @@
   flex-direction: column;
   justify-content: flex-end;
   padding-bottom: 28px;
-  background-color: #ffffff;
+  background-color: #f7f5f3;
 }
 
 .everyday__cell--text p {
@@ -88,4 +88,74 @@
   font-weight: 900;
   color: #1a1a1a;
   line-height: 1.2;
+}
+
+/* ── Interactive Image Links ── */
+.everyday__cell--link {
+  display: block;
+  text-decoration: none;
+  cursor: pointer;
+  position: relative;
+}
+
+.everyday__cell--link .everyday__image {
+  transition: transform 0.4s ease;
+}
+
+.everyday__cell--link:hover .everyday__image {
+  transform: scale(1.05);
+}
+
+.everyday__cell-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 2;
+}
+
+.everyday__cell--link:hover .everyday__cell-overlay {
+  opacity: 1;
+}
+
+.everyday__cell-overlay-text {
+  background-color: #fff;
+  color: #1a1a1a;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-family: 'Grift', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  transform: translateY(10px);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.everyday__cell--link:hover .everyday__cell-overlay-text {
+  transform: translateY(0);
+}
+
+/* ── Loading Skeleton ── */
+.shimmer-bg {
+  background: linear-gradient(90deg, #f0f0ee 25%, #e0e0dc 50%, #f0f0ee 75%);
+  background-size: 200% 100%;
+  animation: everydayShimmer 1.5s infinite linear;
+}
+
+@keyframes everydayShimmer {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
 }

@@ -75,6 +75,22 @@ public class ProductController {
     }
 
     /**
+     * Homepage New Arrivals — GET /api/products/new-arrivals?limit=3
+     * Returns `limit` newest MALE products + `limit` newest FEMALE products.
+     */
+    @GetMapping("/new-arrivals")
+    public ResponseEntity<?> getNewArrivals(
+            @RequestParam(defaultValue = "3") int limit) {
+        try {
+            List<ProductResponse> products = productService.getNewArrivals(limit);
+            return ResponseEntity.ok(products);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new MessageResponse("Error fetching new arrivals: " + e.getMessage()));
+        }
+    }
+
+    /**
      * Get a single product with all details
      * GET /api/products/{productId}
      */

@@ -5,7 +5,8 @@
 
 .ms {
   padding: 96px 48px;
-  background: #f2f2f0;   /* slightly cooler neutral to differentiate from Women's */
+  background: #f7f5f2;
+  /* slightly cooler neutral to differentiate from Women's */
 }
 
 /* ── Section header ── */
@@ -67,17 +68,34 @@
   padding-bottom: 2px;
   transition: gap 0.2s ease, opacity 0.2s;
 }
-.ms__view-all:hover { gap: 14px; opacity: 0.7; }
-.ms__arrow { transition: transform 0.2s; }
-.ms__view-all:hover .ms__arrow { transform: translateX(4px); }
+
+.ms__view-all:hover {
+  gap: 14px;
+  opacity: 0.7;
+}
+
+.ms__arrow {
+  transition: transform 0.2s;
+}
+
+.ms__view-all:hover .ms__arrow {
+  transform: translateX(4px);
+}
 
 /* ── Grid rows ── */
 .ms__row {
   display: grid;
   gap: 10px;
 }
-.ms__row--top    { grid-template-columns: repeat(2, 1fr); margin-bottom: 10px; }
-.ms__row--bottom { grid-template-columns: repeat(3, 1fr); }
+
+.ms__row--top {
+  grid-template-columns: repeat(2, 1fr);
+  margin-bottom: 10px;
+}
+
+.ms__row--bottom {
+  grid-template-columns: repeat(3, 1fr);
+}
 
 /* ── Card base ── */
 .ms__card {
@@ -96,28 +114,32 @@
   object-fit: cover;
   display: block;
   transition: transform 0.65s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-              opacity 0.35s ease;
+    opacity 0.35s ease;
 }
+
 .ms__card:hover .ms__card-img {
   transform: scale(1.05);
   opacity: 0.85;
 }
 
 /* ── Card heights ── */
-.ms__card--top    { height: 480px; }
-.ms__card--bottom { height: 380px; }
+.ms__card--top {
+  height: 480px;
+}
+
+.ms__card--bottom {
+  height: 380px;
+}
 
 /* ── Permanent bottom gradient ── */
 .ms__card::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    to top,
-    rgba(8, 8, 8, 0.82) 0%,
-    rgba(8, 8, 8, 0.22) 42%,
-    transparent 70%
-  );
+  background: linear-gradient(to top,
+      rgba(8, 8, 8, 0.82) 0%,
+      rgba(8, 8, 8, 0.22) 42%,
+      transparent 70%);
   pointer-events: none;
   z-index: 1;
 }
@@ -145,6 +167,7 @@
   opacity: 0;
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
+
 .ms__card:hover .ms__card-tag {
   opacity: 1;
   transform: translateY(0);
@@ -161,40 +184,95 @@
   text-transform: uppercase;
   transition: letter-spacing 0.3s ease;
 }
+
 .ms__card:hover .ms__card-label {
   letter-spacing: 0.05em;
 }
 
 /* ── Responsive ── */
 @media (max-width: 1024px) {
-  .ms { padding: 72px 32px; }
-  .ms__card--top    { height: 380px; }
-  .ms__card--bottom { height: 300px; }
+  .ms {
+    padding: 72px 32px;
+  }
+
+  .ms__card--top {
+    height: 380px;
+  }
+
+  .ms__card--bottom {
+    height: 300px;
+  }
 }
 
 @media (max-width: 768px) {
-  .ms { padding: 56px 20px; }
-  .ms__header { flex-direction: column; align-items: flex-start; gap: 20px; }
-  .ms__header-right { text-align: left; max-width: 100%; }
+  .ms {
+    padding: 56px 20px;
+  }
 
-  .ms__row--top    { grid-template-columns: 1fr; }
-  .ms__row--bottom { grid-template-columns: 1fr 1fr; }
+  .ms__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+
+  .ms__header-right {
+    text-align: left;
+    max-width: 100%;
+  }
+
+  .ms__row--top {
+    grid-template-columns: 1fr;
+  }
+
+  .ms__row--bottom {
+    grid-template-columns: 1fr 1fr;
+  }
 
   /* 3rd bottom card spans full width on tablet */
-  .ms__row--bottom .ms__card:last-child { grid-column: span 2; }
+  .ms__row--bottom .ms__card:last-child {
+    grid-column: span 2;
+  }
 
-  .ms__card--top    { height: 320px; }
-  .ms__card--bottom { height: 260px; }
+  .ms__card--top {
+    height: 320px;
+  }
 
-  .ms__card-tag { opacity: 1; transform: translateY(0); }
+  .ms__card--bottom {
+    height: 260px;
+  }
+
+  .ms__card-tag {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media (max-width: 480px) {
-  .ms { padding: 40px 16px; }
-  .ms__row { gap: 8px; }
-  .ms__row--bottom { grid-template-columns: 1fr; }
-  .ms__row--bottom .ms__card:last-child { grid-column: span 1; }
-  .ms__card--top    { height: 280px; }
-  .ms__card--bottom { height: 240px; }
-  .ms__card-label   { font-size: 1.1rem; }
+  .ms {
+    padding: 40px 16px;
+  }
+
+  .ms__row {
+    gap: 8px;
+  }
+
+  .ms__row--bottom {
+    grid-template-columns: 1fr;
+  }
+
+  .ms__row--bottom .ms__card:last-child {
+    grid-column: span 1;
+  }
+
+  .ms__card--top {
+    height: 280px;
+  }
+
+  .ms__card--bottom {
+    height: 240px;
+  }
+
+  .ms__card-label {
+    font-size: 1.1rem;
+  }
 }

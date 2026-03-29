@@ -1,6 +1,6 @@
 import './DetailsSection.css';
 import useScrollAnimation from '../../hooks/useScrollAnimation';
-import detailsImg from '../../assets/images/details.png';
+import detailsVideo from '../../assets/videos/anywear.mp4';
 
 function DetailsSection() {
   const imageRef = useScrollAnimation('fadeInLeft');
@@ -8,11 +8,15 @@ function DetailsSection() {
   return (
     <section className="details">
       <div className="details__image-wrap" ref={imageRef}>
-        <img
+        <video
           className="details__image"
-          src={detailsImg}
-          alt="Fabric detail"
-        />
+          autoPlay
+          loop
+          muted
+          playsInline
+        >
+          <source src={detailsVideo} type="video/mp4" />
+        </video>
       </div>
 
       <div className="details__footer" ref={textRef}>

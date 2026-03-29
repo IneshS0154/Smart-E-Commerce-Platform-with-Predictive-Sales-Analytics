@@ -8,6 +8,7 @@ import CollectionsSection from '../components/homepage/CollectionsSection';
 import NewsletterSection from '../components/homepage/NewsletterSection';
 import Footer from '../components/Footer';
 import MensSection from '../components/Men_s/MensSection';
+import ScrollToTop from '../components/ScrollToTop';
 
 function HomePage() {
   return (
@@ -22,6 +23,7 @@ function HomePage() {
       <MensSection/>
       <NewsletterSection />
       <Footer />
+      <ScrollToTop />
     </>
   );
 }
