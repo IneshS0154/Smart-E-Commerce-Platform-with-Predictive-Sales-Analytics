@@ -20,12 +20,6 @@ SET @MYSQLDUMP_TEMP_LOG_BIN = @@SESSION.SQL_LOG_BIN;
 SET @@SESSION.SQL_LOG_BIN= 0;
 
 --
--- GTID state at the beginning of the backup 
---
-
-SET @@GLOBAL.GTID_PURGED=/*!80000 '+'*/ '38bed848-23d1-11f1-900c-46eed7698a78:1-1219';
-
---
 -- Table structure for table `admins`
 --
 
