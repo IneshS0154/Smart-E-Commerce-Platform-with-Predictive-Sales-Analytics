@@ -22,9 +22,9 @@ function DetailsSection() {
       <div className="details__footer" ref={textRef}>
         <span className="details__label">Details that Speak</span>
         <p className="details__text">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-          tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim venim,
-          quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+          Clothing is more than what you wear. It's the fabric chosen for how it drapes, the seam
+          built to last, the finish that elevates the ordinary. On ANYWEAR, every piece is a study in
+          detail.
         </p>
       </div>
     </section>

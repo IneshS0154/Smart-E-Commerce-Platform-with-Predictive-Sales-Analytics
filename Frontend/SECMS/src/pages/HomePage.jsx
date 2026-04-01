@@ -12,7 +12,7 @@ import ScrollToTop from '../components/ScrollToTop';
 
 function HomePage() {
   return (
-    <>
+    <div className="home-page" style={{ position: 'relative', minHeight: '100vh' }}>
       <Navbar />
       <HeroSection />
       <NewArrivalsSection />
@@ -24,7 +24,7 @@ function HomePage() {
       <NewsletterSection />
       <Footer />
       <ScrollToTop />
-    </>
+    </div>
   );
 }
 

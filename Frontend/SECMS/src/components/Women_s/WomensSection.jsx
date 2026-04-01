@@ -1,33 +1,84 @@
+import { useState, useEffect } from 'react';
 import './WomensSection.css';
 import { Link } from 'react-router-dom';
 import useScrollAnimation from '../../hooks/useScrollAnimation';
 
-import CasualWear from '../../assets/images/Cat/Women/Casual_Wear.webp';
-import Formal from '../../assets/images/Cat/Women/Formal_Collection.webp';
-import SportsActive from '../../assets/images/Cat/Women/Sports_Active.webp';
-import Outerwear from '../../assets/images/Cat/Women/Outerwear_Jackets.webp';
-import PartyEvening from '../../assets/images/Cat/Women/Party_Evening_Wear.webp';
+// Casual
+import c1 from '../../assets/images/Cat/Women/casual/1.jpg';
+import c2 from '../../assets/images/Cat/Women/casual/2.webp';
+import c3 from '../../assets/images/Cat/Women/casual/3.webp';
+import c4 from '../../assets/images/Cat/Women/casual/4.webp';
+import c5 from '../../assets/images/Cat/Women/casual/5.webp';
+import c6 from '../../assets/images/Cat/Women/casual/6.webp';
 
-const top3 = [
-  { id: 1, label: 'Casual Wear', tag: 'Everyday Essentials', image: CasualWear, path: '/womens-casual-wear', pos: 'center top' },
-  { id: 2, label: 'Formal Collection', tag: 'Elegant Styles', image: Formal, path: '/womens-formal-collection', pos: 'center top' },
-  { id: 3, label: 'Sports & Active', tag: 'Athletic Performance', image: SportsActive, path: '/womens-sports-active', pos: 'center top' },
+// Formal
+import f1 from '../../assets/images/Cat/Women/formal/1.webp';
+import f2 from '../../assets/images/Cat/Women/formal/2.webp';
+import f3 from '../../assets/images/Cat/Women/formal/3.webp';
+import f4 from '../../assets/images/Cat/Women/formal/4.webp';
+import f5 from '../../assets/images/Cat/Women/formal/5.webp';
+
+// Outerwear
+import o1 from '../../assets/images/Cat/Women/outerwear and jackets/1.webp';
+import o2 from '../../assets/images/Cat/Women/outerwear and jackets/2.webp';
+import o3 from '../../assets/images/Cat/Women/outerwear and jackets/3.webp';
+import o4 from '../../assets/images/Cat/Women/outerwear and jackets/4.webp';
+import o5 from '../../assets/images/Cat/Women/outerwear and jackets/5.webp';
+
+// Party
+import p1 from '../../assets/images/Cat/Women/party/1.webp';
+import p2 from '../../assets/images/Cat/Women/party/2.webp';
+import p3 from '../../assets/images/Cat/Women/party/3.webp';
+import p4 from '../../assets/images/Cat/Women/party/4.webp';
+import p5 from '../../assets/images/Cat/Women/party/5.webp';
+
+// Sports
+import s1 from '../../assets/images/Cat/Women/sports/1.webp';
+import s2 from '../../assets/images/Cat/Women/sports/2.webp';
+import s3 from '../../assets/images/Cat/Women/sports/3.webp';
+import s4 from '../../assets/images/Cat/Women/sports/4.webp';
+import s5 from '../../assets/images/Cat/Women/sports/5.webp';
+
+const collections = [
+  { id: 1, label: 'Casual Wear', tag: 'Everyday Essentials', images: [c4, c2, c3, c1, c5, c6], path: '/womens-casual-wear', pos: 'center top', speed: 5000 },
+  { id: 2, label: 'Formal Collection', tag: 'Elegant Styles', images: [f1, f2, f3, f4, f5], path: '/womens-formal-collection', pos: 'center top', speed: 10000 },
+  { id: 3, label: 'Sports & Active', tag: 'Athletic Performance', images: [s1, s2, s3, s4, s5], path: '/womens-sports-active', pos: 'center top', speed: 9000 },
+  { id: 4, label: 'Outerwear & Jackets', tag: 'Versatile Layers', images: [o1, o2, o3, o4, o5], path: '/womens-outerwear-jackets', pos: 'center top', speed: 7000 },
+  { id: 5, label: 'Party & Evening Wear', tag: 'Special Occasions', images: [p1, p2, p3, p4, p5], path: '/womens-party-evening-wear', pos: 'center center', speed: 12000 },
 ];
 
-const bottom2 = [
-  { id: 4, label: 'Outerwear & Jackets', tag: 'Versatile Layers', image: Outerwear, path: '/womens-outerwear-jackets', pos: 'center top' },
-  { id: 5, label: 'Party & Evening Wear', tag: 'Special Occasions', image: PartyEvening, path: '/womens-party-evening-wear', pos: 'center center' },
-];
+function WCard({ item, isLarge }) {
+  const [currentIndex, setCurrentIndex] = useState(0);
 
-function WCard({ item, size }) {
+  useEffect(() => {
+    // Add a slight random delay so tiles cross-fade asynchronously
+    const randomOffset = Math.random() * 2000;
+    const speed = item.speed || 3500;
+
+    const timeout = setTimeout(() => {
+      const interval = setInterval(() => {
+        setCurrentIndex(prev => (prev + 1) % item.images.length);
+      }, speed);
+      return () => clearInterval(interval);
+    }, randomOffset);
+
+    return () => clearTimeout(timeout);
+  }, [item.images.length, item.speed]);
+
   return (
-    <Link to={item.path} className={`ws__card ws__card--${size}`}>
-      <img
-        src={item.image}
-        alt={item.label}
-        className="ws__card-img"
-        style={{ objectPosition: item.pos }}
-      />
+    <Link to={item.path} className={`ws__card ${isLarge ? 'ws__card--large' : 'ws__card--small'}`}>
+      <div className="ws__card-slider">
+        {item.images.map((src, i) => (
+          <img
+            key={i}
+            src={src}
+            alt={`${item.label} ${i + 1}`}
+            className={`ws__card-img ${i === currentIndex ? 'active' : ''}`}
+            style={{ objectPosition: item.pos }}
+            loading="lazy"
+          />
+        ))}
+      </div>
       <div className="ws__card-body">
         <span className="ws__card-tag">{item.tag}</span>
         <h3 className="ws__card-label">Shop {item.label}</h3>
@@ -59,14 +110,11 @@ export default function WomensSection() {
         </div>
       </div>
 
-      {/* ── Top row: 3 equal cards ── */}
-      <div className="ws__row ws__row--top">
-        {top3.map(item => <WCard key={item.id} item={item} size="top" />)}
-      </div>
-
-      {/* ── Bottom row: 2 wide cards ── */}
-      <div className="ws__row ws__row--bottom">
-        {bottom2.map(item => <WCard key={item.id} item={item} size="bottom" />)}
+      {/* ── Masonry Grid ── */}
+      <div className="ws__grid">
+        {collections.map((item, index) => (
+          <WCard key={item.id} item={item} isLarge={index === 0} />
+        ))}
       </div>
 
     </section>

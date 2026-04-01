@@ -3,16 +3,16 @@ import './Footer.css';
 const footerColumns = [
   {
     heading: 'CATEGORIES',
-    links: ['Men', 'Women', 'T-Shirts', 'Pants'],
+    links: ['Men', 'Women', 'Shop'],
   },
   {
     heading: 'ABOUT',
-    links: ['Account', 'Help', 'Contact', 'Gift Card', 'Track your Order'],
+    links: ['Account', 'Help', 'Contact', 'Track your Order'],
   },
   {
     heading: 'Shipping',
     links: [
-      'My Returns',
+      'My Orders',
       'Size Guide',
       'Accessibility Statement',
       'Cookie Policy',

@@ -12,24 +12,19 @@ const api = axios.create({
 api.interceptors.request.use(
     (config) => {
         const adminData = localStorage.getItem('admin');
-        if (adminData) {
-            try {
-                const admin = JSON.parse(adminData);
-                if (admin.token) {
-                    config.headers.Authorization = `Bearer ${admin.token}`;
-                }
-            } catch (e) {
-                const token = localStorage.getItem('customerToken');
-                if (token) {
-                    config.headers.Authorization = `Bearer ${token}`;
-                }
-            }
-        } else {
-            const token = localStorage.getItem('customerToken');
-            if (token) {
-                config.headers.Authorization = `Bearer ${token}`;
-            }
+        const adminToken = localStorage.getItem('adminToken');
+        const customerToken = localStorage.getItem('customerToken');
+        const sellerToken = localStorage.getItem('sellerToken');
+        
+        let token = adminToken || customerToken || sellerToken;
+        
+        if (token && token.startsWith('Bearer ')) {
+            // Already has Bearer prefix
+            config.headers.Authorization = token;
+        } else if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
         }
+        
         return config;
     },
     (error) => {

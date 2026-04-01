@@ -115,14 +115,15 @@
 .auth-subtitle {
   font-size: 0.95rem;
   color: #666;
-  margin: 0 0 2rem 0;
+  margin: 0 0 0 0;
   font-family: 'NORD', sans-serif;
   font-weight: 300;
   text-align: left;
 }
 
 .auth-image-placeholder {
-  max-height: 615px; /* adjust to your liking */
+  max-height: 615px;
+  /* adjust to your liking */
 }
 
 .form-frame {
@@ -130,7 +131,7 @@
   border-radius: 8px;
   padding: 1rem;
   background: #ffffff;
-  margin-top: 1.5rem;
+  margin: 1.5rem;
   margin-right: 1rem;
   display: flex;
   flex-direction: column;
@@ -399,6 +400,10 @@
   max-height: 100%;
 }
 
+
+.agreeTerms {
+  margin-top: 0.18rem;
+}
 
 /* Responsive Design */
 @media (max-width: 768px) {

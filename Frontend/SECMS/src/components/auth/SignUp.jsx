@@ -76,6 +76,7 @@ function SignUp() {
                 <div className="auth-form-wrapper">
                     <h1 className="auth-title">Create Account</h1>
                     <p className="auth-subtitle">Join ANYWEAR today</p>
+                    <br></br>
 
                     {error && (
                         <div style={{ color: '#dc2626', backgroundColor: '#fee2e2', padding: '10px', borderRadius: '6px', marginBottom: '12px', fontSize: '14px' }}>
@@ -181,7 +182,7 @@ function SignUp() {
                                 onChange={(e) => setAgreeTerms(e.target.checked)}
                                 required
                             />
-                            <label htmlFor="agreeTerms">I agree to the Terms & Conditions</label>
+                            <label htmlFor="agreeTerms" class="agreeTerms">I agree to the Terms & Conditions</label>
                         </div>
 
                         <button type="submit" className="auth-button" disabled={submitting}>
@@ -196,9 +197,9 @@ function SignUp() {
 
                 <div className="signup-image-wrapper">
                     <div className="signup-image-placeholder">
-                        <img 
-                            src={SignupImage} 
-                            alt="Sign Up" 
+                        <img
+                            src={SignupImage}
+                            alt="Sign Up"
                         />
                     </div>
                 </div>

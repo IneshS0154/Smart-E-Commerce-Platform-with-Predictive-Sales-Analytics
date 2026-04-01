@@ -70,6 +70,7 @@ export default function Register() {
                 <div className="supplier-auth-form-wrapper">
                     <h1 className="supplier-auth-title">Create Account</h1>
                     <p className="supplier-auth-subtitle">Join ANYWEAR as a Supplier.</p>
+                    <br></br>
 
                     {error && (
                         <div style={{ color: '#dc2626', backgroundColor: '#fee2e2', padding: '10px', borderRadius: '6px', marginBottom: '12px', fontSize: '14px' }}>
@@ -186,7 +187,7 @@ export default function Register() {
                                 name="acceptTerms"
                                 required
                             />
-                            <label htmlFor="acceptTerms">I agree to the Terms & Conditions</label>
+                            <label htmlFor="acceptTerms" class="acceptTerms">I agree to the Terms & Conditions</label>
                         </div>
 
                         <button type="submit" className="supplier-auth-button" disabled={submitting}>
