@@ -107,7 +107,7 @@
   font-size: 2rem;
   font-weight: 700;
   color: #1a1a1a;
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 0.2rem 0;
   font-family: 'Grift', sans-serif;
   text-align: left;
 }
@@ -115,7 +115,7 @@
 .supplier-auth-subtitle {
   font-size: 0.95rem;
   color: #666;
-  margin: 0 0 2rem 0;
+  margin: 0 0 0 0;
   font-family: 'NORD', sans-serif;
   font-weight: 300;
   text-align: left;
@@ -380,13 +380,18 @@
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
 }
 
-.supplierS-auth-image-placeholder img{
-  position: absolute;   /* add this */
+.supplierS-auth-image-placeholder img {
+  position: absolute;
+  /* add this */
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.acceptTerms {
+  margin-top: 0.13 rem;
 }
 
 /* Responsive Design */

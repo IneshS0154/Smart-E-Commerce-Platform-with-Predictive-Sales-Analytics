@@ -1,7 +1,8 @@
 import { useEffect, useState, useMemo } from 'react';
+import orderAPI from '../../api/orderAPI';
 import './DashboardOverview.css';
 
-// ── Constants ────────────────────────────────────────────────────
+const fmtPrice = (p) => p ? `Rs. ${parseFloat(p).toLocaleString('en-IN', { minimumFractionDigits: 2 })}` : 'Rs. 0.00';
 const SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
 const CATEGORIES = [
@@ -81,16 +82,25 @@ function HealthBar({ okEntries, lowEntries, outEntries }) {
 // ── Main component ────────────────────────────────────────────────
 export default function DashboardOverview() {
   const [products, setProducts] = useState([]);
+  const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [ordersLoading, setOrdersLoading] = useState(true);
 
   useEffect(() => {
     const stored = localStorage.getItem('seller');
-    if (!stored) { setLoading(false); return; }
+    if (!stored) { setLoading(false); setOrdersLoading(false); return; }
     const { id } = JSON.parse(stored);
+    
+    // Fetch products
     fetch(`/api/products/supplier/${id}`)
       .then(r => r.ok ? r.json() : [])
       .then(data => { setProducts(data); setLoading(false); })
       .catch(() => setLoading(false));
+    
+    // Fetch orders for this supplier
+    orderAPI.getSellerOrders(id)
+      .then(data => { setOrders(data || []); setOrdersLoading(false); })
+      .catch(() => setOrdersLoading(false));
   }, []);
 
   // ── Computed metrics ─────────────────────────────────────────
@@ -150,11 +160,18 @@ export default function DashboardOverview() {
     const menCount = products.filter(p => p.gender === 'MALE').length;
     const womenCount = products.filter(p => p.gender === 'FEMALE').length;
 
+    // Order statistics
+    const totalOrders = orders.length;
+    const totalRevenue = orders.reduce((sum, o) => sum + (parseFloat(o?.subtotal) || 0), 0);
+    const totalUnitsSold = orders.reduce((sum, o) => sum + (o?.quantity || 0), 0);
+    const uniqueCustomers = new Set(orders.map(o => o?.order?.customer?.id)).size;
+
     return {
       totalProducts, totalUnits, outOfStockProds, lowStockProds,
       categoryData, sizeData, maxSizeUnits, alertProds, menCount, womenCount,
+      totalOrders, totalRevenue, totalUnitsSold, uniqueCustomers
     };
-  }, [products]);
+  }, [products, orders]);
 
   if (loading) {
     return (
@@ -203,6 +220,33 @@ export default function DashboardOverview() {
           <div className="do-kpi__val">{m.categoryData.length}</div>
           <div className="do-kpi__label">Active Categories</div>
           <div className="do-kpi__hint">of 5 total</div>
+        </div>
+      </div>
+
+      {/* ── Order Statistics ── */}
+      <div style={{ marginBottom: '24px' }}>
+        <h3 style={{ fontSize: '18px', fontWeight: 700, marginBottom: '16px' }}>Sales Performance</h3>
+        <div className="do-kpis">
+          <div className="do-kpi">
+            <div className="do-kpi__val">{ordersLoading ? '...' : m.totalOrders}</div>
+            <div className="do-kpi__label">Total Orders</div>
+            <div className="do-kpi__hint">From your products</div>
+          </div>
+          <div className="do-kpi">
+            <div className="do-kpi__val">{ordersLoading ? '...' : fmtPrice(m.totalRevenue)}</div>
+            <div className="do-kpi__label">Total Revenue</div>
+            <div className="do-kpi__hint">From your sales</div>
+          </div>
+          <div className="do-kpi">
+            <div className="do-kpi__val">{ordersLoading ? '...' : m.totalUnitsSold}</div>
+            <div className="do-kpi__label">Units Sold</div>
+            <div className="do-kpi__hint">Total quantity</div>
+          </div>
+          <div className="do-kpi">
+            <div className="do-kpi__val">{ordersLoading ? '...' : m.uniqueCustomers}</div>
+            <div className="do-kpi__label">Unique Customers</div>
+            <div className="do-kpi__hint">Who bought your products</div>
+          </div>
         </div>
       </div>
 

@@ -67,36 +67,49 @@
 }
 
 .status-badge--active {
-    background-color: #d1fae5 !important;
-    color: #065f46 !important;
+    background-color: transparent !important;
+    color: #15803d !important;
 }
 
 .status-badge--deactivated {
-    background-color: #fee2e2 !important;
-    color: #991b1b !important;
+    background-color: transparent !important;
+    color: #b91c1c !important;
 }
 
 .action-btn-delete {
-    background-color: #dc2626;
-    color: #fff;
     border: none;
-    padding: 5px 10px;
-    border-radius: 6px;
-    font-size: 12px;
+    background: transparent;
+    color: var(--text-secondary);
     cursor: pointer;
+    font-family: 'Grift', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 4px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: color 0.3s ease;
+    position: relative;
+}
+
+.action-btn-delete::after {
+    content: '';
+    position: absolute;
+    bottom: 0px;
+    left: 0;
+    width: 0%;
+    height: 1px;
+    background: var(--text-primary);
+    transition: width 0.3s ease, background 0.3s ease;
 }
 
 .action-btn-delete:hover {
-    background-color: #b91c1c;
+    color: #dc2626;
+    transform: none;
+    box-shadow: none;
 }
 
-.action-group {
-    display: flex;
-    gap: 6px;
-    margin-bottom: 4px;
+.action-btn-delete:hover::after {
+    width: 100%;
+    background: #dc2626;
 }
 
-.action-group-secondary {
-    display: flex;
-    gap: 6px;
-}

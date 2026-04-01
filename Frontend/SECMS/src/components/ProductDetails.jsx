@@ -2,7 +2,10 @@ import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import Navbar from './Navbar';
 import Footer from './Footer';
+import { useCart } from '../context/CartContext';
 import './ProductDetails.css';
+
+import sizeChartImg from '../assets/images/size_chart.webp';
 
 const CATEGORY_LABELS = {
   CASUAL_WEAR:        'Casual Wear',
@@ -47,6 +50,7 @@ function Accordion({ title, children, defaultOpen = false }) {
 export default function ProductDetails() {
   const { productId } = useParams();
   const navigate = useNavigate();
+  const { addToCart } = useCart();
   const touchStartX = useRef(null);
 
   const [product,       setProduct]       = useState(null);
@@ -57,6 +61,10 @@ export default function ProductDetails() {
   const [selectedSize,  setSelectedSize]  = useState('');
   const [qty,           setQty]           = useState(1);
   const [addedMsg,      setAddedMsg]      = useState('');
+  const [isAdding,      setIsAdding]      = useState(false);
+  
+  const [showSizeChart, setShowSizeChart] = useState(false);
+  const [sizeUnits,     setSizeUnits]     = useState('INCHES');
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -120,10 +128,25 @@ export default function ProductDetails() {
   const selectedStockCount = selectedSize ? (stockMap[selectedSize] || 0) : null;
   const totalStock = Object.values(stockMap).reduce((a, b) => a + b, 0);
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (!selectedSize) { alert('Please select a size'); return; }
-    setAddedMsg(`Added ${qty}× ${product.productName} (${selectedSize}) to bag`);
-    setTimeout(() => setAddedMsg(''), 3500);
+    
+    const token = localStorage.getItem('customerToken');
+    if (!token) {
+      alert('Please login to add items to cart');
+      return;
+    }
+    
+    setIsAdding(true);
+    const result = await addToCart(product.id, selectedSize, qty);
+    
+    if (result.success) {
+      setAddedMsg(`Added ${qty}× ${product.productName} (${selectedSize}) to bag`);
+      setTimeout(() => setAddedMsg(''), 3500);
+    } else {
+      alert(result.error || 'Failed to add to cart');
+    }
+    setIsAdding(false);
   };
 
   const categoryLabel  = CATEGORY_LABELS[product.category] || product.category;
@@ -233,9 +256,9 @@ export default function ProductDetails() {
                   <button
                     className="pd__add-btn"
                     onClick={handleAddToCart}
-                    disabled={totalStock === 0}
+                    disabled={totalStock === 0 || isAdding}
                   >
-                    {totalStock === 0 ? 'Out of Stock' : 'Add to Bag'}
+                    {isAdding ? 'Adding...' : totalStock === 0 ? 'Out of Stock' : 'Add to Bag'}
                   </button>
                 </div>
               </div>
@@ -270,13 +293,21 @@ export default function ProductDetails() {
               )}
 
               {/* Sizes */}
-              <p className="pd__section-label" style={{ marginTop: 22 }}>
-                Size
-                {selectedSize && selectedStockCount !== null && (
-                  <strong className="pd__section-value"> — {selectedSize} ({selectedStockCount} left)</strong>
-                )}
-              </p>
-              <div className="pd__sizes">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 22 }}>
+                <p className="pd__section-label" style={{ margin: 0 }}>
+                  Size
+                  {selectedSize && selectedStockCount !== null && (
+                    <strong className="pd__section-value"> — {selectedSize} ({selectedStockCount} left)</strong>
+                  )}
+                </p>
+                <button 
+                  className="pd__size-guide-btn" 
+                  onClick={() => setShowSizeChart(true)}
+                >
+                  SIZE CHART
+                </button>
+              </div>
+              <div className="pd__sizes" style={{ marginTop: 12 }}>
                 {allSizes.map(size => {
                   const stock = stockMap[size] || 0;
                   return (
@@ -322,6 +353,73 @@ export default function ProductDetails() {
         </div>
       </div>
       <Footer />
+
+      {/* ── Size Chart Sidebar ── */}
+      {showSizeChart && (
+        <>
+          <div className="pd__sc-backdrop" onClick={() => setShowSizeChart(false)} />
+          <div className="pd__sc-sidebar">
+            <div className="pd__sc-header">
+              <button className="pd__sc-close" onClick={() => setShowSizeChart(false)}>✕</button>
+              <h3 className="pd__sc-title">SIZE CHART</h3>
+              <div style={{ width: 24 }} />
+            </div>
+            
+            <div className="pd__sc-body">
+              <div className="pd__sc-toggle-container">
+                <span className={`pd__sc-unit ${sizeUnits === 'INCHES' ? 'active' : ''}`}>INCHES</span>
+                <button 
+                  className={`pd__sc-switch ${sizeUnits === 'CM' ? 'on' : 'off'}`}
+                  onClick={() => setSizeUnits(u => u === 'INCHES' ? 'CM' : 'INCHES')}
+                >
+                  <div className="pd__sc-switch-knob" />
+                </button>
+                <span className={`pd__sc-unit ${sizeUnits === 'CM' ? 'active' : ''}`}>CM</span>
+              </div>
+
+              <table className="pd__sc-table">
+                <thead>
+                  <tr>
+                    <th>SIZE</th>
+                    <th>BUST ({sizeUnits === 'INCHES' ? 'IN' : 'CM'})</th>
+                    <th>WAIST ({sizeUnits === 'INCHES' ? 'IN' : 'CM'})</th>
+                    <th>HIP ({sizeUnits === 'INCHES' ? 'IN' : 'CM'})</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    { s: 'XS',  b: 32, w: 24, h: 34 },
+                    { s: 'S',   b: 34, w: 26, h: 36 },
+                    { s: 'M',   b: 36, w: 28, h: 38 },
+                    { s: 'L',   b: 38, w: 30, h: 40 },
+                    { s: 'XL',  b: 40, w: 32, h: 42 },
+                    { s: 'XXL', b: 42, w: 34, h: 44 },
+                  ].map(row => {
+                    const mult = sizeUnits === 'CM' ? 2.54 : 1;
+                    return (
+                      <tr key={row.s}>
+                        <td><strong>{row.s}</strong></td>
+                        <td>{Math.round(row.b * mult)}</td>
+                        <td>{Math.round(row.w * mult)}</td>
+                        <td>{Math.round(row.h * mult)}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+
+              <h4 className="pd__sc-how-title">HOW TO MEASURE</h4>
+              <img src={sizeChartImg} alt="How to measure instructions" className="pd__sc-img" />
+              
+              <ul className="pd__sc-instructions">
+                <li><strong>CHEST</strong> - MEASURE AROUND THE FULLEST PART, PLACE THE TAPE CLOSE UNDER THE ARMS AND MAKE SURE THE TAPE IS FLAT ACROSS THE BACK.</li>
+                <li><strong>WAIST</strong> - MEASURE THE AROUND THE NATURAL WAIST LINE, USUALLY THE SHORTEST WIDTH OF THE TORSO</li>
+                <li><strong>HIP</strong> - MEASURE 20CM BELOW THE NATURAL WAIST LINE AROUND THE WIDEST PART.</li>
+              </ul>
+            </div>
+          </div>
+        </>
+      )}
     </>
   );
 }

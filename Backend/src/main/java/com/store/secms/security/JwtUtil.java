@@ -86,9 +86,8 @@ public class JwtUtil {
                     .verifyWith(getSigningKey())
                     .build()
                     .parseSignedClaims(token);
-            return !isTokenExpired(token);
-        } catch (SignatureException | MalformedJwtException | ExpiredJwtException |
-                 UnsupportedJwtException | IllegalArgumentException e) {
+            return true;
+        } catch (Exception e) {
             return false;
         }
     }

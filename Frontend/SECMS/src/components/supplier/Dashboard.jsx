@@ -4,12 +4,16 @@ import SupplierProducts from './SupplierProducts';
 import SupplierStocks from './SupplierStocks';
 import SupplierProfile from './Profile';
 import DashboardOverview from './DashboardOverview';
+import SupplierOrders from './SupplierOrders';
+import SupplierCoupons from './SupplierCoupons';
 import './Dashboard.css';
 
 const navItems = [
     { label: "Dashboard"},
     { label: "Products"},
     { label: "Stocks"},
+    { label: "Orders"},
+    { label: "Coupons"},
     { label: "Profile"},
 ];
 
@@ -65,11 +69,36 @@ export default function Dashboard() {
                         </button>
                     ))}
                 </nav>
-                <div className="sidebar-footer">
+                <div style={{ marginTop: 'auto', padding: '20px 16px' }}>
                     <button
-                        className="nav-item"
                         onClick={handleLogout}
+                        style={{
+                            width: '100%',
+                            padding: '12px 16px',
+                            background: 'transparent',
+                            border: '1px solid var(--border)',
+                            borderRadius: '8px',
+                            fontFamily: "'Grift', sans-serif",
+                            fontSize: '14px',
+                            color: 'var(--text-secondary)',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                            transition: 'all 0.2s ease'
+                        }}
+                        onMouseEnter={e => {
+                            e.currentTarget.style.background = '#fee2e2';
+                            e.currentTarget.style.borderColor = '#fca5a5';
+                            e.currentTarget.style.color = '#dc2626';
+                        }}
+                        onMouseLeave={e => {
+                            e.currentTarget.style.background = 'transparent';
+                            e.currentTarget.style.borderColor = 'var(--border)';
+                            e.currentTarget.style.color = 'var(--text-secondary)';
+                        }}
                     >
+                        <span>↪</span>
                         <span>Logout</span>
                     </button>
                 </div>
@@ -94,6 +123,8 @@ export default function Dashboard() {
                         
                         {activeTab === 'Products' && <SupplierProducts />}
                         {activeTab === 'Stocks' && <SupplierStocks />}
+                        {activeTab === 'Orders' && <SupplierOrders />}
+                        {activeTab === 'Coupons' && <SupplierCoupons />}
                         {activeTab === 'Profile' && <SupplierProfile />}
                     </div>
                 </main>

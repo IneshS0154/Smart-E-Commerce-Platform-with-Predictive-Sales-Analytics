@@ -44,7 +44,7 @@
   opacity: 0.55;
 }
 
-.navbar__brand {
+a.navbar__brand {
   font-family: 'Biondi Sans Bk', sans-serif;
   font-size: 2.2rem;
   font-weight: 500;
@@ -119,4 +119,26 @@
 
 .navbar__profile-item:hover {
   background-color: #f4f4f4;
+}
+
+.navbar__icon-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #1a1a1a;
+  transition: opacity 0.2s ease;
+  padding: 0;
+}
+
+.navbar__icon-link:hover {
+  opacity: 0.55;
+}
+
+.navbar__icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
 }

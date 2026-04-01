@@ -4,63 +4,68 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private JwtUtil jwtUtil;
+    private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
     @Autowired
-    private CustomUserDetailsService userDetailsService;
+    private JwtUtil jwtUtil;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                      FilterChain filterChain) throws ServletException, IOException {
-        final String authorizationHeader = request.getHeader("Authorization");
+        
+        String authHeader = request.getHeader("Authorization");
+        logger.info("=== Request: {} ===", request.getRequestURI());
+        logger.info("Auth header: {}", authHeader != null ? "present" : "null");
 
-        String username = null;
-        String jwt = null;
-
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            jwt = authorizationHeader.substring(7);
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String token = authHeader.substring(7);
+            logger.info("Token: {}...", token.substring(0, Math.min(20, token.length())));
+            
             try {
-                username = jwtUtil.extractUsername(jwt);
-            } catch (Exception e) {
-                logger.error("Error extracting username from JWT: " + e.getMessage());
-            }
-        }
+                if (jwtUtil.validateToken(token)) {
+                    String username = jwtUtil.extractUsername(token);
+                    String role = jwtUtil.extractRole(token);
+                    
+                    logger.info("Username: {}, Role: {}", username, role);
+                    
+                    if (role == null) {
+                        role = "ROLE_CUSTOMER";
+                    }
 
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            try {
-                String role = jwtUtil.extractRole(jwt);
-                if (role == null) {
-                    role = "ROLE_CUSTOMER";
+                    List<SimpleGrantedAuthority> authorities = Arrays.asList(
+                        new SimpleGrantedAuthority(role));
+
+                    UsernamePasswordAuthenticationToken authentication = 
+                            new UsernamePasswordAuthenticationToken(username, null, authorities);
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                    logger.info("=== Authentication SET successfully ===");
+                } else {
+                    logger.warn("Token validation FAILED");
                 }
-                if (!role.startsWith("ROLE_")) {
-                    role = "ROLE_" + role;
-                }
-
-                List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(role));
-
-                UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(username, null, authorities);
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authToken);
             } catch (Exception e) {
-                logger.error("JWT authentication error: " + e.getMessage());
+                logger.error("Error processing JWT: {}", e.getMessage(), e);
             }
+        } else {
+            logger.info("No Bearer token in request");
         }
 
         filterChain.doFilter(request, response);

@@ -1,13 +1,25 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import authService from '../api/authService';
+import { useCart } from '../context/CartContext';
+import searchIcon from '../assets/icons/search.svg';
+import shoppingBagIcon from '../assets/icons/shopping_bag.svg';
+import SearchOverlay from './SearchOverlay';
 import './Navbar.css';
 
 function Navbar() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const isHomePage = location.pathname === '/';
+  const isProductPage = location.pathname.startsWith('/product/');
+  const hideShopLink = !isHomePage;
+  const leftAlignBrand = !isHomePage;
+  
   const [isCustomer, setIsCustomer] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const menuRef = useRef(null);
+  const { cartCount, fetchCart } = useCart();
 
   const customerInitial = useMemo(() => {
     const storedName = localStorage.getItem('customerUsername') || '';
@@ -18,6 +30,9 @@ function Navbar() {
   useEffect(() => {
     const token = localStorage.getItem('customerToken');
     setIsCustomer(Boolean(token));
+    if (token) {
+      fetchCart();
+    }
   }, []);
 
   useEffect(() => {
@@ -106,21 +121,41 @@ function Navbar() {
   return (
     <nav className={`navbar ${isHidden ? 'navbar--hidden' : ''}`}>
       <div className="navbar__left">
-        <Link to="/shop">Shop</Link>
-        <a href="#" onClick={handleMenClick}>Men</a>
-        <a href="#" onClick={handleWomenClick}>Women</a>
+        {leftAlignBrand && (
+          <Link to="/" className="navbar__brand" style={{ marginRight: '20px' }}>ANYWEAR</Link>
+        )}
+        {!hideShopLink && <Link to="/shop">Shop</Link>}
+        {isHomePage && (
+          <>
+            <a href="#" onClick={handleMenClick}>Men</a>
+            <a href="#" onClick={handleWomenClick}>Women</a>
+          </>
+        )}
       </div>
 
       <div className="navbar__center">
-        <Link to="/" className="navbar__brand">ANYWEAR</Link>
+        {!leftAlignBrand && (
+          <Link to="/" className="navbar__brand">ANYWEAR</Link>
+        )}
       </div>
 
       <div className="navbar__right">
-        {isCustomer ? null : <Link to="/login">Account</Link>}
-        {isCustomer ? null : <Link to="/signin">Supplier</Link>}
-        <a href="#">Search</a>
-        <a href="#">Cart</a>
-        <a href="#" className="navbar__bag">BAG 0</a>
+        {isCustomer ? null : (
+          <Link to="/login" className="navbar__icon-link" aria-label="Login">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+          </Link>
+        )}
+        <a href="#" className="navbar__icon-link" aria-label="Search" onClick={(e) => { e.preventDefault(); setIsSearchOpen(true); }}>
+          <img src={searchIcon} alt="Search" className="navbar__icon" />
+        </a>
+        <Link to="/cart" className="navbar__icon-link navbar__cart" aria-label="Cart">
+          <img src={shoppingBagIcon} alt="Cart" className="navbar__icon" />
+          {cartCount > 0 && <span className="navbar__cart-count">{cartCount}</span>}
+        </Link>
+        {isCustomer ? null : <Link to="/signin" >Supplier</Link>}
         {isCustomer ? (
           <div className="navbar__profile" ref={menuRef}>
             <button
@@ -144,6 +179,7 @@ function Navbar() {
           </div>
         ) : null}
       </div>
+      <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
     </nav>
   );
 }

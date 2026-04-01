@@ -73,7 +73,7 @@ function ProductCard({ product }) {
 
         <div className="na-card__bottom">
           <span className="na-card__price">
-            {product.price ? fmtPrice(product.price) : 'Price TBC'}
+            {product.price ? fmtPrice(product.price) : 'SOLD OUT'}
           </span>
           <button className="na-card__btn" onClick={e => e.preventDefault()}>Add to Bag</button>
         </div>

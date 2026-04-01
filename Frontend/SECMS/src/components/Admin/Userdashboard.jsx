@@ -176,18 +176,19 @@ export default function Userdashboard({ activeNav: activeNavProp, onNavChange })
     };
 
     const navItems = [
-    { label: "Overview"},
-    { label: "Users"},
-    { label: "Suppliers"},
-    { label: "Payments"},
-    { label: "Reviews"},
+    { label: "Overview" },
+    { label: "Users" },
+    { label: "Suppliers" },
+    { label: "Orders" },
+    { label: "Payments" },
+    { label: "Reviews" },
 ];
 
     return (
         <div className="admin-layout">
             <aside className="admin-sidebar">
                 <div className="sidebar-brand">
-                    <span className="brand-name">ANYWEAR</span>
+                    <span className="brand-name" style={{ fontFamily: "'NORD', sans-serif", fontWeight: 700, letterSpacing: '0.12em' }}>ANYWEAR</span>
                 </div>
                 <nav className="sidebar-nav">
                     {navItems.map(item => (
@@ -195,17 +196,13 @@ export default function Userdashboard({ activeNav: activeNavProp, onNavChange })
                             key={item.label}
                             className={`nav-item ${activeNav === item.label ? 'nav-item--active' : ''}`}
                             onClick={() => handleNavClick(item.label)}
+                            style={{ fontFamily: "'Grift', sans-serif" }}
                         >
                             <span className="nav-icon">{item.icon}</span>
                             <span>{item.label}</span>
                         </button>
                     ))}
                 </nav>
-                <div className="sidebar-footer">
-                    <button className="nav-item">
-                        <span>Settings</span>
-                    </button>
-                </div>
             </aside>
 
             <main className="admin-main">
@@ -264,15 +261,18 @@ export default function Userdashboard({ activeNav: activeNavProp, onNavChange })
                                     <p className="table-card-title">Customer list</p>
                                     <p className="table-card-sub">A list of all registered customers</p>
                                 </div>
-                                <div className="search-box">
-                                    <input
-                                        className="search-input"
-                                        placeholder="Search by name or email"
-                                        value={search}
-                                        onChange={e => setSearch(e.target.value)}
-                                    />
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                    <div className="search-box">
+                                        <input
+                                            className="search-input"
+                                            placeholder="Search customers"
+                                            value={search}
+                                            onChange={e => setSearch(e.target.value)}
+                                            style={{ width: '180px' }}
+                                        />
+                                    </div>
+                                    <button onClick={fetchUsers} className="action-btn action-btn-view">Refresh</button>
                                 </div>
-                                <button onClick={fetchUsers} className="action-btn action-btn-view" style={{ marginLeft: '10px' }}>Refresh</button>
                             </div>
                             {error && (
                                 <div style={{ padding: '12px', backgroundColor: '#fee2e2', color: '#dc2626', borderRadius: '6px', marginBottom: '10px' }}>

@@ -23,6 +23,9 @@ import WomensOuterwearJackets from './components/Women_s/catalogue/WomensOuterwe
 import WomensPartyEveningWear from './components/Women_s/catalogue/WomensPartyEveningWear';
 import ProductDetails from './components/ProductDetails';
 import ShopPage from './pages/ShopPage';
+import CartPage from './pages/CartPage';
+import CheckoutPage from './pages/CheckoutPage';
+import OrderSuccessPage from './pages/OrderSuccessPage';
 
 function ProtectedRoute({ children, allowedRoles }) {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -91,6 +94,9 @@ function App() {
                 <Route path="/womens-party-evening-wear" element={<WomensPartyEveningWear />} />
                 <Route path="/product/:productId" element={<ProductDetails />} />
                 <Route path="/shop" element={<ShopPage />} />
+                <Route path="/cart" element={<CartPage />} />
+                <Route path="/checkout" element={<CheckoutPage />} />
+                <Route path="/order-success" element={<OrderSuccessPage />} />
                 <Route
                     path="/dashboard"
                     element={
