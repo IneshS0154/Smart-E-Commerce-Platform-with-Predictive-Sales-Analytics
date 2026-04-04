@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Auth.css';
-import LoginImage from '../../assets/images/login_signup/login.png';
+import LoginImage from '../../assets/images/login_signup/Login.png';
 
 const API_BASE = 'http://localhost:8080/api';
 
