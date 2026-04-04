@@ -272,6 +272,13 @@
   padding: 5px 12px;
   border-radius: 100px;
   margin-bottom: 18px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s;
+}
+.pd__seller-badge:hover {
+  background: #1a1a1a;
+  color: #fff;
 }
 
 /* Product name — Grift to match site-wide design */
@@ -639,6 +646,480 @@
   padding: 0 0 18px;
 }
 
+/* ═══════════════════════════════════════
+   REVIEWS
+═══════════════════════════════════════ */
+.pd__reviews-wrapper {
+  background: #fdfdfd;
+  border-top: 1px solid #ebebeb;
+  padding: 80px 5vw;
+}
+
+.pd__reviews-container {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.pd__reviews-title {
+  font-family: 'NORD', sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #111;
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.pd__text-left {
+  text-align: left;
+}
+
+.pd__reviews-grid {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 64px;
+  align-items: start;
+}
+
+.pd__reviews-sidebar {
+  position: sticky;
+  top: 40px;
+}
+
+.pd__reviews-summary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 56px;
+}
+
+.pd__flex-start {
+  justify-content: flex-start;
+  margin-bottom: 40px;
+}
+
+.pd__reviews-avg {
+  font-family: 'Grift', sans-serif;
+  font-size: 64px;
+  font-weight: 900;
+  color: #111;
+  line-height: 1;
+}
+
+.pd__reviews-stars-wrap {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+}
+
+.pd__reviews-count {
+  font-family: 'Grift', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  color: #999;
+  letter-spacing: 0.1em;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+/* ── Filter ── */
+.pd__filter-section {
+  border-top: 1px solid #ebebeb;
+  padding-top: 32px;
+}
+
+.pd__filter-title {
+  font-family: 'Grift', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: #111;
+  margin: 0 0 16px;
+  text-transform: uppercase;
+}
+
+.pd__filter-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pd__filter-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 12px 16px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pd__filter-btn:hover:not(:disabled) {
+  background: #f9f9f9;
+}
+
+.pd__filter-btn.active {
+  background: #fff;
+  border-color: #ebebeb;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.pd__filter-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pd__filter-label {
+  font-family: 'NORD', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: #111;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.pd__filter-stars {
+  font-size: 14px;
+}
+
+.pd__filter-count {
+  font-family: 'NORD', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: #888;
+}
+
+/* ── List ── */
+.pd__reviews-list-col {
+  min-height: 400px;
+}
+
+.pd__reviews-loading,
+.pd__reviews-empty {
+  text-align: center;
+  padding: 64px 48px;
+  background: #fff;
+  border-radius: 12px;
+  border: 1px dashed #ebebeb;
+  font-family: 'NORD', sans-serif;
+  font-size: 11px;
+  color: #888;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.pd__reviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.pd__review-card {
+  background: #fff;
+  border: 1px solid #f0f0ee;
+  border-radius: 16px;
+  padding: 32px 40px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.pd__review-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+}
+
+.pd__review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.pd__review-author {
+  font-family: 'NORD', sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  color: #111;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin: 0 0 8px;
+}
+
+.pd__review-stars {
+  margin-bottom: 0;
+}
+
+.pd__review-date {
+  font-family: 'NORD', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  color: #aaa;
+  letter-spacing: 0.05em;
+}
+
+.pd__review-text {
+  font-family: 'Grift', sans-serif;
+  font-size: 12px;
+  line-height: 1.8;
+  color: #555;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.pd__reviews-note {
+  text-align: center;
+  font-family: 'NORD', sans-serif;
+  font-size: 10px;
+  color: #aaa;
+  letter-spacing: 0.1em;
+  margin-top: 32px;
+  text-transform: uppercase;
+}
+
+/* ═══════════════════════════════════════
+   RECOMMENDATIONS (YOU MAY ALSO LIKE)
+═══════════════════════════════════════ */
+.pd__recommended-wrapper {
+  background: #fdfdfd;
+  padding: 0px 5vw;
+}
+
+.pd__recommended-container {
+  width: 100%;
+}
+
+.pd__recommended-title {
+  font-family: 'Grift', sans-serif;
+  font-size: 32px;
+  font-weight: 800;
+  color: #111;
+  text-align: left;
+  margin-bottom: 48px;
+  text-transform: uppercase;
+}
+
+.pd__recommended-list {
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+  padding-bottom: 24px;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  /* Hide for Firefox */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.pd__recommended-list::-webkit-scrollbar {
+  display: none;
+}
+
+.pd__rec-card {
+  flex: 0 0 280px;
+  scroll-snap-align: start;
+  cursor: pointer;
+}
+
+.pd__rec-card:hover .pd__rec-img {
+  transform: scale(1.05);
+}
+
+.pd__rec-img-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #f4f4f4;
+  margin-bottom: 16px;
+}
+
+.pd__rec-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.pd__rec-no-img {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  font-family: 'NORD', sans-serif;
+  font-size: 10px;
+  color: #999;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.pd__rec-sale-tag {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-family: 'NORD', sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #fff;
+  z-index: 2;
+}
+
+.pd__rec-sale-tag.sold-out {
+  background: #111;
+}
+
+.pd__rec-body {
+  padding: 0 4px;
+}
+
+.pd__rec-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 4px;
+}
+
+.pd__rec-name {
+  font-family: 'Grift', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #111;
+  margin: 0;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.pd__rec-price {
+  font-family: 'NORD', sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  color: #111;
+  white-space: nowrap;
+}
+
+.pd__rec-category {
+  font-family: 'NORD', sans-serif;
+  font-size: 11px;
+  color: #888;
+  margin: 0 0 12px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.pd__rec-colors {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.pd__rec-color-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ddd;
+  /* fallback */
+  border: 1px solid #e0e0e0;
+}
+
+/* ═══════════════════════════════════════
+   SHOP FAQS
+═══════════════════════════════════════ */
+.pd__faqs-wrapper {
+  background: #fff;
+  padding: 50px 5vw 100px;
+}
+
+.pd__faqs-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.pd__faqs-title {
+  font-family: 'Grift', sans-serif;
+  font-size: 32px;
+  font-weight: 800;
+  color: #111;
+  text-align: center;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.pd__faqs-subtitle {
+  font-family: 'NORD', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #111;
+  text-align: center;
+  line-height: 1.6;
+  margin-bottom: 64px;
+}
+
+.pd__faqs-list {
+  border-top: 1px solid #f0f0f0;
+}
+
+.pd__faq-item {
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.pd__faq-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 0;
+  background: transparent;
+  border: none;
+  font-family: 'NORD', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #444;
+  cursor: pointer;
+  text-align: left;
+}
+
+.pd__faq-header:hover {
+  color: #111;
+}
+
+.pd__faq-icon {
+  flex-shrink: 0;
+  margin-left: 24px;
+  color: #888;
+  transition: transform 0.3s ease;
+}
+
+.pd__faq-icon.open {
+  transform: rotate(180deg);
+}
+
+.pd__faq-body {
+  font-family: 'NORD', sans-serif;
+  font-size: 13px;
+  color: #666;
+  line-height: 1.7;
+  padding: 0 0 24px 0;
+}
+
 /* ─────────────────────────────────────────────────
    SIZE CHART SIDEBAR
 ───────────────────────────────────────────────── */
@@ -679,20 +1160,30 @@
   height: 100vh;
   background: #fff;
   z-index: 9999;
-  box-shadow: -4px 0 24px rgba(0,0,0,0.1);
+  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   animation: pdSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes pdFadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes pdSlideIn {
-  from { transform: translateX(100%); }
-  to { transform: translateX(0); }
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
 }
 
 .pd__sc-header {
@@ -768,7 +1259,8 @@
   padding: 0;
 }
 
-.pd__sc-switch.on { /* assuming ON means CM */
+.pd__sc-switch.on {
+  /* assuming ON means CM */
   background: #111;
 }
 

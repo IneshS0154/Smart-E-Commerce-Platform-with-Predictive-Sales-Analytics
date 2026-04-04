@@ -6,6 +6,7 @@ import searchIcon from '../assets/icons/search.svg';
 import shoppingBagIcon from '../assets/icons/shopping_bag.svg';
 import SearchOverlay from './SearchOverlay';
 import './Navbar.css';
+import TopMarqueeBar from './TopMarqueeBar';
 
 function Navbar() {
   const navigate = useNavigate();
@@ -119,8 +120,10 @@ function Navbar() {
   };
 
   return (
-    <nav className={`navbar ${isHidden ? 'navbar--hidden' : ''}`}>
-      <div className="navbar__left">
+    <>
+      <TopMarqueeBar />
+      <nav className={`navbar ${isHidden ? 'navbar--hidden' : ''}`}>
+        <div className="navbar__left">
         {leftAlignBrand && (
           <Link to="/" className="navbar__brand" style={{ marginRight: '20px' }}>ANYWEAR</Link>
         )}
@@ -138,7 +141,6 @@ function Navbar() {
           <Link to="/" className="navbar__brand">ANYWEAR</Link>
         )}
       </div>
-
       <div className="navbar__right">
         {isCustomer ? null : (
           <Link to="/login" className="navbar__icon-link" aria-label="Login">
@@ -179,8 +181,9 @@ function Navbar() {
           </div>
         ) : null}
       </div>
-      <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
     </nav>
+    <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
+    </>
   );
 }
 

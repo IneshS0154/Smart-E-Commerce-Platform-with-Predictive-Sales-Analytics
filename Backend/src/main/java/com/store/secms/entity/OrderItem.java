@@ -20,8 +20,8 @@ public class OrderItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"orderItems", "hibernateLazyInitializer", "handler"})
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 

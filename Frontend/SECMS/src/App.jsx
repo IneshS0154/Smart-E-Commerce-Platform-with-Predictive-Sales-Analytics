@@ -26,6 +26,8 @@ import ShopPage from './pages/ShopPage';
 import CartPage from './pages/CartPage';
 import CheckoutPage from './pages/CheckoutPage';
 import OrderSuccessPage from './pages/OrderSuccessPage';
+import SupplierShopPage from './components/sup-page/SupplierShopPage';
+import CookieConsent from './components/CookieConsent';
 
 function ProtectedRoute({ children, allowedRoles }) {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -76,6 +78,7 @@ function App() {
     return (
         <BrowserRouter>
             <PageTransition />
+            <CookieConsent />
             <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/login" element={<Login />} />
@@ -94,6 +97,7 @@ function App() {
                 <Route path="/womens-party-evening-wear" element={<WomensPartyEveningWear />} />
                 <Route path="/product/:productId" element={<ProductDetails />} />
                 <Route path="/shop" element={<ShopPage />} />
+                <Route path="/shop/:sellerId" element={<SupplierShopPage />} />
                 <Route path="/cart" element={<CartPage />} />
                 <Route path="/checkout" element={<CheckoutPage />} />
                 <Route path="/order-success" element={<OrderSuccessPage />} />

@@ -4,6 +4,7 @@ import './Admindashboard.css';
 import Supplierdashboard from './Supplierdashboard';
 import Userdashboard from './Userdashboard';
 import orderAPI from '../../api/orderAPI';
+import reviewAPI from '../../api/reviewAPI';
 
 const fmtPrice = (p) => p ? `Rs. ${parseFloat(p).toLocaleString('en-IN', { minimumFractionDigits: 2 })}` : 'Rs. 0.00';
 
@@ -30,6 +31,11 @@ export default function AdminOverview() {
     const [ordersError, setOrdersError] = useState(null);
     const [orderSearch, setOrderSearch] = useState("");
     const [expandedOrders, setExpandedOrders] = useState(new Set());
+
+    // Reviews state
+    const [allReviews, setAllReviews] = useState([]);
+    const [reviewsLoading, setReviewsLoading] = useState(false);
+    const [ratingFilter, setRatingFilter] = useState('all');
 
     const toggleOrderExpand = (orderId) => {
         setExpandedOrders(prev => {
@@ -66,9 +72,37 @@ export default function AdminOverview() {
         }
     };
 
+    const fetchAllReviews = async () => {
+        setReviewsLoading(true);
+        try {
+            const data = await reviewAPI.getAllReviews();
+            setAllReviews(data || []);
+        } catch (err) {
+            console.error('Error fetching reviews:', err);
+            setAllReviews([]);
+        } finally {
+            setReviewsLoading(false);
+        }
+    };
+
+    const handleDeleteReview = async (reviewId) => {
+        if (!confirm('Are you sure you want to delete this review?')) return;
+        try {
+            await reviewAPI.deleteReviewAsAdmin(reviewId);
+            alert('Review deleted successfully');
+            fetchAllReviews();
+        } catch (err) {
+            console.error('Error deleting review:', err);
+            alert(err?.response?.data?.message || 'Failed to delete review');
+        }
+    };
+
     useEffect(() => {
         if (activeNav === "Orders" || activeNav === "Overview") {
             fetchAllOrders();
+        }
+        if (activeNav === "Reviews") {
+            fetchAllReviews();
         }
     }, [activeNav]);
 
@@ -527,28 +561,33 @@ export default function AdminOverview() {
 
                 {/* Content */}
                 <div className="ov-content">
-                    <h2 className="ov-section-title">Sales and Payment History</h2>
+                    {/* Show Sales and Payment History for all tabs except Reviews */}
+                    {activeNav !== "Reviews" && (
+                        <>
+                            <h2 className="ov-section-title">Sales and Payment History</h2>
 
-                    {/* Stats */}
-                    <div className="ov-stats-grid">
-                        <div className="ov-stat-card ov-stat-card--wide">
-                            <p className="ov-stat-label">Total Revenue</p>
-                            <p className="ov-stat-value">{ordersLoading ? '...' : fmtPrice(allOrders.reduce((sum, o) => sum + (parseFloat(o?.finalAmount) || 0), 0))}</p>
-                            <p className="ov-stat-growth">+{allOrders.length > 0 ? Math.round((allOrders.filter(o => new Date(o?.createdAt) > new Date(Date.now() - 30*24*60*60*1000)).length / allOrders.length) * 100) : 0}% from last month</p>
-                        </div>
-                        <div className="ov-stat-card">
-                            <p className="ov-stat-label">Total Orders</p>
-                            <p className="ov-stat-value">{ordersLoading ? '...' : allOrders.length}</p>
-                        </div>
-                        <div className="ov-stat-card">
-                            <p className="ov-stat-label">New Users(M)</p>
-                            <p className="ov-stat-value">{ordersLoading ? '...' : new Set(allOrders.map(o => o?.customer?.id)).size}</p>
-                        </div>
-                        <div className="ov-stat-card">
-                            <p className="ov-stat-label">New Sellers(M)</p>
-                            <p className="ov-stat-value">{ordersLoading ? '...' : new Set(allOrders.flatMap(o => o?.orderItems?.map(i => i?.product?.seller?.id) || [])).size}</p>
-                        </div>
-                    </div>
+                            {/* Stats */}
+                            <div className="ov-stats-grid">
+                                <div className="ov-stat-card ov-stat-card--wide">
+                                    <p className="ov-stat-label">Total Revenue</p>
+                                    <p className="ov-stat-value">{ordersLoading ? '...' : fmtPrice(allOrders.reduce((sum, o) => sum + (parseFloat(o?.finalAmount) || 0), 0))}</p>
+                                    <p className="ov-stat-growth">+{allOrders.length > 0 ? Math.round((allOrders.filter(o => new Date(o?.createdAt) > new Date(Date.now() - 30*24*60*60*1000)).length / allOrders.length) * 100) : 0}% from last month</p>
+                                </div>
+                                <div className="ov-stat-card">
+                                    <p className="ov-stat-label">Total Orders</p>
+                                    <p className="ov-stat-value">{ordersLoading ? '...' : allOrders.length}</p>
+                                </div>
+                                <div className="ov-stat-card">
+                                    <p className="ov-stat-label">New Users(M)</p>
+                                    <p className="ov-stat-value">{ordersLoading ? '...' : new Set(allOrders.map(o => o?.customer?.id)).size}</p>
+                                </div>
+                                <div className="ov-stat-card">
+                                    <p className="ov-stat-label">New Sellers(M)</p>
+                                    <p className="ov-stat-value">{ordersLoading ? '...' : new Set(allOrders.flatMap(o => o?.orderItems?.map(i => i?.product?.seller?.id) || [])).size}</p>
+                                </div>
+                            </div>
+                        </>
+                    )}
 
                     {/* Component Rendering by Nav */}
                     {activeNav === "Payments" && (
@@ -613,6 +652,111 @@ export default function AdminOverview() {
                             </tbody>
                         </table>
                     </div>
+                    )}
+
+                    {activeNav === "Reviews" && (
+                        <div>
+                            <h2 className="ov-section-title">Customer Reviews Management</h2>
+                            
+                            {/* Rating Filter */}
+                            <div style={{ marginBottom: '24px', display: 'flex', gap: '12px', alignItems: 'center' }}>
+                                <span style={{ fontSize: '13px', fontWeight: 600 }}>Filter by Rating:</span>
+                                <select 
+                                    value={ratingFilter} 
+                                    onChange={(e) => setRatingFilter(e.target.value)}
+                                    style={{
+                                        padding: '8px 16px',
+                                        border: '1px solid #e5e7eb',
+                                        borderRadius: '6px',
+                                        fontSize: '13px',
+                                        cursor: 'pointer'
+                                    }}
+                                >
+                                    <option value="all">All Ratings</option>
+                                    <option value="5">5 Stars</option>
+                                    <option value="4">4 Stars</option>
+                                    <option value="3">3 Stars</option>
+                                    <option value="2">2 Stars</option>
+                                    <option value="1">1 Star</option>
+                                </select>
+                            </div>
+
+                            {/* Reviews Table */}
+                            <div className="ov-table-card">
+                                {reviewsLoading ? (
+                                    <div style={{ padding: '48px', textAlign: 'center' }}>
+                                        <p style={{ color: '#6b7280' }}>Loading reviews...</p>
+                                    </div>
+                                ) : allReviews.filter(r => ratingFilter === 'all' || r.rating === parseInt(ratingFilter)).length === 0 ? (
+                                    <div style={{ padding: '48px', textAlign: 'center' }}>
+                                        <p style={{ color: '#6b7280' }}>No reviews found.</p>
+                                    </div>
+                                ) : (
+                                    <table className="ov-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Customer</th>
+                                                <th>Product</th>
+                                                <th>Seller</th>
+                                                <th>Rating</th>
+                                                <th>Review</th>
+                                                <th>Date</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {allReviews
+                                                .filter(r => ratingFilter === 'all' || r.rating === parseInt(ratingFilter))
+                                                .map(review => (
+                                                <tr key={review.id}>
+                                                    <td>{review.customerName}</td>
+                                                    <td>
+                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                                            {review.productImage && (
+                                                                <img 
+                                                                    src={review.productImage} 
+                                                                    alt="" 
+                                                                    style={{ width: '32px', height: '32px', objectFit: 'cover', borderRadius: '4px' }} 
+                                                                />
+                                                            )}
+                                                            <span style={{ fontSize: '13px' }}>{review.productName}</span>
+                                                        </div>
+                                                    </td>
+                                                    <td>{review.sellerName}</td>
+                                                    <td>
+                                                        <span style={{ color: '#fbbf24' }}>
+                                                            {'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}
+                                                        </span>
+                                                    </td>
+                                                    <td style={{ maxWidth: '200px' }}>
+                                                        <p style={{ margin: 0, fontSize: '13px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                                            {review.reviewText || 'No written review'}
+                                                        </p>
+                                                    </td>
+                                                    <td>{new Date(review.createdAt).toLocaleDateString('en-GB')}</td>
+                                                    <td>
+                                                        <button
+                                                            onClick={() => handleDeleteReview(review.id)}
+                                                            style={{
+                                                                padding: '6px 12px',
+                                                                background: '#fee2e2',
+                                                                color: '#dc2626',
+                                                                border: '1px solid #fca5a5',
+                                                                borderRadius: '4px',
+                                                                fontSize: '12px',
+                                                                cursor: 'pointer'
+                                                            }}
+                                                        >
+                                                            Delete
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                )}
+                            </div>
+                        </div>
                     )}
 
                     {activeNav === "Overview" && (

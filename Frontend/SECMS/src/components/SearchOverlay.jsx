@@ -117,7 +117,7 @@ export default function SearchOverlay({ isOpen, onClose }) {
     const parts = text.split(new RegExp(`(${match})`, 'gi'));
     return parts.map((part, i) =>
       part.toLowerCase() === match.toLowerCase() ?
-        <span key={i} className="so-highlight">{part}</span> : part
+        <span key={i} className="search-overlay__highlight">{part}</span> : part
     );
   };
 
@@ -185,28 +185,28 @@ export default function SearchOverlay({ isOpen, onClose }) {
                     const isSoldOut = totalStock === 0;
 
                     return (
-                      <div key={product.id} className="so-card" onClick={() => handleProductClick(product.id)} style={isSoldOut ? { opacity: 0.6 } : {}}>
-                        <div className="so-card__img-wrap">
+                      <div key={product.id} className="search-overlay__card" onClick={() => handleProductClick(product.id)} style={isSoldOut ? { opacity: 0.6 } : {}}>
+                        <div className="search-overlay__card-img-wrap">
                           {product.mainImagePath ? (
-                            <img src={product.mainImagePath} alt={product.productName} className="so-card__img" />
+                            <img src={product.mainImagePath} alt={product.productName} className="search-overlay__card-img" />
                           ) : (
-                            <div className="so-card__no-img">No Image</div>
+                            <div className="search-overlay__card-no-img">No Image</div>
                           )}
                           {isSoldOut ? (
-                            <span className="so-card__sale-tag" style={{ background: 'rgba(0,0,0,0.8)', color: '#fff', left: 'auto', right: '8px' }}>SOLD OUT</span>
+                            <span className="search-overlay__card-sale-tag" style={{ background: 'rgba(0,0,0,0.8)', color: '#fff', left: 'auto', right: '8px' }}>SOLD OUT</span>
                           ) : (
-                            <span className="so-card__sale-tag">SALE</span>
+                            <span className="search-overlay__card-sale-tag">SALE</span>
                           )}
-                          {!isSoldOut && <span className="so-card__discount-tag">NEW</span>}
+                          {!isSoldOut && <span className="search-overlay__card-discount-tag">NEW</span>}
                         </div>
-                        <div className="so-card__info">
-                          <h5 className="so-card__name">{product.productName}</h5>
-                          <p className="so-card__price">{isSoldOut ? 'SOLD OUT' : fmtPrice(product.price)}</p>
+                        <div className="search-overlay__card-info">
+                          <h5 className="search-overlay__card-name">{product.productName}</h5>
+                          <p className="search-overlay__card-price">{isSoldOut ? 'SOLD OUT' : fmtPrice(product.price)}</p>
                           {/* Mini circles mimicking color swatches if data exists */}
                           {colors.length > 0 && (
-                            <div className="so-card__colors">
+                            <div className="search-overlay__card-colors">
                               {colors.slice(0, 3).map((c, i) => (
-                                <span key={i} className="so-card__color-dot" style={{ background: c.toLowerCase() }}></span>
+                                <span key={i} className="search-overlay__card-color-dot" style={{ background: c.toLowerCase() }}></span>
                               ))}
                             </div>
                           )}

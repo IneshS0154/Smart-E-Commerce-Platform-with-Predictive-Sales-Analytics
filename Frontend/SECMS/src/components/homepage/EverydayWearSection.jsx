@@ -13,87 +13,82 @@ function shuffleArray(array) {
   return newArr;
 }
 
+const BENTO_LAYOUT = [
+  { type: 'product', cssClass: 'bento-hero' },
+  { type: 'product', cssClass: 'bento-tall' },
+  { type: 'product', cssClass: 'bento-std' },
+  { type: 'product', cssClass: 'bento-std' },
+  { type: 'text', cssClass: 'bento-wide' },
+  { type: 'product', cssClass: 'bento-std' },
+  { type: 'product', cssClass: 'bento-std' },
+];
+
 function EverydayWearSection() {
   const headerRef = useScrollAnimation('fadeInUp');
   const [randomProducts, setRandomProducts] = useState([]);
 
   useEffect(() => {
-    // Fetch a batch of products so we can select some randomly
     fetch('/api/products/new-arrivals?limit=50')
       .then(r => r.ok ? r.json() : [])
       .then(data => {
         if (Array.isArray(data) && data.length > 0) {
           const shuffled = shuffleArray(data);
-          // We need up to 8 products for the image edge cases
-          setRandomProducts(shuffled.slice(0, 8));
+          // We need exactly 6 products for this layout
+          setRandomProducts(shuffled.slice(0, 6));
         }
       })
       .catch(err => console.error("Could not fetch products for everyday grid", err));
   }, []);
 
-  const renderCell = (index, cellType, productIndex) => {
-    if (cellType === 'text') {
-      return (
-        <div key={index} className="everyday__cell everyday__cell--text">
-          <p>Choose it</p>
-          <p>Pair it</p>
-          <p>Wear it</p>
-        </div>
-      );
-    }
-    if (cellType === 'placeholder-dark') {
-      return <div key={index} className="everyday__cell everyday__cell--dark" />;
-    }
-    if (cellType === 'placeholder-light') {
-      return <div key={index} className="everyday__cell everyday__cell--light" />;
-    }
-
-    // It's an image cell
-    const p = randomProducts[productIndex];
-    if (!p) {
-      // Show skeleton loader while fetching
-      return (
-        <div key={index} className="everyday__cell everyday__cell--image">
-          <div className="everyday__image-placeholder shimmer-bg" />
-        </div>
-      );
-    }
-
-    return (
-      <Link key={index} to={`/product/${p.id}`} className="everyday__cell everyday__cell--image everyday__cell--link">
-        {p.mainImagePath ? (
-          <img className="everyday__image" src={p.mainImagePath} alt={p.productName} loading="lazy" />
-        ) : (
-          <div className="everyday__image-placeholder">No Image</div>
-        )}
-        <div className="everyday__cell-overlay">
-          <span className="everyday__cell-overlay-text">View</span>
-        </div>
-      </Link>
-    );
-  };
+  let productIndex = 0;
 
   return (
     <section className="everyday">
       <div className="everyday__header" ref={headerRef}>
         <h2 className="everyday__title">For Your Everyday Wear</h2>
-        <Link to="/shop" className="everyday__view-all">View All</Link>
+        <Link to="/shop" className="everyday__view-all">View Editorial Collection</Link>
       </div>
 
-      <div className="everyday__grid">
-        {/* We explicitly map the grid pattern instead of a flat list to keep the layout exact */}
-        {renderCell(0, 'image', 0)}
-        {renderCell(1, 'image', 1)}
-        {renderCell(2, 'image', 2)}
-        {renderCell(3, 'placeholder-dark', null)}
-        {renderCell(4, 'placeholder-light', null)}
-        {renderCell(5, 'image', 3)}
-        {renderCell(6, 'image', 4)}
-        {renderCell(7, 'image', 5)}
-        {renderCell(8, 'text', null)}
-        {renderCell(9, 'image', 6)}
-        {renderCell(10, 'placeholder-light', null)}
-        {renderCell(11, 'image', 7)}
+      <div className="bento-grid">
+        {BENTO_LAYOUT.map((cell, index) => {
+          if (cell.type === 'text') {
+            return (
+              <div key={`text-${index}`} className={`bento-item bento-text-card ${cell.cssClass}`}>
+                <h3>
+                  <span>Choose it.</span>
+                  <span>Pair it.</span>
+                  Wear it.
+                </h3>
+              </div>
+            );
+          }
+
+          const p = randomProducts[productIndex++];
+
+          if (!p) {
+            return (
+              <div key={`skel-${index}`} className={`bento-item shimmer-bg ${cell.cssClass}`} />
+            );
+          }
+
+          return (
+            <Link key={`prod-${p.id}`} to={`/product/${p.id}`} className={`bento-item bento-link ${cell.cssClass}`}>
+              {p.mainImagePath ? (
+                <img className="bento-image" src={p.mainImagePath} alt={p.productName} loading="lazy" />
+              ) : (
+                <div className="everyday__image-placeholder shimmer-bg"></div>
+              )}
+
+              {/* Sleek Glassmorphic Overlay */}
+              <div className="bento__overlay">
+                <div className="bento__glass-card">
+                  <span className="bento__product-name">{p.productName || 'Editorial Piece'}</span>
+                  <span className="bento__product-price">LKR {p.price}</span>
+                </div>
+              </div>
+            </Link>
+          );
+        })}
       </div>
     </section>
   );

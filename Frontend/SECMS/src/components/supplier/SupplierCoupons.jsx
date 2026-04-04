@@ -21,7 +21,25 @@ function StatusBadge({ status }) {
 }
 
 export default function SupplierCoupons() {
-    const seller = JSON.parse(localStorage.getItem('seller') || '{}');
+    const [seller, setSeller] = useState(null);
+    const [error, setError] = useState(null);
+    
+    useEffect(() => {
+        try {
+            const stored = localStorage.getItem('seller');
+            if (stored) {
+                const parsed = JSON.parse(stored);
+                console.log('SupplierCoupons - seller loaded:', parsed);
+                setSeller(parsed);
+            } else {
+                console.warn('SupplierCoupons - no seller in localStorage');
+            }
+        } catch (err) {
+            console.error('SupplierCoupons - failed to parse seller:', err);
+            setError('Failed to load seller data');
+        }
+    }, []);
+    
     const sellerId = seller?.id;
 
     const [coupons, setCoupons] = useState([]);
@@ -38,13 +56,22 @@ export default function SupplierCoupons() {
     });
 
     const fetchCoupons = async () => {
-        if (!sellerId) return;
+        if (!sellerId) {
+            console.log('SupplierCoupons - no sellerId, skipping fetch');
+            setLoading(false);
+            return;
+        }
         setLoading(true);
+        setError(null);
         try {
+            console.log('SupplierCoupons - fetching coupons for sellerId:', sellerId);
             const data = await couponAPI.getSellerCoupons(sellerId);
+            console.log('SupplierCoupons - coupons received:', data);
             setCoupons(data || []);
         } catch (e) {
-            console.error('Failed to load coupons:', e);
+            console.error('SupplierCoupons - failed to load coupons:', e);
+            setError('Failed to load coupons: ' + (e.message || 'Unknown error'));
+            setCoupons([]);
         } finally {
             setLoading(false);
         }
@@ -114,6 +141,21 @@ export default function SupplierCoupons() {
 
     return (
         <div className="sc-page">
+            {/* Error Display */}
+            {error && (
+                <div style={{ 
+                    background: '#fef2f2', 
+                    border: '1px solid #fecaca', 
+                    color: '#dc2626', 
+                    padding: '16px', 
+                    borderRadius: '8px', 
+                    marginBottom: '20px' 
+                }}>
+                    <p style={{ margin: '0 0 8px 0', fontWeight: 600 }}>Error:</p>
+                    <p style={{ margin: 0 }}>{error}</p>
+                </div>
+            )}
+
             {/* Header */}
             <div className="sc-header">
                 <div>

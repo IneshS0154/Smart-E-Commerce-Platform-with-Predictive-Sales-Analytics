@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import customerAPI from '../../api/customerAPI';
 import orderAPI from '../../api/orderAPI';
+import reviewAPI from '../../api/reviewAPI';
 import './CustomerDashboard.css';
 
 const fmtPrice = (p) => p ? `Rs. ${parseFloat(p).toLocaleString('en-IN', { minimumFractionDigits: 2 })}` : 'Rs. 0.00';
@@ -9,6 +10,7 @@ const fmtPrice = (p) => p ? `Rs. ${parseFloat(p).toLocaleString('en-IN', { minim
 const navItems = [
     { label: 'MyInfo' },
     { label: 'My Orders' },
+    { label: 'My Reviews' },
 ];
 
 export default function CustomerDashboard() {
@@ -23,6 +25,18 @@ export default function CustomerDashboard() {
     const [ordersLoading, setOrdersLoading] = useState(false);
     const [ordersError, setOrdersError] = useState(null);
     const [expandedOrders, setExpandedOrders] = useState({});
+
+    // Review states
+    const [myReviews, setMyReviews] = useState([]);
+    const [myReviewsLoading, setMyReviewsLoading] = useState(false);
+    const [recentOrderItems, setRecentOrderItems] = useState([]);
+    const [recentOrdersLoading, setRecentOrdersLoading] = useState(false);
+    const [showWriteReviewModal, setShowWriteReviewModal] = useState(false);
+    const [showEditReviewModal, setShowEditReviewModal] = useState(false);
+    const [selectedOrderItem, setSelectedOrderItem] = useState(null);
+    const [selectedReview, setSelectedReview] = useState(null);
+    const [reviewForm, setReviewForm] = useState({ rating: 5, reviewText: '' });
+    const [submittingReview, setSubmittingReview] = useState(false);
 
     const toggleOrder = (orderId) => {
         if (!orderId) return;
@@ -49,6 +63,8 @@ export default function CustomerDashboard() {
     useEffect(() => {
         fetchProfile();
         fetchOrders();
+        fetchMyReviews();
+        fetchRecentOrderItems();
     }, []);
 
     const fetchOrders = async () => {
@@ -136,6 +152,127 @@ export default function CustomerDashboard() {
             console.error('Error changing password:', err);
             alert(err?.response?.data?.message || 'Failed to change password.');
         }
+    };
+
+    // Review functions
+    const fetchMyReviews = async () => {
+        setMyReviewsLoading(true);
+        try {
+            const data = await reviewAPI.getMyReviews();
+            setMyReviews(data || []);
+        } catch (err) {
+            console.error('Error fetching reviews:', err);
+        } finally {
+            setMyReviewsLoading(false);
+        }
+    };
+
+    const fetchRecentOrderItems = async () => {
+        setRecentOrdersLoading(true);
+        try {
+            const data = await reviewAPI.getRecentOrdersForReview();
+            setRecentOrderItems(data || []);
+        } catch (err) {
+            console.error('Error fetching recent orders:', err);
+        } finally {
+            setRecentOrdersLoading(false);
+        }
+    };
+
+    const handleWriteReview = (orderItem) => {
+        setSelectedOrderItem(orderItem);
+        setReviewForm({ rating: 5, reviewText: '' });
+        setShowWriteReviewModal(true);
+    };
+
+    const handleEditReview = (review) => {
+        setSelectedReview(review);
+        setReviewForm({ rating: review.rating, reviewText: review.reviewText || '' });
+        setShowEditReviewModal(true);
+    };
+
+    const submitReview = async () => {
+        if (!selectedOrderItem) return;
+        setSubmittingReview(true);
+        try {
+            await reviewAPI.createReview({
+                orderItemId: selectedOrderItem.id,
+                productId: selectedOrderItem.productId,
+                orderId: selectedOrderItem.orderId,
+                rating: reviewForm.rating,
+                reviewText: reviewForm.reviewText
+            });
+            setShowWriteReviewModal(false);
+            alert('Review submitted successfully!');
+            fetchMyReviews();
+            fetchRecentOrderItems();
+        } catch (err) {
+            console.error('Error submitting review:', err);
+            alert(err?.response?.data?.message || 'Failed to submit review');
+        } finally {
+            setSubmittingReview(false);
+        }
+    };
+
+    const updateReview = async () => {
+        if (!selectedReview) return;
+        setSubmittingReview(true);
+        try {
+            await reviewAPI.updateReview(selectedReview.id, {
+                orderItemId: selectedReview.orderItemId,
+                productId: selectedReview.productId,
+                orderId: selectedReview.orderId,
+                rating: reviewForm.rating,
+                reviewText: reviewForm.reviewText
+            });
+            setShowEditReviewModal(false);
+            alert('Review updated successfully!');
+            fetchMyReviews();
+        } catch (err) {
+            console.error('Error updating review:', err);
+            alert(err?.response?.data?.message || 'Failed to update review');
+        } finally {
+            setSubmittingReview(false);
+        }
+    };
+
+    const deleteReview = async (reviewId) => {
+        if (!confirm('Are you sure you want to delete this review?')) return;
+        try {
+            await reviewAPI.deleteReview(reviewId);
+            alert('Review deleted successfully!');
+            fetchMyReviews();
+        } catch (err) {
+            console.error('Error deleting review:', err);
+            alert(err?.response?.data?.message || 'Failed to delete review');
+        }
+    };
+
+    const StarRating = ({ rating, onRatingChange, readonly = false }) => {
+        return (
+            <div style={{ display: 'flex', gap: '4px' }}>
+                {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                        key={star}
+                        onClick={() => !readonly && onRatingChange && onRatingChange(star)}
+                        disabled={readonly}
+                        style={{
+                            background: 'none',
+                            border: 'none',
+                            cursor: readonly ? 'default' : 'pointer',
+                            fontSize: '24px',
+                            color: star <= rating ? '#fbbf24' : '#d1d5db',
+                            padding: '0',
+                            transition: 'transform 0.1s'
+                        }}
+                        onMouseEnter={e => !readonly && (e.currentTarget.style.transform = 'scale(1.1)')}
+                        onMouseLeave={e => !readonly && (e.currentTarget.style.transform = 'scale(1)')}
+                    >
+                        ★
+                    </button>
+                ))}
+            </div>
+        );
     };
 
     const displayName = profile
@@ -455,6 +592,181 @@ export default function CustomerDashboard() {
                             )}
                         </div>
                     )}
+
+                    {activeNav === 'My Reviews' && (
+                        <div>
+                            <h2 className="ov-section-title">My Reviews</h2>
+                            
+                            {/* Recent Orders Available for Review */}
+                            <div style={{ marginBottom: '32px' }}>
+                                <h3 style={{ fontSize: '14px', fontFamily: 'NORD, sans-serif', marginBottom: '16px', color: 'var(--ov-text-secondary)' }}>RECENT ORDERS AVAILABLE FOR REVIEW</h3>
+                                {recentOrdersLoading ? (
+                                    <div className="ov-table-card" style={{ padding: '32px', textAlign: 'center' }}>
+                                        <p style={{ color: 'var(--ov-text-secondary)', fontSize: '14px' }}>Loading...</p>
+                                    </div>
+                                ) : (() => {
+                                    const unreviewedItems = recentOrderItems.filter(item => item.canReview && !item.hasReview);
+                                    if (unreviewedItems.length === 0) {
+                                        return (
+                                            <div className="ov-table-card" style={{ padding: '32px', textAlign: 'center' }}>
+                                                <p style={{ color: 'var(--ov-text-secondary)', fontSize: '14px' }}>No products available for review. Only items purchased within the last 7 days can be reviewed.</p>
+                                            </div>
+                                        );
+                                    }
+                                    
+                                    const groupedUnreviewed = unreviewedItems.reduce((acc, item) => {
+                                        const key = item.transactionId || 'Unknown Order';
+                                        if (!acc[key]) acc[key] = { orderDate: item.orderDate, items: [] };
+                                        acc[key].items.push(item);
+                                        return acc;
+                                    }, {});
+
+                                    return Object.entries(groupedUnreviewed).map(([transactionId, group]) => (
+                                        <div key={transactionId} className="ov-table-card" style={{ marginBottom: '16px' }}>
+                                            <div style={{ padding: '16px', borderBottom: '1px solid var(--ov-border)', background: '#fafafa', borderTopLeftRadius: '12px', borderTopRightRadius: '12px' }}>
+                                                <h4 style={{ margin: 0, fontSize: '13px', fontFamily: 'NORD, sans-serif', color: 'var(--ov-text-secondary)' }}>
+                                                    ORDER: <strong style={{ color: '#1a1a1a' }}>{transactionId}</strong>
+                                                    <span style={{ marginLeft: '12px', fontWeight: 400 }}>| Ordered: {new Date(group.orderDate).toLocaleDateString('en-GB')}</span>
+                                                </h4>
+                                            </div>
+                                            {group.items.map((item, index) => (
+                                                <div key={item.id} style={{ display: 'flex', gap: '16px', padding: '16px', borderBottom: index < group.items.length - 1 ? '1px solid var(--ov-border)' : 'none', alignItems: 'center' }}>
+                                                    <div style={{ width: '60px', height: '60px', borderRadius: '8px', overflow: 'hidden', background: '#f4f4f4', flexShrink: 0 }}>
+                                                        {item.productImage ? (
+                                                            <img src={item.productImage} alt={item.productName} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                                        ) : (
+                                                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', fontSize: '10px', color: '#999' }}>No Img</div>
+                                                        )}
+                                                    </div>
+                                                    <div style={{ flexGrow: 1 }}>
+                                                        <h4 style={{ margin: '0 0 4px', fontSize: '14px', fontWeight: 600 }}>{item.productName}</h4>
+                                                        <p style={{ margin: '0 0 4px', fontSize: '12px', color: 'var(--ov-text-secondary)' }}>
+                                                            Size: <strong>{item.size}</strong> | Seller: {item.sellerName}
+                                                        </p>
+                                                        <p style={{ margin: 0, fontSize: '12px', color: '#059669' }}>{fmtPrice(item.price)}</p>
+                                                    </div>
+                                                    <button
+                                                        onClick={() => handleWriteReview(item)}
+                                                        style={{
+                                                            padding: '8px 16px',
+                                                            background: '#1a1a1a',
+                                                            color: '#fff',
+                                                            border: 'none',
+                                                            borderRadius: '6px',
+                                                            fontSize: '12px',
+                                                            fontWeight: 600,
+                                                            cursor: 'pointer',
+                                                            fontFamily: 'NORD, sans-serif'
+                                                        }}
+                                                    >
+                                                        Write Review
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ));
+                                })()}
+                            </div>
+
+                            {/* My Submitted Reviews */}
+                            <div>
+                                <h3 style={{ fontSize: '14px', fontFamily: 'NORD, sans-serif', marginBottom: '16px', color: 'var(--ov-text-secondary)' }}>MY SUBMITTED REVIEWS</h3>
+                                {myReviewsLoading ? (
+                                    <div className="ov-table-card" style={{ padding: '32px', textAlign: 'center' }}>
+                                        <p style={{ color: 'var(--ov-text-secondary)', fontSize: '14px' }}>Loading reviews...</p>
+                                    </div>
+                                ) : (() => {
+                                    if (myReviews.length === 0) {
+                                        return (
+                                            <div className="ov-table-card" style={{ padding: '32px', textAlign: 'center' }}>
+                                                <p style={{ color: 'var(--ov-text-secondary)', fontSize: '14px' }}>You haven't submitted any reviews yet.</p>
+                                            </div>
+                                        );
+                                    }
+
+                                    const groupedReviews = myReviews.reduce((acc, review) => {
+                                        const key = review.transactionId || 'Unknown Order';
+                                        if (!acc[key]) acc[key] = [];
+                                        acc[key].push(review);
+                                        return acc;
+                                    }, {});
+
+                                    return Object.entries(groupedReviews).map(([transactionId, reviews]) => (
+                                        <div key={transactionId} className="ov-table-card" style={{ marginBottom: '16px' }}>
+                                            <div style={{ padding: '16px', borderBottom: '1px solid var(--ov-border)', background: '#fafafa', borderTopLeftRadius: '12px', borderTopRightRadius: '12px' }}>
+                                                <h4 style={{ margin: 0, fontSize: '13px', fontFamily: 'NORD, sans-serif', color: 'var(--ov-text-secondary)' }}>
+                                                    ORDER: <strong style={{ color: '#1a1a1a' }}>{transactionId}</strong>
+                                                </h4>
+                                            </div>
+                                            {reviews.map((review, index) => (
+                                                <div key={review.id} style={{ padding: '16px', borderBottom: index < reviews.length - 1 ? '1px solid var(--ov-border)' : 'none' }}>
+                                                    <div style={{ display: 'flex', gap: '16px', marginBottom: '12px' }}>
+                                                        <div style={{ width: '60px', height: '60px', borderRadius: '8px', overflow: 'hidden', background: '#f4f4f4', flexShrink: 0 }}>
+                                                            {review.productImage ? (
+                                                                <img src={review.productImage} alt={review.productName} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                                            ) : (
+                                                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', fontSize: '10px', color: '#999' }}>No Img</div>
+                                                            )}
+                                                        </div>
+                                                        <div style={{ flexGrow: 1 }}>
+                                                            <h4 style={{ margin: '0 0 4px', fontSize: '14px', fontWeight: 600 }}>{review.productName}</h4>
+                                                            <p style={{ margin: '0 0 4px', fontSize: '12px', color: 'var(--ov-text-secondary)' }}>
+                                                                Seller: {review.sellerName}
+                                                            </p>
+                                                            <StarRating rating={review.rating} readonly />
+                                                        </div>
+                                                    </div>
+                                                    {review.reviewText && (
+                                                        <p style={{ margin: '0 0 12px', fontSize: '13px', color: 'var(--ov-text-primary)', lineHeight: '1.5', paddingLeft: '76px' }}>
+                                                            "{review.reviewText}"
+                                                        </p>
+                                                    )}
+                                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingLeft: '76px' }}>
+                                                        <span style={{ fontSize: '11px', color: 'var(--ov-text-secondary)' }}>
+                                                            Posted: {new Date(review.createdAt).toLocaleDateString('en-GB')}
+                                                            {review.updatedAt && review.updatedAt !== review.createdAt && ' (Edited)'}
+                                                        </span>
+                                                        <div style={{ display: 'flex', gap: '8px' }}>
+                                                            {review.canEdit && (
+                                                                <button
+                                                                    onClick={() => handleEditReview(review)}
+                                                                    style={{
+                                                                        padding: '6px 12px',
+                                                                        background: 'transparent',
+                                                                        color: 'var(--ov-text-secondary)',
+                                                                        border: '1px solid var(--ov-border)',
+                                                                        borderRadius: '4px',
+                                                                        fontSize: '11px',
+                                                                        cursor: 'pointer'
+                                                                    }}
+                                                                >
+                                                                    Edit
+                                                                </button>
+                                                            )}
+                                                            <button
+                                                                onClick={() => deleteReview(review.id)}
+                                                                style={{
+                                                                    padding: '6px 12px',
+                                                                    background: 'transparent',
+                                                                    color: '#dc2626',
+                                                                    border: '1px solid #fca5a5',
+                                                                    borderRadius: '4px',
+                                                                    fontSize: '11px',
+                                                                    cursor: 'pointer'
+                                                                }}
+                                                            >
+                                                                Delete
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ));
+                                })()}
+                            </div>
+                        </div>
+                    )}
                 </div>
             </main>
 
@@ -566,6 +878,150 @@ export default function CustomerDashboard() {
                                 }}
                             >
                                 Change Password
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Write Review Modal */}
+            {showWriteReviewModal && (
+                <div className="modal-overlay" onClick={() => setShowWriteReviewModal(false)}>
+                    <div className="modal" onClick={e => e.stopPropagation()} style={{
+                        background: 'var(--ov-card-bg)', borderRadius: 'var(--ov-radius)',
+                        padding: '28px', width: '500px', maxWidth: '90vw', maxHeight: '90vh',
+                        overflowY: 'auto', boxShadow: '0 25px 50px rgba(0,0,0,0.25)'
+                    }}>
+                        <h2 style={{ fontFamily: 'Grift, sans-serif', fontSize: '20px', fontWeight: 700, marginBottom: '8px' }}>Write a Review</h2>
+                        {selectedOrderItem && (
+                            <div style={{ marginBottom: '20px', padding: '12px', background: '#f9fafb', borderRadius: '8px' }}>
+                                <p style={{ margin: '0 0 4px', fontSize: '13px', fontWeight: 600 }}>{selectedOrderItem.productName}</p>
+                                <p style={{ margin: 0, fontSize: '12px', color: 'var(--ov-text-secondary)' }}>
+                                    Size: {selectedOrderItem.size} | Transaction: {selectedOrderItem.transactionId}
+                                </p>
+                            </div>
+                        )}
+                        <div style={{ marginBottom: '20px' }}>
+                            <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, marginBottom: '10px', color: 'var(--ov-text-primary)' }}>
+                                Your Rating
+                            </label>
+                            <StarRating
+                                rating={reviewForm.rating}
+                                onRatingChange={(rating) => setReviewForm({ ...reviewForm, rating })}
+                            />
+                        </div>
+                        <div style={{ marginBottom: '24px' }}>
+                            <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, marginBottom: '8px', color: 'var(--ov-text-primary)' }}>
+                                Your Review (Optional)
+                            </label>
+                            <textarea
+                                style={{
+                                    width: '100%', padding: '12px',
+                                    border: '1px solid var(--ov-border)', borderRadius: 'var(--ov-radius-sm)',
+                                    fontSize: '14px', fontFamily: 'NORD, sans-serif', background: 'var(--ov-bg)',
+                                    color: 'var(--ov-text-primary)', boxSizing: 'border-box', outline: 'none',
+                                    minHeight: '100px', resize: 'vertical'
+                                }}
+                                placeholder="Share your experience with this product..."
+                                value={reviewForm.reviewText}
+                                onChange={e => setReviewForm({ ...reviewForm, reviewText: e.target.value })}
+                            />
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
+                            <button
+                                onClick={() => setShowWriteReviewModal(false)}
+                                disabled={submittingReview}
+                                style={{
+                                    padding: '10px 20px', background: 'var(--ov-bg)', color: 'var(--ov-text-primary)',
+                                    border: '1px solid var(--ov-border)', borderRadius: 'var(--ov-radius-sm)',
+                                    fontFamily: 'NORD, sans-serif', fontWeight: 500, cursor: 'pointer', fontSize: '14px'
+                                }}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={submitReview}
+                                disabled={submittingReview}
+                                style={{
+                                    padding: '10px 20px', background: '#1a1a1a', color: '#fff',
+                                    border: 'none', borderRadius: 'var(--ov-radius-sm)',
+                                    fontFamily: 'NORD, sans-serif', fontWeight: 600, cursor: submittingReview ? 'not-allowed' : 'pointer',
+                                    fontSize: '14px', opacity: submittingReview ? 0.7 : 1
+                                }}
+                            >
+                                {submittingReview ? 'Submitting...' : 'Submit Review'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Edit Review Modal */}
+            {showEditReviewModal && (
+                <div className="modal-overlay" onClick={() => setShowEditReviewModal(false)}>
+                    <div className="modal" onClick={e => e.stopPropagation()} style={{
+                        background: 'var(--ov-card-bg)', borderRadius: 'var(--ov-radius)',
+                        padding: '28px', width: '500px', maxWidth: '90vw', maxHeight: '90vh',
+                        overflowY: 'auto', boxShadow: '0 25px 50px rgba(0,0,0,0.25)'
+                    }}>
+                        <h2 style={{ fontFamily: 'Grift, sans-serif', fontSize: '20px', fontWeight: 700, marginBottom: '8px' }}>Edit Review</h2>
+                        {selectedReview && (
+                            <div style={{ marginBottom: '20px', padding: '12px', background: '#f9fafb', borderRadius: '8px' }}>
+                                <p style={{ margin: '0 0 4px', fontSize: '13px', fontWeight: 600 }}>{selectedReview.productName}</p>
+                                <p style={{ margin: 0, fontSize: '11px', color: '#dc2626' }}>
+                                    You can only edit this review within 1 day of posting.
+                                </p>
+                            </div>
+                        )}
+                        <div style={{ marginBottom: '20px' }}>
+                            <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, marginBottom: '10px', color: 'var(--ov-text-primary)' }}>
+                                Your Rating
+                            </label>
+                            <StarRating
+                                rating={reviewForm.rating}
+                                onRatingChange={(rating) => setReviewForm({ ...reviewForm, rating })}
+                            />
+                        </div>
+                        <div style={{ marginBottom: '24px' }}>
+                            <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, marginBottom: '8px', color: 'var(--ov-text-primary)' }}>
+                                Your Review (Optional)
+                            </label>
+                            <textarea
+                                style={{
+                                    width: '100%', padding: '12px',
+                                    border: '1px solid var(--ov-border)', borderRadius: 'var(--ov-radius-sm)',
+                                    fontSize: '14px', fontFamily: 'NORD, sans-serif', background: 'var(--ov-bg)',
+                                    color: 'var(--ov-text-primary)', boxSizing: 'border-box', outline: 'none',
+                                    minHeight: '100px', resize: 'vertical'
+                                }}
+                                placeholder="Share your experience with this product..."
+                                value={reviewForm.reviewText}
+                                onChange={e => setReviewForm({ ...reviewForm, reviewText: e.target.value })}
+                            />
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
+                            <button
+                                onClick={() => setShowEditReviewModal(false)}
+                                disabled={submittingReview}
+                                style={{
+                                    padding: '10px 20px', background: 'var(--ov-bg)', color: 'var(--ov-text-primary)',
+                                    border: '1px solid var(--ov-border)', borderRadius: 'var(--ov-radius-sm)',
+                                    fontFamily: 'NORD, sans-serif', fontWeight: 500, cursor: 'pointer', fontSize: '14px'
+                                }}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={updateReview}
+                                disabled={submittingReview}
+                                style={{
+                                    padding: '10px 20px', background: '#1a1a1a', color: '#fff',
+                                    border: 'none', borderRadius: 'var(--ov-radius-sm)',
+                                    fontFamily: 'NORD, sans-serif', fontWeight: 600, cursor: submittingReview ? 'not-allowed' : 'pointer',
+                                    fontSize: '14px', opacity: submittingReview ? 0.7 : 1
+                                }}
+                            >
+                                {submittingReview ? 'Updating...' : 'Update Review'}
                             </button>
                         </div>
                     </div>

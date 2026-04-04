@@ -3,6 +3,7 @@ import HeroSection from '../components/homepage/HeroSection';
 import NewArrivalsSection from '../components/homepage/NewArrivalsSection';
 import DetailsSection from '../components/homepage/DetailsSection';
 import EverydayWearSection from '../components/homepage/EverydayWearSection';
+import SupplierSection from '../components/homepage/SupplierSection';
 import WomensSection from '../components/Women_s/WomensSection';
 import CollectionsSection from '../components/homepage/CollectionsSection';
 import NewsletterSection from '../components/homepage/NewsletterSection';
@@ -18,6 +19,7 @@ function HomePage() {
       <NewArrivalsSection />
       <DetailsSection />
       <EverydayWearSection />
+      <SupplierSection />
       <WomensSection />
       {/* <CollectionsSection /> */}
       <MensSection/>
