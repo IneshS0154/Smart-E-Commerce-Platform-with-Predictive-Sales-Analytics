@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authService } from '../../api/authService';
 import './Auth.css';
-import SignupImage from '../../assets/images/login_signup/signup.png';
+import SignupImage from '../../assets/images/login_signup/Signup.png';
 
 function SignUp() {
     const [firstName, setFirstName] = useState('');
