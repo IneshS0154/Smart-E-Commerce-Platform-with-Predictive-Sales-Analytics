@@ -1,0 +1,310 @@
+.supplier-cta {
+  padding: 100px 40px;
+  background-color: #fbfbf9; /* Matching the bento-text-card clean theme */
+  overflow: hidden;
+}
+
+.supplier-cta__container {
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 80px;
+}
+
+/* ── Split Image ────────────────────────────── */
+.supplier-cta__image-wrap {
+  flex: 1.2;
+  position: relative;
+  aspect-ratio: 4 / 3;
+  border-radius: 4px;
+  /* overflow: hidden; Removed to allow chart card to float outside */
+  box-shadow: 0 30px 60px rgba(0,0,0,0.1);
+  border: 1px solid #e8e8e4;
+}
+
+.supplier-cta__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px; /* Maintain rounded corners on the image itself */
+  transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.supplier-cta__image-wrap:hover .supplier-cta__img {
+  transform: scale(1.04);
+}
+
+.supplier-cta__image-label {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  font-family: 'NORD', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  color: #1a1a1a;
+  background: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  letter-spacing: 0.1em;
+}
+
+/* ── Content ────────────────────────────────── */
+.supplier-cta__content {
+  flex: 1;
+}
+
+.supplier-cta__eyebrow {
+  display: block;
+  font-family: 'NORD', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: #aaa;
+  margin-bottom: 24px;
+}
+
+.supplier-cta__title {
+  font-family: 'Grift', sans-serif;
+  font-size: clamp(2rem, 3.5vw, 3.8rem);
+  font-weight: 900;
+  color: #1a1a1a;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  margin-bottom: 32px;
+}
+
+.supplier-cta__text {
+  font-family: 'Grift', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: #444;
+  line-height: 1.6;
+  max-width: 480px;
+  margin-bottom: 48px;
+}
+
+.supplier-cta__actions {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.supplier-cta__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 36px;
+  background-color: #1a1a1a;
+  color: white;
+  font-family: 'Grift', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.supplier-cta__btn:hover {
+  background-color: #333;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+}
+
+.supplier-cta__btn span {
+  font-size: 1.2rem;
+  transition: transform 0.3s ease;
+}
+
+.supplier-cta__btn:hover span {
+  transform: translateX(4px);
+}
+
+.supplier-cta__secondary {
+  font-family: 'Grift', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #1a1a1a;
+  text-decoration: none;
+  border-bottom: 1.5px solid #1a1a1a;
+  padding-bottom: 2px;
+  transition: opacity 0.2s ease, border-color 0.2s ease;
+}
+
+.supplier-cta__secondary:hover {
+  opacity: 0.6;
+  border-color: transparent;
+}
+
+/* ── Growth Chart Layer ────────────────────────────── */
+.growth-card {
+  position: absolute;
+  bottom: 40px;
+  right: -40px;
+  width: 250px;
+  background: rgba(255, 255, 255, 0.95); /* Solid for visibility, subtle blur */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 24px;
+  border-radius: 12px;
+  border: 1px solid #e8e8e4;
+  box-shadow: 0 40px 80px rgba(0,0,0,0.15);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+/* Trigger animation when section is scrolled into view */
+.scroll-animated .growth-card {
+  animation: float-up 1.2s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+
+.growth-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.growth-card__title {
+  font-family: 'NORD', sans-serif;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #888;
+}
+
+.growth-card__stat {
+  font-family: 'Grift', sans-serif;
+  font-size: 14px;
+  font-weight: 900;
+  color: #1a1a1a;
+}
+
+.growth-card__chart {
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.growth-chart {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* ── Path Animation (Triggered by Scroll) ───────────────────────────── */
+.path-before, .path-after {
+  stroke-dasharray: 500;
+  stroke-dashoffset: 500;
+}
+
+.scroll-animated .path-before {
+  animation: draw-path 1.5s ease forwards 0.5s;
+}
+
+.scroll-animated .path-after {
+  animation: draw-path 1.8s cubic-bezier(0.165, 0.84, 0.44, 1) forwards 0.8s;
+  stroke-width: 4; /* Thicker for visibility */
+  stroke: #1a1a1a;
+}
+
+@keyframes draw-path {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes float-up {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.growth-card__footer {
+  display: flex;
+  gap: 16px;
+  border-top: 1px solid #f0f0f0;
+  padding-top: 12px;
+}
+
+.growth-card__legend {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.legend-dot.before {
+  background: #e0e0e0;
+}
+
+.legend-dot.after {
+  background: #1a1a1a;
+}
+
+.legend-label {
+  font-family: 'NORD', sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #aaa;
+}
+
+/* ── Responsive ────────────────────────────── */
+@media (max-width: 1200px) {
+  .growth-card {
+    right: 20px;
+    bottom: 20px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .growth-card {
+    position: relative;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    max-width: 320px;
+    margin: 40px auto 30px;
+    background: #ffffff;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .supplier-cta {
+    padding: 60px 20px;
+  }
+  
+  .supplier-cta__title {
+    font-size: 2.2rem;
+  }
+  
+  .supplier-cta__actions {
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+  }
+  
+  .supplier-cta__btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+

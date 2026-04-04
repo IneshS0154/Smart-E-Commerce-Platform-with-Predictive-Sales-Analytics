@@ -90,7 +90,6 @@
   100% { transform: scaleX(1); opacity: 0; }
 }
 
-/* Page content fade-up (applied via injected <style> tag) */
 @keyframes ptFadeUp {
   from {
     opacity: 0;
@@ -98,6 +97,6 @@
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: none;
   }
 }

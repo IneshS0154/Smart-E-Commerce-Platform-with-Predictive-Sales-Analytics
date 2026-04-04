@@ -58,7 +58,7 @@ function PageTransition() {
       {/* Invisible wrapper that re-mounts to replay the fade-in */}
       <style key={fadeKey}>{`
         body > #root > * {
-          animation: ptFadeUp 0.55s cubic-bezier(0.22,1,0.36,1) both;
+          animation: ptFadeUp 0.55s cubic-bezier(0.22,1,0.36,1);
         }
       `}</style>
     </>

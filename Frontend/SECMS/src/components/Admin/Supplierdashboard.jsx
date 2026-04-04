@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import orderAPI from "../../api/orderAPI";
+import reviewAPI from "../../api/reviewAPI";
 import './Supplierdashboard.css';
 
 const navItems = [
@@ -27,6 +28,11 @@ export default function Supplierdashboard({ activeNav: activeNavProp, onNavChang
     const [sellerOrders, setSellerOrders] = useState([]);
     const [ordersLoading, setOrdersLoading] = useState(false);
     const [newSupplier, setNewSupplier] = useState({ storeName: "", username: "", email: "", phoneNumber: "", address: "", password: "", status: "PENDING" });
+    
+    // Reviews state
+    const [sellerReviews, setSellerReviews] = useState([]);
+    const [reviewsLoading, setReviewsLoading] = useState(false);
+    const [selectedSellerId, setSelectedSellerId] = useState('');
 
     const admin = JSON.parse(localStorage.getItem("admin") || "{}") || {};
     const seller = JSON.parse(localStorage.getItem("seller") || "{}") || {};
@@ -76,10 +82,30 @@ export default function Supplierdashboard({ activeNav: activeNavProp, onNavChang
         }
     };
 
+    const fetchSellerReviews = async (sellerId) => {
+        if (!sellerId) return;
+        setReviewsLoading(true);
+        try {
+            const data = await reviewAPI.getSellerReviews(sellerId);
+            setSellerReviews(data || []);
+        } catch (err) {
+            console.error("Error fetching seller reviews:", err);
+            setSellerReviews([]);
+        } finally {
+            setReviewsLoading(false);
+        }
+    };
+
     useEffect(() => {
         fetchSellers();
         fetchSellerOrders();
     }, []);
+
+    useEffect(() => {
+        if (activeNav === "Reviews" && selectedSellerId) {
+            fetchSellerReviews(selectedSellerId);
+        }
+    }, [activeNav, selectedSellerId]);
 
     const handleNavClick = (label) => {
         setActiveNav(label);
@@ -459,6 +485,103 @@ export default function Supplierdashboard({ activeNav: activeNavProp, onNavChang
                                 </div>
                             )}
                         </>
+                    )}
+
+                    {/* ── REVIEWS TAB ── */}
+                    {activeNav === "Reviews" && (
+                        <div>
+                            <h2 style={{ fontSize: '22px', fontFamily: "'NORD', sans-serif", letterSpacing: '0.04em', fontWeight: 700, marginBottom: '24px' }}>
+                                Supplier Reviews
+                            </h2>
+                            
+                            {/* Supplier Selector */}
+                            <div style={{ marginBottom: '24px' }}>
+                                <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, marginBottom: '8px' }}>
+                                    Select Supplier:
+                                </label>
+                                <select 
+                                    value={selectedSellerId} 
+                                    onChange={(e) => setSelectedSellerId(e.target.value)}
+                                    style={{
+                                        padding: '10px 16px',
+                                        border: '1px solid #e5e7eb',
+                                        borderRadius: '6px',
+                                        fontSize: '14px',
+                                        minWidth: '250px',
+                                        cursor: 'pointer'
+                                    }}
+                                >
+                                    <option value="">-- Select a supplier --</option>
+                                    {suppliers.map(supplier => (
+                                        <option key={supplier.id} value={supplier.id}>
+                                            {supplier.storeName} ({supplier.status})
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            {/* Reviews Display */}
+                            {selectedSellerId ? (
+                                reviewsLoading ? (
+                                    <div style={{ padding: '48px', textAlign: 'center' }}>
+                                        <p style={{ color: '#6b7280' }}>Loading reviews...</p>
+                                    </div>
+                                ) : sellerReviews.length === 0 ? (
+                                    <div style={{ padding: '32px', textAlign: 'center', background: '#f9fafb', borderRadius: '12px' }}>
+                                        <p style={{ color: '#6b7280' }}>No reviews found for this supplier.</p>
+                                    </div>
+                                ) : (
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                                        {sellerReviews.map((review) => (
+                                            <div 
+                                                key={review.id} 
+                                                style={{ 
+                                                    background: '#fff', 
+                                                    padding: '20px', 
+                                                    borderRadius: '12px',
+                                                    border: '1px solid #e5e7eb'
+                                                }}
+                                            >
+                                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
+                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                                        {review.productImage && (
+                                                            <img 
+                                                                src={review.productImage} 
+                                                                alt="" 
+                                                                style={{ width: '48px', height: '48px', objectFit: 'cover', borderRadius: '6px' }} 
+                                                            />
+                                                        )}
+                                                        <div>
+                                                            <p style={{ margin: '0 0 4px', fontWeight: 600, fontSize: '14px' }}>{review.productName}</p>
+                                                            <p style={{ margin: 0, fontSize: '12px', color: '#6b7280' }}>
+                                                                By {review.customerName} · Transaction: {review.transactionId}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <div style={{ textAlign: 'right' }}>
+                                                        <span style={{ color: '#fbbf24', fontSize: '16px' }}>
+                                                            {'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}
+                                                        </span>
+                                                        <p style={{ margin: '4px 0 0', fontSize: '11px', color: '#9ca3af' }}>
+                                                            {new Date(review.createdAt).toLocaleDateString('en-GB')}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                {review.reviewText && (
+                                                    <p style={{ margin: 0, fontSize: '14px', color: '#374151', lineHeight: '1.6', paddingLeft: '60px' }}>
+                                                        "{review.reviewText}"
+                                                    </p>
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
+                                )
+                            ) : (
+                                <div style={{ padding: '32px', textAlign: 'center', background: '#f9fafb', borderRadius: '12px' }}>
+                                    <p style={{ color: '#6b7280' }}>Please select a supplier to view their product reviews.</p>
+                                </div>
+                            )}
+                        </div>
                     )}
 
                 </div>

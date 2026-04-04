@@ -1,0 +1,294 @@
+/* ═══════════════════════════════════════════════════
+   SupplierOrders.css
+   Prefix: so-*   Fonts: Grift · NORD
+═══════════════════════════════════════════════════ */
+
+/* ── Page entry animation ── */
+@keyframes soFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.so {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  font-family: 'Grift', sans-serif;
+  animation: soFadeUp 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+/* ── Page heading ── */
+.so-heading {
+  display: flex;
+  flex-direction: column;
+}
+
+.so-heading__title {
+  font-family: 'Grift', sans-serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 4px;
+}
+
+.so-heading__sub {
+  font-family: 'NORD', sans-serif;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #aaa;
+}
+
+/* ── Empty State ── */
+.so-empty {
+  background: #fff;
+  border: 1px dashed #e8e8e4;
+  border-radius: 10px;
+  padding: 60px 20px;
+  text-align: center;
+  font-family: 'NORD', sans-serif;
+  font-size: 13px;
+  color: #888;
+}
+
+/* ── Search Bar ── */
+.so-search-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 0 16px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.so-search-bar:focus-within {
+  border-color: #1a1a1a;
+  box-shadow: 0 0 0 3px rgba(26,26,26,0.06);
+}
+
+.so-search-bar__icon {
+  font-size: 18px;
+  color: #bbb;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.so-search-bar__input {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 13px 0;
+  font-family: 'Grift', sans-serif;
+  font-size: 14px;
+  color: #1a1a1a;
+  background: transparent;
+}
+
+.so-search-bar__input::placeholder { color: #bbb; }
+
+.so-search-bar__clear {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #bbb;
+  font-size: 13px;
+  padding: 4px;
+  line-height: 1;
+  transition: color 0.15s;
+}
+
+.so-search-bar__clear:hover { color: #1a1a1a; }
+
+.so-search-bar__result {
+  font-family: 'NORD', sans-serif;
+  font-size: 12px;
+  color: #999;
+  white-space: nowrap;
+}
+
+/* ── Orders List ── */
+.so-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+/* ── Individual Order Card ── */
+.so-card {
+  width: 100%;
+  box-sizing: border-box;
+  background: #fff;
+  border: 1px solid #e8e8e4;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  animation: soFadeUp 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+.so-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+}
+
+/* ── Card Header ── */
+.so-card__header {
+  background: #fafafa;
+  border-bottom: 1px solid #e8e8e4;
+  padding: 16px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.so-card__id-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.so-card__id {
+  font-family: 'Grift', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a1a;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.so-card__id-val {
+  font-family: monospace;
+  font-size: 13px;
+  background: #fff;
+  border: 1px solid #e8e8e4;
+  padding: 2px 8px;
+  border-radius: 6px;
+  color: #444;
+}
+
+.so-card__customer {
+  font-family: 'NORD', sans-serif;
+  font-size: 12px;
+  color: #666;
+}
+
+.so-card__meta {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.so-card__date {
+  font-family: 'NORD', sans-serif;
+  font-size: 11px;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ── Order Items ── */
+.so-card__body {
+  padding: 8px 24px;
+}
+
+.so-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.so-item:last-child {
+  border-bottom: none;
+}
+
+.so-item__left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.so-item__img-wrap {
+  width: 56px;
+  height: 56px;
+  border-radius: 8px;
+  background: #f0f0f0;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 1px solid #e8e8e4;
+}
+
+.so-item__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.so-item__no-img {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'NORD', sans-serif;
+  font-size: 10px;
+  color: #aaa;
+}
+
+.so-item__details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.so-item__title {
+  font-family: 'Grift', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.so-item__specs {
+  font-family: 'NORD', sans-serif;
+  font-size: 11px;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  display: flex;
+  gap: 12px;
+}
+
+.so-item__specs strong {
+  color: #1a1a1a;
+  font-weight: 600;
+}
+
+.so-item__right {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.so-item__price {
+  font-family: 'Grift', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a1a1a;
+}

@@ -127,10 +127,10 @@ export default function Profile() {
             </div>
           </div>
           <button
-            className={`prof-edit-btn ${isEditing ? 'prof-edit-btn--cancel' : ''}`}
-            onClick={() => isEditing ? (setIsEditing(false), setFormData(seller)) : setIsEditing(true)}
+            className="prof-edit-btn"
+            onClick={() => { setIsEditing(true); setFormData(seller); setError(''); setSuccess(''); }}
           >
-            {isEditing ? '✕ Cancel' : '✎ Edit Profile'}
+            ✎ Edit Profile
           </button>
         </div>
       </div>
@@ -249,55 +249,67 @@ export default function Profile() {
 
             <div className="prof-card">
               <h3 className="prof-card__title">Contact Details</h3>
-
-              {isEditing ? (
-                <div className="prof-form">
-                  {[
-                    { name: 'storeName',   label: 'Store Name',   type: 'text', placeholder: 'Enter store name' },
-                    { name: 'phoneNumber', label: 'Phone Number', type: 'tel',  placeholder: 'Enter phone number' },
-                    { name: 'address',     label: 'Address',      type: 'text', placeholder: 'Enter address' },
-                  ].map(f => (
-                    <div key={f.name} className="prof-form__group">
-                      <label className="prof-form__label">{f.label}</label>
-                      <input
-                        type={f.type}
-                        name={f.name}
-                        value={formData[f.name] || ''}
-                        onChange={handleInputChange}
-                        className="prof-form__input"
-                        placeholder={f.placeholder}
-                      />
-                    </div>
-                  ))}
-                  <div className="prof-form__actions">
-                    <button className="prof-btn prof-btn--primary" onClick={handleSave} disabled={isSaving}>
-                      {isSaving ? 'Saving…' : 'Save Changes'}
-                    </button>
-                    <button className="prof-btn prof-btn--ghost" onClick={() => { setIsEditing(false); setFormData(seller); }}>
-                      Cancel
-                    </button>
+              <div className="prof-info-list">
+                {[
+                  { label: 'Store Name',   value: seller.storeName },
+                  { label: 'Email',        value: seller.email },
+                  { label: 'Phone Number', value: seller.phoneNumber || 'Not provided' },
+                  { label: 'Address',      value: seller.address || 'Not provided' },
+                ].map(row => (
+                  <div key={row.label} className="prof-info-row">
+                    <span className="prof-info-label">{row.label}</span>
+                    <span className="prof-info-value">{row.value}</span>
                   </div>
-                </div>
-              ) : (
-                <div className="prof-info-list">
-                  {[
-                    { label: 'Store Name',   value: seller.storeName },
-                    { label: 'Email',        value: seller.email },
-                    { label: 'Phone Number', value: seller.phoneNumber || 'Not provided' },
-                    { label: 'Address',      value: seller.address || 'Not provided' },
-                  ].map(row => (
-                    <div key={row.label} className="prof-info-row">
-                      <span className="prof-info-label">{row.label}</span>
-                      <span className="prof-info-value">{row.value}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
+                ))}
+              </div>
             </div>
 
           </div>
         </div>
       </div>
+
+      {/* ── Edit Profile Modal ── */}
+      {isEditing && (
+        <div className="prof-modal-overlay" onClick={() => { setIsEditing(false); setFormData(seller); }}>
+          <div className="prof-modal" onClick={e => e.stopPropagation()}>
+            <div className="prof-modal__header">
+              <h3 className="prof-modal__title">Edit Profile</h3>
+              <button className="prof-modal__close" onClick={() => { setIsEditing(false); setFormData(seller); }}>✕</button>
+            </div>
+            <div className="prof-modal__body">
+              {error   && <div className="prof-alert prof-alert--error">{error}</div>}
+              {success && <div className="prof-alert prof-alert--success">{success}</div>}
+              <div className="prof-form">
+                {[
+                  { name: 'storeName',   label: 'Store Name',   type: 'text', placeholder: 'Enter store name' },
+                  { name: 'phoneNumber', label: 'Phone Number', type: 'tel',  placeholder: 'Enter phone number' },
+                  { name: 'address',     label: 'Address',      type: 'text', placeholder: 'Enter address' },
+                ].map(f => (
+                  <div key={f.name} className="prof-form__group">
+                    <label className="prof-form__label">{f.label}</label>
+                    <input
+                      type={f.type}
+                      name={f.name}
+                      value={formData[f.name] || ''}
+                      onChange={handleInputChange}
+                      className="prof-form__input"
+                      placeholder={f.placeholder}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="prof-modal__footer">
+              <button className="prof-btn prof-btn--ghost" onClick={() => { setIsEditing(false); setFormData(seller); }}>
+                Cancel
+              </button>
+              <button className="prof-btn prof-btn--primary" onClick={handleSave} disabled={isSaving}>
+                {isSaving ? 'Saving…' : 'Save Changes'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

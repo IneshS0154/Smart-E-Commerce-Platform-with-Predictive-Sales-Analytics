@@ -6,6 +6,7 @@ import SupplierProfile from './Profile';
 import DashboardOverview from './DashboardOverview';
 import SupplierOrders from './SupplierOrders';
 import SupplierCoupons from './SupplierCoupons';
+import SupplierReviews from './SupplierReviews';
 import './Dashboard.css';
 
 const navItems = [
@@ -14,6 +15,7 @@ const navItems = [
     { label: "Stocks"},
     { label: "Orders"},
     { label: "Coupons"},
+    { label: "Reviews"},
     { label: "Profile"},
 ];
 
@@ -125,6 +127,7 @@ export default function Dashboard() {
                         {activeTab === 'Stocks' && <SupplierStocks />}
                         {activeTab === 'Orders' && <SupplierOrders />}
                         {activeTab === 'Coupons' && <SupplierCoupons />}
+                        {activeTab === 'Reviews' && <SupplierReviews />}
                         {activeTab === 'Profile' && <SupplierProfile />}
                     </div>
                 </main>
