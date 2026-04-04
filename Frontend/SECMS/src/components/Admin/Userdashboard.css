@@ -1,0 +1,115 @@
+
+@font-face {
+  font-family: 'NORD';
+  src: url('../../assets/fonts/NORD-Regular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'NORD';
+  src: url('../../assets/fonts/NORD-Bold.otf') format('opentype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'NORD';
+  src: url('../../assets/fonts/NORD-Light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Grift';
+  src: url('../../assets/fonts/Grift-Regular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Grift';
+  src: url('../../assets/fonts/Grift-Bold.otf') format('opentype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Grift';
+  src: url('../../assets/fonts/Grift-SemiBold.otf') format('opentype');
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Grift';
+  src: url('../../assets/fonts/Grift-Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+
+.user-dropdown-item {
+    display: block;
+    width: 100%;
+    padding: 10px 14px;
+    border: none;
+    background: transparent;
+    text-align: left;
+    cursor: pointer;
+    font-size: 14px;
+    color: #374151;
+    transition: background-color 0.2s;
+}
+
+.user-dropdown-item:hover {
+    background-color: #f3f4f6;
+}
+
+.status-badge--active {
+    background-color: transparent !important;
+    color: #15803d !important;
+}
+
+.status-badge--deactivated {
+    background-color: transparent !important;
+    color: #b91c1c !important;
+}
+
+.action-btn-delete {
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-family: 'Grift', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 4px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: color 0.3s ease;
+    position: relative;
+}
+
+.action-btn-delete::after {
+    content: '';
+    position: absolute;
+    bottom: 0px;
+    left: 0;
+    width: 0%;
+    height: 1px;
+    background: var(--text-primary);
+    transition: width 0.3s ease, background 0.3s ease;
+}
+
+.action-btn-delete:hover {
+    color: #dc2626;
+    transform: none;
+    box-shadow: none;
+}
+
+.action-btn-delete:hover::after {
+    width: 100%;
+    background: #dc2626;
+}
+

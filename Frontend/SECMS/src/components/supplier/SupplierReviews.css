@@ -1,0 +1,150 @@
+.supplier-reviews {
+    padding: 24px;
+}
+
+.reviews-header {
+    margin-bottom: 24px;
+}
+
+.reviews-header h2 {
+    font-family: 'Grift', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0 0 8px 0;
+    color: #1a1a1a;
+}
+
+.reviews-header p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.reviews-summary {
+    margin-bottom: 32px;
+}
+
+.summary-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 32px;
+    text-align: center;
+    border: 1px solid #e5e7eb;
+    max-width: 300px;
+}
+
+.rating-big {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.rating-number {
+    font-size: 48px;
+    font-weight: 700;
+    color: #1a1a1a;
+    font-family: 'NORD', sans-serif;
+}
+
+.rating-text {
+    margin: 0;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.no-reviews {
+    background: #f9fafb;
+    border-radius: 12px;
+    padding: 48px;
+    text-align: center;
+}
+
+.no-reviews p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.reviews-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.review-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    border: 1px solid #e5e7eb;
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+}
+
+.review-product {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.product-thumb {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+    background: #f4f4f4;
+}
+
+.product-info h4 {
+    margin: 0 0 4px 0;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.transaction-id {
+    margin: 0;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.review-meta {
+    text-align: right;
+}
+
+.review-date {
+    display: block;
+    margin-top: 4px;
+    font-size: 12px;
+    color: #9ca3af;
+}
+
+.review-content {
+    padding-left: 76px;
+}
+
+.customer-name {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+}
+
+.review-text {
+    margin: 0;
+    font-size: 14px;
+    color: #4b5563;
+    line-height: 1.6;
+    font-style: italic;
+}
+
+.reviews-loading {
+    text-align: center;
+    padding: 48px;
+    color: #6b7280;
+}

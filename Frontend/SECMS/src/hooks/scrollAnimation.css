@@ -1,0 +1,212 @@
+/* ════════════════════════════════════════════════════════════════
+   🎬 SCROLL ANIMATIONS - Luxury Feel
+   ════════════════════════════════════════════════════════════════ */
+
+/* Base animation state - invisible before scroll trigger */
+.scroll-animated {
+  opacity: 0;
+  animation-fill-mode: forwards;
+}
+
+/* ─────────────────────────────────────────────────────────────── */
+/* FADE IN UP - Element fades in while sliding up */
+/* ─────────────────────────────────────────────────────────────── */
+.scroll-fadeInUp {
+  animation: fadeInUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation-delay: var(--scroll-delay, 0ms);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(60px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────── */
+/* FADE IN DOWN - Element fades in while sliding down */
+/* ─────────────────────────────────────────────────────────────── */
+.scroll-fadeInDown {
+  animation: fadeInDown 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation-delay: var(--scroll-delay, 0ms);
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-60px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────── */
+/* FADE IN LEFT - Element fades in while sliding from left */
+/* ─────────────────────────────────────────────────────────────── */
+.scroll-fadeInLeft {
+  animation: fadeInLeft 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation-delay: var(--scroll-delay, 0ms);
+}
+
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-60px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────── */
+/* FADE IN RIGHT - Element fades in while sliding from right */
+/* ─────────────────────────────────────────────────────────────── */
+.scroll-fadeInRight {
+  animation: fadeInRight 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation-delay: var(--scroll-delay, 0ms);
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(60px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────── */
+/* SCALE IN - Element fades in with smooth scale effect */
+/* ─────────────────────────────────────────────────────────────── */
+.scroll-scaleIn {
+  animation: scaleIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation-delay: var(--scroll-delay, 0ms);
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────── */
+/* SLIDE UP - Smooth slide up animation (luxury effect) */
+/* ─────────────────────────────────────────────────────────────── */
+.scroll-slideUp {
+  animation: slideUp 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  animation-delay: var(--scroll-delay, 0ms);
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────── */
+/* FLIP IN - Elegant flip animation */
+/* ─────────────────────────────────────────────────────────────── */
+.scroll-flipIn {
+  animation: flipIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation-delay: var(--scroll-delay, 0ms);
+  perspective: 1000px;
+}
+
+@keyframes flipIn {
+  from {
+    opacity: 0;
+    transform: rotateX(90deg) translateZ(0);
+  }
+  to {
+    opacity: 1;
+    transform: rotateX(0deg) translateZ(0);
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────── */
+/* BLUR IN - Element comes into focus from blur (luxury effect) */
+/* ─────────────────────────────────────────────────────────────── */
+.scroll-blurIn {
+  animation: blurIn 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation-delay: var(--scroll-delay, 0ms);
+}
+
+@keyframes blurIn {
+  from {
+    opacity: 0;
+    filter: blur(10px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0px);
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────── */
+/* STAGGER EFFECT - For multiple child elements */
+/* ─────────────────────────────────────────────────────────────── */
+.scroll-stagger {
+  opacity: 0;
+  animation-fill-mode: forwards;
+}
+
+.scroll-stagger:nth-child(1) { animation: fadeInUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0ms forwards; }
+.scroll-stagger:nth-child(2) { animation: fadeInUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 100ms forwards; }
+.scroll-stagger:nth-child(3) { animation: fadeInUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 200ms forwards; }
+.scroll-stagger:nth-child(4) { animation: fadeInUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 300ms forwards; }
+.scroll-stagger:nth-child(5) { animation: fadeInUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 400ms forwards; }
+.scroll-stagger:nth-child(6) { animation: fadeInUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 500ms forwards; }
+
+/* ─────────────────────────────────────────────────────────────── */
+/* PARALLAX EFFECT - Subtle depth movement on scroll */
+/* ─────────────────────────────────────────────────────────────── */
+.scroll-parallax {
+  position: relative;
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+@supports (animation: none) {
+  .scroll-parallax::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .scroll-animated,
+  .scroll-fadeInUp,
+  .scroll-fadeInDown,
+  .scroll-fadeInLeft,
+  .scroll-fadeInRight,
+  .scroll-scaleIn,
+  .scroll-slideUp,
+  .scroll-flipIn,
+  .scroll-blurIn,
+  .scroll-stagger {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

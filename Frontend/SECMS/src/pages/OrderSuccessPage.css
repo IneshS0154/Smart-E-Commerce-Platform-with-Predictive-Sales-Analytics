@@ -1,0 +1,153 @@
+.order-success-page {
+    background: #fafaf8;
+    min-height: 100vh;
+}
+
+.order-success-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 80px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 200px);
+}
+
+.order-success-card {
+    background: #fff;
+    border-radius: 16px;
+    border: 1px solid #ebebeb;
+    padding: 48px;
+    text-align: center;
+    width: 100%;
+}
+
+.order-success-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+    font-size: 40px;
+    color: #fff;
+}
+
+.order-success-title {
+    font-family: 'Grift', sans-serif;
+    font-size: 1.75rem;
+    font-weight: 900;
+    color: #1a1a1a;
+    margin: 0 0 12px;
+    text-transform: uppercase;
+}
+
+.order-success-message {
+    font-family: 'Grift', sans-serif;
+    font-size: 14px;
+    color: #666;
+    margin: 0 0 32px;
+}
+
+.order-success-details {
+    background: #f8f8f6;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 32px;
+    text-align: left;
+}
+
+.order-success-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #ebebeb;
+}
+
+.order-success-row:last-child {
+    border-bottom: none;
+}
+
+.order-success-row span:first-child {
+    font-family: 'NORD', sans-serif;
+    font-size: 12px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.order-success-value {
+    font-family: 'Grift', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.order-success-status {
+    font-family: 'NORD', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 100px;
+    background: #fef3c7;
+    color: #d97706;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.order-success-status.success {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.order-success-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.order-success-btn {
+    padding: 14px 28px;
+    border-radius: 8px;
+    font-family: 'NORD', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.order-success-btn.primary {
+    background: #1a1a1a;
+    color: #fff;
+    border: none;
+}
+
+.order-success-btn.primary:hover {
+    background: #333;
+    transform: translateY(-2px);
+}
+
+.order-success-btn.secondary {
+    background: transparent;
+    color: #666;
+    border: 1px solid #ddd;
+}
+
+.order-success-btn.secondary:hover {
+    border-color: #1a1a1a;
+    color: #1a1a1a;
+}
+
+@media (max-width: 768px) {
+    .order-success-card {
+        padding: 32px 24px;
+    }
+
+    .order-success-title {
+        font-size: 1.25rem;
+    }
+}

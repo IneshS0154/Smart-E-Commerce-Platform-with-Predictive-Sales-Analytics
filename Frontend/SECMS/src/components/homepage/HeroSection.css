@@ -1,0 +1,70 @@
+.hero {
+  position: relative;
+  display: flex;
+  height: calc(100vh - 72px);
+  overflow: hidden;
+}
+
+/* ── Fullscreen Video Background ── */
+.hero__video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+/* ── Centered overlay ── */
+.hero__overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.hero__title {
+  font-family: 'Helvena', sans-serif;
+  font-size: clamp(2.8rem, 6.5vw, 5.5rem);
+  font-weight: 400;
+  color: #ffffff;
+  line-height: 1.15;
+  text-align: center;
+  letter-spacing: -0.01em;
+  text-shadow: 10px 15px 40px rgba(0, 0, 0, 0.45);
+  max-width: 700px;
+  padding: 0 24px;
+}
+
+.hero__cta {
+  pointer-events: all;
+  display: inline-block;
+  text-decoration: none;
+  background-color: #ffffff;
+  color: #1a1a1a;
+  border: none;
+  border-radius: 50px;
+  padding: 17px 52px;
+  font-size: 1rem;
+  font-weight: 500;
+  font-family: 'Grift', sans-serif;
+  letter-spacing: 0.02em;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
+  transition: background-color 0.22s ease, color 0.22s ease, transform 0.18s ease;
+}
+
+.hero__cta:hover {
+  background-color: #1a1a1a;
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+
+.hero__cta:active {
+  transform: translateY(0);
+}
