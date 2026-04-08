@@ -1,279 +1,281 @@
+@import "tailwindcss";
+
 /* ── Biondi Sans ── */
 @font-face {
-    font-family: 'Biondi Sans';
-    src: url('./assets/fonts/fonnts.com-biondi_sans_ul.otf') format('opentype');
-    font-weight: 100;
-    font-style: normal;
+  font-family: 'Biondi Sans';
+  src: url('./assets/fonts/fonnts.com-biondi_sans_ul.otf') format('opentype');
+  font-weight: 100;
+  font-style: normal;
 }
 @font-face {
-    font-family: 'Biondi Sans';
-    src: url('./assets/fonts/fonnts.com-biondi_sans_ul_it.otf') format('opentype');
-    font-weight: 100;
-    font-style: italic;
+  font-family: 'Biondi Sans';
+  src: url('./assets/fonts/fonnts.com-biondi_sans_ul_it.otf') format('opentype');
+  font-weight: 100;
+  font-style: italic;
 }
 @font-face {
-    font-family: 'Biondi Sans';
-    src: url('./assets/fonts/fonnts.com-biondi_sans_el.otf') format('opentype');
-    font-weight: 200;
-    font-style: normal;
+  font-family: 'Biondi Sans';
+  src: url('./assets/fonts/fonnts.com-biondi_sans_el.otf') format('opentype');
+  font-weight: 200;
+  font-style: normal;
 }
 @font-face {
-    font-family: 'Biondi Sans';
-    src: url('./assets/fonts/fonnts.com-biondi_sans_el_it.otf') format('opentype');
-    font-weight: 200;
-    font-style: italic;
+  font-family: 'Biondi Sans';
+  src: url('./assets/fonts/fonnts.com-biondi_sans_el_it.otf') format('opentype');
+  font-weight: 200;
+  font-style: italic;
 }
 @font-face {
-    font-family: 'Biondi Sans';
-    src: url('./assets/fonts/fonnts.com-biondi_sans_lt.otf') format('opentype');
-    font-weight: 300;
-    font-style: normal;
+  font-family: 'Biondi Sans';
+  src: url('./assets/fonts/fonnts.com-biondi_sans_lt.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
 }
 @font-face {
-    font-family: 'Biondi Sans';
-    src: url('./assets/fonts/fonnts.com-biondi_sans_lt_it.otf') format('opentype');
-    font-weight: 300;
-    font-style: italic;
+  font-family: 'Biondi Sans';
+  src: url('./assets/fonts/fonnts.com-biondi_sans_lt_it.otf') format('opentype');
+  font-weight: 300;
+  font-style: italic;
 }
 @font-face {
-    font-family: 'Biondi Sans';
-    src: url('./assets/fonts/fonnts.com-biondi_sans_bk.otf') format('opentype');
-    font-weight: 400;
-    font-style: normal;
+  font-family: 'Biondi Sans';
+  src: url('./assets/fonts/fonnts.com-biondi_sans_bk.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
 }
 @font-face {
-    font-family: 'Biondi Sans';
-    src: url('./assets/fonts/fonnts.com-biondi_sans_bk_it.otf') format('opentype');
-    font-weight: 400;
-    font-style: italic;
+  font-family: 'Biondi Sans';
+  src: url('./assets/fonts/fonnts.com-biondi_sans_bk_it.otf') format('opentype');
+  font-weight: 400;
+  font-style: italic;
 }
 @font-face {
-    font-family: 'Biondi Sans';
-    src: url('./assets/fonts/fonnts.com-biondi_sans_rg.otf') format('opentype');
-    font-weight: 500;
-    font-style: normal;
+  font-family: 'Biondi Sans';
+  src: url('./assets/fonts/fonnts.com-biondi_sans_rg.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
 }
 @font-face {
-    font-family: 'Biondi Sans';
-    src: url('./assets/fonts/fonnts.com-biondi_sans_rg_it.otf') format('opentype');
-    font-weight: 500;
-    font-style: italic;
+  font-family: 'Biondi Sans';
+  src: url('./assets/fonts/fonnts.com-biondi_sans_rg_it.otf') format('opentype');
+  font-weight: 500;
+  font-style: italic;
 }
 @font-face {
-    font-family: 'Biondi Sans';
-    src: url('./assets/fonts/fonnts.com-biondi_sans_bd.otf') format('opentype');
-    font-weight: 700;
-    font-style: normal;
+  font-family: 'Biondi Sans';
+  src: url('./assets/fonts/fonnts.com-biondi_sans_bd.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
 }
 @font-face {
-    font-family: 'Biondi Sans';
-    src: url('./assets/fonts/fonnts.com-biondi_sans_bd_it.otf') format('opentype');
-    font-weight: 700;
-    font-style: italic;
+  font-family: 'Biondi Sans';
+  src: url('./assets/fonts/fonnts.com-biondi_sans_bd_it.otf') format('opentype');
+  font-weight: 700;
+  font-style: italic;
 }
 
 /* ── Helvena ── */
 @font-face {
-    font-family: 'Helvena';
-    src: url('./assets/fonts/Helvena-Extralight.otf') format('opentype');
-    font-weight: 200;
-    font-style: normal;
+  font-family: 'Helvena';
+  src: url('./assets/fonts/Helvena-Extralight.otf') format('opentype');
+  font-weight: 200;
+  font-style: normal;
 }
 @font-face {
-    font-family: 'Helvena';
-    src: url('./assets/fonts/Helvena-Light.otf') format('opentype');
-    font-weight: 300;
-    font-style: normal;
+  font-family: 'Helvena';
+  src: url('./assets/fonts/Helvena-Light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
 }
 @font-face {
-    font-family: 'Helvena';
-    src: url('./assets/fonts/Helvena-Regular.otf') format('opentype');
-    font-weight: 400;
-    font-style: normal;
+  font-family: 'Helvena';
+  src: url('./assets/fonts/Helvena-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
 }
 @font-face {
-    font-family: 'Helvena';
-    src: url('./assets/fonts/Helvena-Medium.otf') format('opentype');
-    font-weight: 500;
-    font-style: normal;
+  font-family: 'Helvena';
+  src: url('./assets/fonts/Helvena-Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
 }
 @font-face {
-    font-family: 'Helvena';
-    src: url('./assets/fonts/Helvena-Semibold.otf') format('opentype');
-    font-weight: 600;
-    font-style: normal;
+  font-family: 'Helvena';
+  src: url('./assets/fonts/Helvena-Semibold.otf') format('opentype');
+  font-weight: 600;
+  font-style: normal;
 }
 @font-face {
-    font-family: 'Helvena';
-    src: url('./assets/fonts/Helvena-Bold.otf') format('opentype');
-    font-weight: 700;
-    font-style: normal;
+  font-family: 'Helvena';
+  src: url('./assets/fonts/Helvena-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
 }
 @font-face {
-    font-family: 'Helvena';
-    src: url('./assets/fonts/Helvena-Extrabold.otf') format('opentype');
-    font-weight: 800;
-    font-style: normal;
+  font-family: 'Helvena';
+  src: url('./assets/fonts/Helvena-Extrabold.otf') format('opentype');
+  font-weight: 800;
+  font-style: normal;
 }
 @font-face {
-    font-family: 'Helvena';
-    src: url('./assets/fonts/Helvena-Black.otf') format('opentype');
-    font-weight: 900;
-    font-style: normal;
+  font-family: 'Helvena';
+  src: url('./assets/fonts/Helvena-Black.otf') format('opentype');
+  font-weight: 900;
+  font-style: normal;
 }
 
 /* ── Grift ── */
 @font-face {
-    font-family: 'Grift';
-    src: url('./assets/fonts/Grift-Thin.otf') format('opentype');
-    font-weight: 100;
-    font-style: normal;
+  font-family: 'Grift';
+  src: url('./assets/fonts/Grift-Thin.otf') format('opentype');
+  font-weight: 100;
+  font-style: normal;
 }
 @font-face {
-    font-family: 'Grift';
-    src: url('./assets/fonts/Grift-ThinItalic.otf') format('opentype');
-    font-weight: 100;
-    font-style: italic;
+  font-family: 'Grift';
+  src: url('./assets/fonts/Grift-ThinItalic.otf') format('opentype');
+  font-weight: 100;
+  font-style: italic;
 }
 @font-face {
-    font-family: 'Grift';
-    src: url('./assets/fonts/Grift-ExtraLight.otf') format('opentype');
-    font-weight: 200;
-    font-style: normal;
+  font-family: 'Grift';
+  src: url('./assets/fonts/Grift-ExtraLight.otf') format('opentype');
+  font-weight: 200;
+  font-style: normal;
 }
 @font-face {
-    font-family: 'Grift';
-    src: url('./assets/fonts/Grift-ExtraLightItalic.otf') format('opentype');
-    font-weight: 200;
-    font-style: italic;
+  font-family: 'Grift';
+  src: url('./assets/fonts/Grift-ExtraLightItalic.otf') format('opentype');
+  font-weight: 200;
+  font-style: italic;
 }
 @font-face {
-    font-family: 'Grift';
-    src: url('./assets/fonts/Grift-Light.otf') format('opentype');
-    font-weight: 300;
-    font-style: normal;
+  font-family: 'Grift';
+  src: url('./assets/fonts/Grift-Light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
 }
 @font-face {
-    font-family: 'Grift';
-    src: url('./assets/fonts/Grift-LightItalic.otf') format('opentype');
-    font-weight: 300;
-    font-style: italic;
+  font-family: 'Grift';
+  src: url('./assets/fonts/Grift-LightItalic.otf') format('opentype');
+  font-weight: 300;
+  font-style: italic;
 }
 @font-face {
-    font-family: 'Grift';
-    src: url('./assets/fonts/Grift-Regular.otf') format('opentype');
-    font-weight: 400;
-    font-style: normal;
+  font-family: 'Grift';
+  src: url('./assets/fonts/Grift-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
 }
 @font-face {
-    font-family: 'Grift';
-    src: url('./assets/fonts/Grift-Italic.otf') format('opentype');
-    font-weight: 400;
-    font-style: italic;
+  font-family: 'Grift';
+  src: url('./assets/fonts/Grift-Italic.otf') format('opentype');
+  font-weight: 400;
+  font-style: italic;
 }
 @font-face {
-    font-family: 'Grift';
-    src: url('./assets/fonts/Grift-Medium.otf') format('opentype');
-    font-weight: 500;
-    font-style: normal;
+  font-family: 'Grift';
+  src: url('./assets/fonts/Grift-Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
 }
 @font-face {
-    font-family: 'Grift';
-    src: url('./assets/fonts/Grift-MediumItalic.otf') format('opentype');
-    font-weight: 500;
-    font-style: italic;
+  font-family: 'Grift';
+  src: url('./assets/fonts/Grift-MediumItalic.otf') format('opentype');
+  font-weight: 500;
+  font-style: italic;
 }
 @font-face {
-    font-family: 'Grift';
-    src: url('./assets/fonts/Grift-SemiBold.otf') format('opentype');
-    font-weight: 600;
-    font-style: normal;
+  font-family: 'Grift';
+  src: url('./assets/fonts/Grift-SemiBold.otf') format('opentype');
+  font-weight: 600;
+  font-style: normal;
 }
 @font-face {
-    font-family: 'Grift';
-    src: url('./assets/fonts/Grift-SemiBoldItalic.otf') format('opentype');
-    font-weight: 600;
-    font-style: italic;
+  font-family: 'Grift';
+  src: url('./assets/fonts/Grift-SemiBoldItalic.otf') format('opentype');
+  font-weight: 600;
+  font-style: italic;
 }
 @font-face {
-    font-family: 'Grift';
-    src: url('./assets/fonts/Grift-Bold.otf') format('opentype');
-    font-weight: 700;
-    font-style: normal;
+  font-family: 'Grift';
+  src: url('./assets/fonts/Grift-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
 }
 @font-face {
-    font-family: 'Grift';
-    src: url('./assets/fonts/Grift-BoldItalic.otf') format('opentype');
-    font-weight: 700;
-    font-style: italic;
+  font-family: 'Grift';
+  src: url('./assets/fonts/Grift-BoldItalic.otf') format('opentype');
+  font-weight: 700;
+  font-style: italic;
 }
 @font-face {
-    font-family: 'Grift';
-    src: url('./assets/fonts/Grift-ExtraBold.otf') format('opentype');
-    font-weight: 800;
-    font-style: normal;
+  font-family: 'Grift';
+  src: url('./assets/fonts/Grift-ExtraBold.otf') format('opentype');
+  font-weight: 800;
+  font-style: normal;
 }
 @font-face {
-    font-family: 'Grift';
-    src: url('./assets/fonts/Grift-ExtraBoldItalic.otf') format('opentype');
-    font-weight: 800;
-    font-style: italic;
+  font-family: 'Grift';
+  src: url('./assets/fonts/Grift-ExtraBoldItalic.otf') format('opentype');
+  font-weight: 800;
+  font-style: italic;
 }
 @font-face {
-    font-family: 'Grift';
-    src: url('./assets/fonts/Grift-Black.otf') format('opentype');
-    font-weight: 900;
-    font-style: normal;
+  font-family: 'Grift';
+  src: url('./assets/fonts/Grift-Black.otf') format('opentype');
+  font-weight: 900;
+  font-style: normal;
 }
 @font-face {
-    font-family: 'Grift';
-    src: url('./assets/fonts/Grift-BlackItalic.otf') format('opentype');
-    font-weight: 900;
-    font-style: italic;
+  font-family: 'Grift';
+  src: url('./assets/fonts/Grift-BlackItalic.otf') format('opentype');
+  font-weight: 900;
+  font-style: italic;
 }
 
 /* ── Global reset ── */
 *,
 *::before,
 *::after {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 :root {
-    font-family: 'Biondi Sans', system-ui, sans-serif;
-    font-synthesis: none;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+  font-family: 'Biondi Sans', system-ui, sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 html,
 body,
 #root {
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
 }
 
 body {
-    background-color: #ffffff;
-    color: #1a1a1a;
+  background-color: #ffffff;
+  color: #1a1a1a;
 }
 
 a {
-    text-decoration: none;
-    color: inherit;
+  text-decoration: none;
+  color: inherit;
 }
 
 button {
-    cursor: pointer;
-    font-family: inherit;
-    border: none;
-    outline: none;
+  cursor: pointer;
+  font-family: inherit;
+  border: none;
+  outline: none;
 }
 
 img {
-    display: block;
-    max-width: 100%;
+  display: block;
+  max-width: 100%;
 }

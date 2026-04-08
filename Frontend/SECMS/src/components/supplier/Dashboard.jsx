@@ -1,23 +1,35 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import SupplierProducts from './SupplierProducts';
+import SupplierStocks from './SupplierStocks';
+import SupplierProfile from './Profile';
+import DashboardOverview from './DashboardOverview';
+import SupplierOrders from './SupplierOrders';
+import SupplierCoupons from './SupplierCoupons';
+import SupplierReviews from './SupplierReviews';
 import './Dashboard.css';
 
 const navItems = [
-    { label: "Dashboard", icon: "📊" },
-    { label: "Profile", icon: "👤" },
-    { label: "Settings", icon: "⚙️" },
+    { label: "Dashboard"},
+    { label: "Products"},
+    { label: "Stocks"},
+    { label: "Orders"},
+    { label: "Coupons"},
+    { label: "Reviews"},
+    { label: "Profile"},
 ];
 
 export default function Dashboard() {
     const navigate = useNavigate();
     const [seller, setSeller] = useState(null);
+    const [activeTab, setActiveTab] = useState('Dashboard');
 
     useEffect(() => {
         const storedSeller = localStorage.getItem('seller');
         if (storedSeller) {
             setSeller(JSON.parse(storedSeller));
         } else {
-            navigate('/login');
+            navigate('/signin');
         }
     }, [navigate]);
 
@@ -27,11 +39,11 @@ export default function Dashboard() {
     };
 
     const handleNavClick = (label) => {
+        setActiveTab(label);
         if (label === 'Dashboard') {
             navigate('/dashboard');
-        } else if (label === 'Profile') {
-            navigate('/profile');
         }
+        // Products, Stocks, Profile all render as tabs — no route change
     };
 
     if (!seller) {
@@ -45,14 +57,13 @@ export default function Dashboard() {
             {/* Sidebar */}
             <aside className="dashboard-sidebar">
                 <div className="sidebar-brand">
-                    <span className="brand-icon">◫</span>
                     <span className="brand-name">ANYWEAR</span>
                 </div>
                 <nav className="sidebar-nav">
                     {navItems.map(item => (
                         <button
                             key={item.label}
-                            className={`nav-item ${item.label === 'Dashboard' ? 'nav-item--active' : ''}`}
+                            className={`nav-item ${item.label === activeTab ? 'nav-item--active' : ''}`}
                             onClick={() => handleNavClick(item.label)}
                         >
                             <span className="nav-icon">{item.icon}</span>
@@ -60,12 +71,36 @@ export default function Dashboard() {
                         </button>
                     ))}
                 </nav>
-                <div className="sidebar-footer">
+                <div style={{ marginTop: 'auto', padding: '20px 16px' }}>
                     <button
-                        className="nav-item"
                         onClick={handleLogout}
+                        style={{
+                            width: '100%',
+                            padding: '12px 16px',
+                            background: 'transparent',
+                            border: '1px solid var(--border)',
+                            borderRadius: '8px',
+                            fontFamily: "'Grift', sans-serif",
+                            fontSize: '14px',
+                            color: 'var(--text-secondary)',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                            transition: 'all 0.2s ease'
+                        }}
+                        onMouseEnter={e => {
+                            e.currentTarget.style.background = '#fee2e2';
+                            e.currentTarget.style.borderColor = '#fca5a5';
+                            e.currentTarget.style.color = '#dc2626';
+                        }}
+                        onMouseLeave={e => {
+                            e.currentTarget.style.background = 'transparent';
+                            e.currentTarget.style.borderColor = 'var(--border)';
+                            e.currentTarget.style.color = 'var(--text-secondary)';
+                        }}
                     >
-                        <span className="nav-icon">🚪</span>
+                        <span>↪</span>
                         <span>Logout</span>
                     </button>
                 </div>
@@ -74,7 +109,7 @@ export default function Dashboard() {
             {/* Main Content */}
             <div className="dashboard-main">
                 <header className="dashboard-topbar">
-                    <h1 className="topbar-title">Supplier Dashboard</h1>
+                    <h1 className="topbar-title">{activeTab === 'Dashboard' ? 'Supplier Dashboard' : activeTab}</h1>
                     <div className="topbar-user">
                         <div className="user-avatar">{initials}</div>
                         <div className="user-info">
@@ -85,85 +120,16 @@ export default function Dashboard() {
                 </header>
 
                 <main className="dashboard-content">
-                    <div className="content-heading">
-                        <h2>Inventory and Order Overview</h2>
+                    <div key={activeTab} className="dash-tab-content">
+                        {activeTab === 'Dashboard' && <DashboardOverview />}
+                        
+                        {activeTab === 'Products' && <SupplierProducts />}
+                        {activeTab === 'Stocks' && <SupplierStocks />}
+                        {activeTab === 'Orders' && <SupplierOrders />}
+                        {activeTab === 'Coupons' && <SupplierCoupons />}
+                        {activeTab === 'Reviews' && <SupplierReviews />}
+                        {activeTab === 'Profile' && <SupplierProfile />}
                     </div>
-
-                    <section className="kpi-row">
-                        <div className="kpi-card">
-                            <div className="kpi-label">Active SKUs</div>
-                            <div className="kpi-value">128</div>
-                            <div className="kpi-sub">+12 new this month</div>
-                        </div>
-                        <div className="kpi-card">
-                            <div className="kpi-label">Open Purchase Orders</div>
-                            <div className="kpi-value">18</div>
-                            <div className="kpi-sub">5 due this week</div>
-                        </div>
-                        <div className="kpi-card">
-                            <div className="kpi-label">On‑time Delivery Rate</div>
-                            <div className="kpi-value">96%</div>
-                            <div className="kpi-sub">Last 30 days</div>
-                        </div>
-                        <div className="kpi-card">
-                            <div className="kpi-label">Low‑stock Alerts</div>
-                            <div className="kpi-value">9</div>
-                            <div className="kpi-sub">Reorder today</div>
-                        </div>
-                    </section>
-
-                    <section className="transactions-card">
-                        <div className="transactions-header">
-                            <div>
-                                <h3>Recent Purchase Orders</h3>
-                                <span>Latest orders from your retail partners</span>
-                            </div>
-                            <div className="transactions-filter">Most Recent</div>
-                        </div>
-
-                        <table className="transactions-table">
-                            <thead>
-                            <tr>
-                                <th>PO ID</th>
-                                <th>Retailer</th>
-                                <th>Order Date</th>
-                                <th>Expected Delivery</th>
-                                <th>Items</th>
-                                <th>Value</th>
-                                <th>Status</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td>#PO-7842</td>
-                                <td>Urban Streetwear</td>
-                                <td>02/03/26</td>
-                                <td>09/03/26</td>
-                                <td>42</td>
-                                <td>LKR 185,900</td>
-                                <td>In transit</td>
-                            </tr>
-                            <tr>
-                                <td>#PO-7839</td>
-                                <td>Metro Fashion</td>
-                                <td>01/03/26</td>
-                                <td>06/03/26</td>
-                                <td>27</td>
-                                <td>LKR 92,450</td>
-                                <td>Packed</td>
-                            </tr>
-                            <tr>
-                                <td>#PO-7833</td>
-                                <td>Anywear Flagship</td>
-                                <td>28/02/26</td>
-                                <td>03/03/26</td>
-                                <td>35</td>
-                                <td>LKR 124,300</td>
-                                <td>Delivered</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </section>
                 </main>
             </div>
         </div>
