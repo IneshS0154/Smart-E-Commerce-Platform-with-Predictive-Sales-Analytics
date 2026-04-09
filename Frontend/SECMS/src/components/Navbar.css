@@ -1,0 +1,144 @@
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  height: 72px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e8e8e8;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  transition: transform 0.35s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.navbar--hidden {
+  transform: translateY(-100%);
+}
+
+.navbar__left,
+.navbar__right {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+  flex: 1;
+}
+
+.navbar__right {
+  justify-content: flex-end;
+}
+
+.navbar__left a,
+.navbar__right a {
+  font-family: 'Biondi Sans Bk', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: #1a1a1a;
+  letter-spacing: 0.04em;
+  text-transform: capitalize;
+  transition: opacity 0.2s ease;
+}
+
+.navbar__left a:hover,
+.navbar__right a:hover {
+  opacity: 0.55;
+}
+
+a.navbar__brand {
+  font-family: 'Biondi Sans Bk', sans-serif;
+  font-size: 2.2rem;
+  font-weight: 500;
+  color: #1a1a1a;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.navbar__bag {
+  font-weight: 500 !important;
+  text-decoration: underline !important;
+  text-underline-offset: 3px;
+}
+
+.navbar__profile {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.navbar__profile-button {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: 1px solid #e8e8e8;
+  background: #ffffff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s ease;
+}
+
+.navbar__profile-button:hover {
+  opacity: 0.7;
+}
+
+.navbar__profile-initial {
+  font-family: 'Biondi Sans Bk', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  text-transform: uppercase;
+}
+
+.navbar__profile-menu {
+  position: absolute;
+  top: 52px;
+  right: 0;
+  background: #ffffff;
+  border: 1px solid #e8e8e8;
+  border-radius: 10px;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.08);
+  padding: 6px;
+  min-width: 160px;
+  z-index: 200;
+}
+
+.navbar__profile-item {
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: transparent;
+  padding: 10px 12px;
+  cursor: pointer;
+  font-family: 'Biondi Sans Bk', sans-serif;
+  font-size: 0.875rem;
+  color: #1a1a1a;
+  transition: background-color 0.15s ease;
+}
+
+.navbar__profile-item:hover {
+  background-color: #f4f4f4;
+}
+
+.navbar__icon-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #1a1a1a;
+  transition: opacity 0.2s ease;
+  padding: 0;
+}
+
+.navbar__icon-link:hover {
+  opacity: 0.55;
+}
+
+.navbar__icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
