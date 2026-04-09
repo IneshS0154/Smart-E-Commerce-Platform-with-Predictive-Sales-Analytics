@@ -1,0 +1,59 @@
+.collections {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  padding: 0 40px;
+  margin-bottom: 6px;
+}
+
+.collections__card {
+  position: relative;
+  aspect-ratio: 9 / 10;
+  overflow: hidden;
+  background-color: #c8c8c8;
+}
+
+.collections__image,
+.collections__placeholder {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+}
+
+.collections__placeholder {
+  background-color: #c8c8c8;
+}
+
+/* dark gradient so white text is always legible */
+.collections__card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0.45) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.collections__overlay {
+  position: absolute;
+  top: 28px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  z-index: 1;
+}
+
+.collections__title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  font-family: 'Grift', sans-serif;
+  font-size: clamp(5.8rem, 5.5vw, 3rem);
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.1;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.3);
+}

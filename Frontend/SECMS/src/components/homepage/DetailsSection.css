@@ -1,0 +1,43 @@
+.details {
+  margin-top: 20px;
+}
+
+/* ── Single wide image with side breathing room ── */
+.details__image-wrap {
+  padding: 0 40px;
+}
+
+.details__image {
+  width: 100%;
+  display: block;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+/* ── Caption row ── */
+.details__footer {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 40px;
+  padding: 24px 40px 60px;
+}
+
+.details__label {
+  font-family: 'Grift', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: #888888;
+  white-space: nowrap;
+  padding-top: 2px;
+}
+
+.details__text {
+  font-family: 'Grift', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #1a1a1a;
+  line-height: 1.7;
+  text-align: right;
+  max-width: 560px;
+}
