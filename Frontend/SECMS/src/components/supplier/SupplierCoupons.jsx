@@ -49,7 +49,11 @@ export default function SupplierCoupons() {
     const [formError, setFormError] = useState('');
     const [successMsg, setSuccessMsg] = useState('');
 
-    const today = new Date().toISOString().slice(0, 16);
+    const getLocalISOString = () => {
+        const tzoffset = (new Date()).getTimezoneOffset() * 60000; 
+        return (new Date(Date.now() - tzoffset)).toISOString().slice(0, 16);
+    };
+    const today = getLocalISOString();
     const [form, setForm] = useState({
         code: '', description: '', discountPercentage: '', minimumOrderAmount: '',
         maxUsages: '', validFrom: today, validUntil: ''
@@ -133,7 +137,9 @@ export default function SupplierCoupons() {
         try {
             await couponAPI.deleteCoupon(id);
             fetchCoupons();
-        } catch { alert('Failed to delete coupon.'); }
+        } catch (err) { 
+            alert(err.response?.data?.message || 'Failed to delete coupon. If this coupon has been used in orders, it cannot be safely deleted. Please use Deactivate instead.'); 
+        }
     };
 
     const active = coupons.filter(c => c.status === 'ACTIVE').length;

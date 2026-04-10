@@ -10,7 +10,15 @@ export default function Login() {
     const [rememberMe, setRememberMe] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const [fieldErrors, setFieldErrors] = useState({});
     const [showPassword, setShowPassword] = useState(false);
+
+    const validateForm = () => {
+        const errors = {};
+        if (!credentials.email.trim()) errors.email = 'Email is required';
+        if (!credentials.password) errors.password = 'Password is required';
+        return errors;
+    };
 
     const handleChange = (e) => {
         setCredentials({ ...credentials, [e.target.name]: e.target.value });
@@ -18,8 +26,16 @@ export default function Login() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setSubmitting(true);
         setErrorMessage('');
+        setFieldErrors({});
+
+        const errors = validateForm();
+        if (Object.keys(errors).length > 0) {
+            setFieldErrors(errors);
+            return;
+        }
+
+        setSubmitting(true);
         try {
             const response = await api.post('/sellers/login', credentials);
             const data = response.data;
@@ -106,7 +122,9 @@ export default function Login() {
                                     placeholder="Enter your email"
                                     name="email"
                                     autoComplete="username"
+                                    style={fieldErrors.email ? { borderColor: '#dc2626' } : {}}
                                 />
+                                {fieldErrors.email && <span style={{ color: '#dc2626', fontSize: '12px', marginTop: '4px', display: 'block' }}>{fieldErrors.email}</span>}
                             </div>
 
                             <div className="form-group">
@@ -120,8 +138,9 @@ export default function Login() {
                                         placeholder="Enter your password"
                                         name="password"
                                         autoComplete="current-password"
-                                        style={{ paddingRight: '44px', width: '100%' }}
+                                        style={{ paddingRight: '44px', width: '100%', ...(fieldErrors.password ? { borderColor: '#dc2626' } : {}) }}
                                     />
+                                    {fieldErrors.password && <span style={{ color: '#dc2626', fontSize: '12px', marginTop: '4px', display: 'block' }}>{fieldErrors.password}</span>}
                                     <button
                                         type="button"
                                         onClick={() => setShowPassword(p => !p)}

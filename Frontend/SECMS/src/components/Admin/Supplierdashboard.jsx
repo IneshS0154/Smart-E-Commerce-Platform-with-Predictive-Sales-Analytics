@@ -184,16 +184,16 @@ export default function Supplierdashboard({ activeNav: activeNavProp, onNavChang
 
     const handleUpdateSupplier = async () => {
         if (!editSupplier) return;
-        const { id, storeName, phoneNumber, address } = editSupplier;
+        const { id, storeName, phoneNumber, address, username, email } = editSupplier;
         try {
             const response = await fetch(`http://localhost:8080/api/sellers/${id}/update`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ storeName, phoneNumber, address })
+                body: JSON.stringify({ storeName, phoneNumber, address, username, email })
             });
             if (!response.ok) throw new Error((await response.text()) || "Failed to update supplier");
             const updatedSeller = await response.json();
-            setSuppliers(prev => prev.map(s => s.id === updatedSeller.id ? { ...s, storeName: updatedSeller.storeName, phoneNumber: updatedSeller.phoneNumber || "N/A", address: updatedSeller.address || "N/A" } : s));
+            setSuppliers(prev => prev.map(s => s.id === updatedSeller.id ? { ...s, storeName: updatedSeller.storeName, phoneNumber: updatedSeller.phoneNumber || "N/A", address: updatedSeller.address || "N/A", username: updatedSeller.username || "N/A", email: updatedSeller.email } : s));
             setShowEditModal(false);
             setEditSupplier(null);
             alert("Supplier updated successfully");
@@ -647,7 +647,9 @@ export default function Supplierdashboard({ activeNav: activeNavProp, onNavChang
                         {[
                             { key: "storeName", label: "Store Name" },
                             { key: "phoneNumber", label: "Phone Number" },
-                            { key: "address", label: "Address" }
+                            { key: "address", label: "Address" },
+                            { key: "username", label: "Username" },
+                            { key: "email", label: "Email" }
                         ].map(field => (
                             <div className="modal-field" key={field.key}>
                                 <label className="modal-label">{field.label}</label>

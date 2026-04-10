@@ -44,7 +44,8 @@ public class CustomerController {
 
     @PutMapping("/{id}/update")
     @PreAuthorize("hasRole('ADMIN') or (hasRole('CUSTOMER') and #id == authentication.principal.userId)")
-    public ResponseEntity<?> updateCustomer(@PathVariable Long id, @RequestBody com.store.secms.dto.CustomerUpdateRequest request) {
+    public ResponseEntity<?> updateCustomer(@PathVariable Long id,
+            @RequestBody com.store.secms.dto.CustomerUpdateRequest request) {
         try {
             Customer updated = customerService.updateCustomer(id, request);
             return ResponseEntity.ok(updated);
@@ -55,7 +56,8 @@ public class CustomerController {
 
     @PutMapping("/{id}/change-password")
     @PreAuthorize("hasRole('CUSTOMER') and #id == authentication.principal.userId")
-    public ResponseEntity<?> changePassword(@PathVariable Long id, @RequestBody com.store.secms.dto.ChangePasswordRequest request) {
+    public ResponseEntity<?> changePassword(@PathVariable Long id,
+            @RequestBody com.store.secms.dto.ChangePasswordRequest request) {
         try {
             customerService.changePassword(id, request);
             return ResponseEntity.ok(new MessageResponse("Password changed successfully."));
@@ -86,7 +88,7 @@ public class CustomerController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}/delete")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteCustomer(@PathVariable Long id) {
         try {

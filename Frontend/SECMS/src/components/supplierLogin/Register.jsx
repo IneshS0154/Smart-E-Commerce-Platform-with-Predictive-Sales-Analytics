@@ -19,6 +19,52 @@ export default function Register() {
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const [fieldErrors, setFieldErrors] = useState({});
+
+    const validateForm = () => {
+        const errors = {};
+        
+        if (!formData.storeName.trim()) {
+            errors.storeName = 'Store/Brand name is required';
+        }
+
+        if (formData.username.length < 3) {
+            errors.username = 'Username must be at least 3 characters';
+        } else if (!/^[A-Za-z0-9_]+$/.test(formData.username)) {
+            errors.username = 'Username can only contain numbers, letters, and underscores';
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!formData.email.trim()) {
+            errors.email = 'Email is required';
+        } else if (!emailRegex.test(formData.email)) {
+            errors.email = 'Please enter a valid email address';
+        }
+
+        if (formData.phoneNumber && !/^[\d\+\-\s\(\)]+$/.test(formData.phoneNumber)) {
+            errors.phoneNumber = 'Please enter a valid phone number';
+        } else if (formData.phoneNumber && formData.phoneNumber.replace(/\D/g, '').length < 9) {
+            errors.phoneNumber = 'Phone number must have at least 9 digits';
+        }
+
+        if (!formData.password) {
+            errors.password = 'Password is required';
+        } else if (formData.password.length < 6) {
+            errors.password = 'Password must be at least 6 characters';
+        } else if (!/(?=.*[A-Za-z])(?=.*\d)/.test(formData.password)) {
+            errors.password = 'Password must contain at least one letter and one number';
+        }
+
+        if (formData.password !== formData.confirmPassword) {
+            errors.confirmPassword = 'Passwords do not match';
+        }
+
+        if (!formData.acceptTerms) {
+            errors.acceptTerms = 'You must accept the Terms & Conditions';
+        }
+
+        return errors;
+    };
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -29,14 +75,11 @@ export default function Register() {
         e.preventDefault();
         setError('');
         setSuccess('');
+        setFieldErrors({});
 
-        if (formData.password !== formData.confirmPassword) {
-            setError('Passwords do not match');
-            return;
-        }
-
-        if (!formData.acceptTerms) {
-            setError('Please accept the Terms & Conditions to continue.');
+        const errors = validateForm();
+        if (Object.keys(errors).length > 0) {
+            setFieldErrors(errors);
             return;
         }
 
@@ -95,8 +138,9 @@ export default function Register() {
                                     onChange={handleChange}
                                     placeholder="e.g. Anywear Studio"
                                     name="storeName"
-                                    required
+                                    style={fieldErrors.storeName ? { borderColor: '#dc2626' } : {}}
                                 />
+                                {fieldErrors.storeName && <span style={{ color: '#dc2626', fontSize: '12px', marginTop: '4px', display: 'block' }}>{fieldErrors.storeName}</span>}
                             </div>
 
                             <div className="form-group form-group-half">
@@ -108,8 +152,9 @@ export default function Register() {
                                     onChange={handleChange}
                                     placeholder="Choose a username"
                                     name="username"
-                                    required
+                                    style={fieldErrors.username ? { borderColor: '#dc2626' } : {}}
                                 />
+                                {fieldErrors.username && <span style={{ color: '#dc2626', fontSize: '12px', marginTop: '4px', display: 'block' }}>{fieldErrors.username}</span>}
                             </div>
                         </div>
 
@@ -122,8 +167,9 @@ export default function Register() {
                                 onChange={handleChange}
                                 placeholder="Enter your email"
                                 name="email"
-                                required
+                                style={fieldErrors.email ? { borderColor: '#dc2626' } : {}}
                             />
+                            {fieldErrors.email && <span style={{ color: '#dc2626', fontSize: '12px', marginTop: '4px', display: 'block' }}>{fieldErrors.email}</span>}
                         </div>
 
                         <div className="form-group">
@@ -135,8 +181,9 @@ export default function Register() {
                                 onChange={handleChange}
                                 placeholder="Enter your phone number"
                                 name="phoneNumber"
-                                required
+                                style={fieldErrors.phoneNumber ? { borderColor: '#dc2626' } : {}}
                             />
+                            {fieldErrors.phoneNumber && <span style={{ color: '#dc2626', fontSize: '12px', marginTop: '4px', display: 'block' }}>{fieldErrors.phoneNumber}</span>}
                         </div>
 
                         <div className="form-group">
@@ -148,7 +195,6 @@ export default function Register() {
                                 onChange={handleChange}
                                 placeholder="Enter your address"
                                 name="address"
-                                required
                             />
                         </div>
 
@@ -161,8 +207,9 @@ export default function Register() {
                                 onChange={handleChange}
                                 placeholder="Create a strong password"
                                 name="password"
-                                required
+                                style={fieldErrors.password ? { borderColor: '#dc2626' } : {}}
                             />
+                            {fieldErrors.password && <span style={{ color: '#dc2626', fontSize: '12px', marginTop: '4px', display: 'block' }}>{fieldErrors.password}</span>}
                         </div>
 
                         <div className="form-group">
@@ -174,8 +221,9 @@ export default function Register() {
                                 onChange={handleChange}
                                 placeholder="Confirm your password"
                                 name="confirmPassword"
-                                required
+                                style={fieldErrors.confirmPassword ? { borderColor: '#dc2626' } : {}}
                             />
+                            {fieldErrors.confirmPassword && <span style={{ color: '#dc2626', fontSize: '12px', marginTop: '4px', display: 'block' }}>{fieldErrors.confirmPassword}</span>}
                         </div>
 
                         <div className="form-group checkbox">
@@ -185,9 +233,9 @@ export default function Register() {
                                 checked={formData.acceptTerms}
                                 onChange={handleChange}
                                 name="acceptTerms"
-                                required
                             />
-                            <label htmlFor="acceptTerms" class="acceptTerms">I agree to the Terms & Conditions</label>
+                            <label htmlFor="acceptTerms" className="acceptTerms" style={fieldErrors.acceptTerms ? { color: '#dc2626' } : {}}>I agree to the Terms & Conditions</label>
+                            {fieldErrors.acceptTerms && <span style={{ color: '#dc2626', fontSize: '12px', marginTop: '4px', display: 'block', width: '100%' }}>{fieldErrors.acceptTerms}</span>}
                         </div>
 
                         <button type="submit" className="supplier-auth-button" disabled={submitting}>

@@ -284,6 +284,9 @@ export default function Profile() {
                   { name: 'storeName',   label: 'Store Name',   type: 'text', placeholder: 'Enter store name' },
                   { name: 'phoneNumber', label: 'Phone Number', type: 'tel',  placeholder: 'Enter phone number' },
                   { name: 'address',     label: 'Address',      type: 'text', placeholder: 'Enter address' },
+                  { name: 'username',    label: 'Username',     type: 'text', placeholder: 'Enter username' },
+                  { name: 'email',       label: 'Email',        type: 'email', placeholder: 'Enter email' },
+                  { name: 'password',    label: 'Password',     type: 'password', placeholder: 'Enter new password (optional)' },
                 ].map(f => (
                   <div key={f.name} className="prof-form__group">
                     <label className="prof-form__label">{f.label}</label>
