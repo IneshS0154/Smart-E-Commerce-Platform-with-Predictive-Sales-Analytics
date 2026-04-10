@@ -13,7 +13,15 @@ export default function Login() {
     const [rememberVal, setRememberVal] = useState(false);
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
+    const [fieldErrors, setFieldErrors] = useState({});
     const [showPassword, setShowPassword] = useState(false);
+
+    const validateForm = () => {
+        const errors = {};
+        if (!usernameVal.trim()) errors.username = 'Username is required';
+        if (!passwordVal) errors.password = 'Password is required';
+        return errors;
+    };
 
     const doAdminLogin = async () => {
         try {
@@ -40,8 +48,12 @@ export default function Login() {
 
     const doLogin = async (e) => {
         if (e) e.preventDefault();
-        if (!usernameVal.trim() || !passwordVal.trim()) {
-            setErrorMsg('Please enter both username and password.');
+        setErrorMsg('');
+        setFieldErrors({});
+
+        const errors = validateForm();
+        if (Object.keys(errors).length > 0) {
+            setFieldErrors(errors);
             return;
         }
 
@@ -134,7 +146,9 @@ export default function Login() {
                                     onChange={(e) => setUsernameVal(e.target.value)}
                                     placeholder="Enter your username"
                                     autoComplete="username"
+                                    style={fieldErrors.username ? { borderColor: '#dc2626' } : {}}
                                 />
+                                {fieldErrors.username && <span style={{ color: '#dc2626', fontSize: '12px', marginTop: '4px', display: 'block' }}>{fieldErrors.username}</span>}
                             </div>
 
                             <div className="form-group">
@@ -147,8 +161,9 @@ export default function Login() {
                                         onChange={(e) => setPasswordVal(e.target.value)}
                                         placeholder="Enter your password"
                                         autoComplete="current-password"
-                                        style={{ paddingRight: '44px', width: '100%' }}
+                                        style={{ paddingRight: '44px', width: '100%', ...(fieldErrors.password ? { borderColor: '#dc2626' } : {}) }}
                                     />
+                                    {fieldErrors.password && <span style={{ color: '#dc2626', fontSize: '12px', marginTop: '4px', display: 'block' }}>{fieldErrors.password}</span>}
                                     <button
                                         type="button"
                                         onClick={() => setShowPassword(p => !p)}

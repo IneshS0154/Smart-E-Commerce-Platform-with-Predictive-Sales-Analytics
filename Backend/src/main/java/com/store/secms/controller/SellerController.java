@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -120,7 +121,12 @@ public class SellerController {
 
     @GetMapping("/all")
     public ResponseEntity<?> getAllSellers() {
-        return ResponseEntity.ok(sellerRepository.findAll());
+        List<Seller> sellers = sellerRepository.findAll();
+        for (Seller seller : sellers) {
+            Optional<SellerLogin> loginOpt = sellerLoginRepository.findBySeller(seller);
+            loginOpt.ifPresent(login -> seller.setUsername(login.getUsername()));
+        }
+        return ResponseEntity.ok(sellers);
     }
 
     @PutMapping("/{id}/deactivate")
@@ -191,7 +197,30 @@ public class SellerController {
             if (updatedSeller.getAddress() != null) {
                 seller.setAddress(updatedSeller.getAddress());
             }
+            if (updatedSeller.getEmail() != null) {
+                seller.setEmail(updatedSeller.getEmail());
+            }
+            
+            if (updatedSeller.getUsername() != null || (updatedSeller.getPassword() != null && !updatedSeller.getPassword().trim().isEmpty())) {
+                Optional<SellerLogin> loginOpt = sellerLoginRepository.findBySeller(seller);
+                if (loginOpt.isPresent()) {
+                    SellerLogin login = loginOpt.get();
+                    if (updatedSeller.getUsername() != null) {
+                        login.setUsername(updatedSeller.getUsername());
+                    }
+                    if (updatedSeller.getPassword() != null && !updatedSeller.getPassword().trim().isEmpty()) {
+                        login.setPassword(passwordEncoder.encode(updatedSeller.getPassword()));
+                    }
+                    sellerLoginRepository.save(login);
+                }
+            }
+            
             sellerRepository.save(seller);
+            
+            // Set the username back to the object to return updated values
+            Optional<SellerLogin> loginOptReturn = sellerLoginRepository.findBySeller(seller);
+            loginOptReturn.ifPresent(login -> seller.setUsername(login.getUsername()));
+            
             return ResponseEntity.ok(seller);
         }
         return ResponseEntity.status(404).body("Seller not found");

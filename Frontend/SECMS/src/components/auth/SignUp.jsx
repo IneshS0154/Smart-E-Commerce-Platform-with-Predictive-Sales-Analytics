@@ -16,25 +16,67 @@ function SignUp() {
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const [fieldErrors, setFieldErrors] = useState({});
     const navigate = useNavigate();
+
+    const validateForm = () => {
+        const errors = {};
+        
+        if (!firstName.trim()) {
+            errors.firstName = 'First name is required';
+        } else if (!/^[A-Za-z\s]+$/.test(firstName)) {
+            errors.firstName = 'First name can only contain letters';
+        }
+
+        if (!lastName.trim()) {
+            errors.lastName = 'Last name is required';
+        } else if (!/^[A-Za-z\s]+$/.test(lastName)) {
+            errors.lastName = 'Last name can only contain letters';
+        }
+
+        if (username.length < 3) {
+            errors.username = 'Username must be at least 3 characters';
+        } else if (!/^[A-Za-z0-9_]+$/.test(username)) {
+            errors.username = 'Username can only contain letters, numbers, and underscores';
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!email.trim()) {
+            errors.email = 'Email is required';
+        } else if (!emailRegex.test(email)) {
+            errors.email = 'Please enter a valid email address';
+        }
+
+        if (phoneNumber && !/^[\d\+\-\s\(\)]+$/.test(phoneNumber)) {
+            errors.phoneNumber = 'Please enter a valid phone number';
+        } else if (phoneNumber && phoneNumber.replace(/\D/g, '').length < 9) {
+            errors.phoneNumber = 'Phone number must have at least 9 digits';
+        }
+
+        if (!password) {
+            errors.password = 'Password is required';
+        } else if (password.length < 6) {
+            errors.password = 'Password must be at least 6 characters';
+        } else if (!/(?=.*[A-Za-z])(?=.*\d)/.test(password)) {
+            errors.password = 'Password must contain at least one letter and one number';
+        }
+
+        if (!agreeTerms) {
+            errors.agreeTerms = 'You must agree to the Terms & Conditions';
+        }
+
+        return errors;
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
         setSuccess('');
+        setFieldErrors({});
 
-        if (!agreeTerms) {
-            setError('You must agree to the Terms & Conditions');
-            return;
-        }
-
-        if (password.length < 6) {
-            setError('Password must be at least 6 characters');
-            return;
-        }
-
-        if (username.length < 3) {
-            setError('Username must be at least 3 characters');
+        const errors = validateForm();
+        if (Object.keys(errors).length > 0) {
+            setFieldErrors(errors);
             return;
         }
 
@@ -99,8 +141,9 @@ function SignUp() {
                                     value={firstName}
                                     onChange={(e) => setFirstName(e.target.value)}
                                     placeholder="First name"
-                                    required
+                                    style={fieldErrors.firstName ? { borderColor: '#dc2626' } : {}}
                                 />
+                                {fieldErrors.firstName && <span style={{ color: '#dc2626', fontSize: '12px', marginTop: '4px', display: 'block' }}>{fieldErrors.firstName}</span>}
                             </div>
 
                             <div className="form-group form-group-half">
@@ -111,8 +154,9 @@ function SignUp() {
                                     value={lastName}
                                     onChange={(e) => setLastName(e.target.value)}
                                     placeholder="Last name"
-                                    required
+                                    style={fieldErrors.lastName ? { borderColor: '#dc2626' } : {}}
                                 />
+                                {fieldErrors.lastName && <span style={{ color: '#dc2626', fontSize: '12px', marginTop: '4px', display: 'block' }}>{fieldErrors.lastName}</span>}
                             </div>
                         </div>
 
@@ -123,9 +167,10 @@ function SignUp() {
                                 id="username"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
-                                placeholder="Choose a username (min 3 characters)"
-                                required
+                                placeholder="Choose a username"
+                                style={fieldErrors.username ? { borderColor: '#dc2626' } : {}}
                             />
+                            {fieldErrors.username && <span style={{ color: '#dc2626', fontSize: '12px', marginTop: '4px', display: 'block' }}>{fieldErrors.username}</span>}
                         </div>
 
                         <div className="form-group">
@@ -136,8 +181,9 @@ function SignUp() {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 placeholder="Enter your email"
-                                required
+                                style={fieldErrors.email ? { borderColor: '#dc2626' } : {}}
                             />
+                            {fieldErrors.email && <span style={{ color: '#dc2626', fontSize: '12px', marginTop: '4px', display: 'block' }}>{fieldErrors.email}</span>}
                         </div>
 
                         <div className="form-group">
@@ -148,7 +194,9 @@ function SignUp() {
                                 value={phoneNumber}
                                 onChange={(e) => setPhoneNumber(e.target.value)}
                                 placeholder="Enter your phone number"
+                                style={fieldErrors.phoneNumber ? { borderColor: '#dc2626' } : {}}
                             />
+                            {fieldErrors.phoneNumber && <span style={{ color: '#dc2626', fontSize: '12px', marginTop: '4px', display: 'block' }}>{fieldErrors.phoneNumber}</span>}
                         </div>
 
                         <div className="form-group">
@@ -170,8 +218,9 @@ function SignUp() {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 placeholder="Create a password (min 6 characters)"
-                                required
+                                style={fieldErrors.password ? { borderColor: '#dc2626' } : {}}
                             />
+                            {fieldErrors.password && <span style={{ color: '#dc2626', fontSize: '12px', marginTop: '4px', display: 'block' }}>{fieldErrors.password}</span>}
                         </div>
 
                         <div className="form-group checkbox">
@@ -180,9 +229,9 @@ function SignUp() {
                                 id="agreeTerms"
                                 checked={agreeTerms}
                                 onChange={(e) => setAgreeTerms(e.target.checked)}
-                                required
                             />
-                            <label htmlFor="agreeTerms" class="agreeTerms">I agree to the Terms & Conditions</label>
+                            <label htmlFor="agreeTerms" className="agreeTerms" style={fieldErrors.agreeTerms ? { color: '#dc2626' } : {}}>I agree to the Terms & Conditions</label>
+                            {fieldErrors.agreeTerms && <span style={{ color: '#dc2626', fontSize: '12px', marginTop: '4px', display: 'block', width: '100%' }}>{fieldErrors.agreeTerms}</span>}
                         </div>
 
                         <button type="submit" className="auth-button" disabled={submitting}>
