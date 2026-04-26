@@ -6,12 +6,8 @@ import {
     ArrowLeft, ShoppingBag, ChevronLeft
 } from 'lucide-react';
 import './Auth.css';
-<<<<<<< Updated upstream
-import SignupImage from '../../assets/images/login_signup/signup.png';
-=======
 import DarkVeil from '../ui/DarkVeil';
 import SignupImage from '../../assets/images/login_signup/Signup.png';
->>>>>>> Stashed changes
 
 function SignUp() {
     const [firstName, setFirstName] = useState('');

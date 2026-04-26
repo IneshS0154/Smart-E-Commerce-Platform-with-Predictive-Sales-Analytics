@@ -6,12 +6,8 @@ import {
     ShoppingBag, Lock, ChevronLeft
 } from 'lucide-react';
 import './Auth.css';
-<<<<<<< Updated upstream
-import LoginImage from '../../assets/images/login_signup/login.png';
-=======
 import DarkVeil from '../ui/DarkVeil';
 import LoginImage from '../../assets/images/login_signup/Login.png';
->>>>>>> Stashed changes
 
 const API_BASE = 'http://localhost:8080/api';
 
