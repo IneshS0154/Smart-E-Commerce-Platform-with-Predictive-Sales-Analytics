@@ -1,0 +1,35 @@
+.parallax {
+  position: relative;
+  overflow: hidden;
+  margin: 40px 0;
+}
+
+.scroller {
+  display: flex;
+  white-space: nowrap;
+  text-align: center;
+  font-family: 'Grift', sans-serif;
+  font-size: 2.25rem;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: #1a1a1a;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.05));
+}
+
+.scroller span {
+  flex-shrink: 0;
+}
+
+@media (min-width: 768px) {
+  .scroller {
+    font-size: 6rem;
+    line-height: 1;
+  }
+}
+
+/* Custom class for the vault aesthetic */
+.custom-scroll-text {
+  color: #1a1a1a;
+  opacity: 0.9;
+}

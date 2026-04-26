@@ -1,8 +1,13 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { createPortal } from 'react-dom';
+import { 
+  Search, Plus, Eye, Edit3, Trash2, X, 
+  ChevronRight, ChevronDown, Package, Layers,
+  ExternalLink, UploadCloud, Check, AlertCircle,
+  Users, Palette, AlignLeft
+} from 'lucide-react';
 import './SupplierProducts.css';
 
-// ── Constants ────────────────────────────────────────────────────
 const CATEGORIES = [
   { key: 'CASUAL_WEAR',        label: 'Casual Wear'          },
   { key: 'FORMAL_COLLECTION',  label: 'Formal Collection'    },
@@ -11,68 +16,63 @@ const CATEGORIES = [
   { key: 'PARTY_EVENING_WEAR', label: 'Party & Evening Wear' },
 ];
 const GENDERS = ['MALE', 'FEMALE'];
-
 const fmtCat    = s => s.replace(/_/g, ' ');
 const fmtGender = g => g === 'MALE' ? 'Men' : 'Women';
 
-// ── Category table (single gender, single category) ──────────────
+// ── Category Table Component ─────────────────────────────────────
 function CategoryTable({ category, products, onView, onEdit, onDelete }) {
-  const [open, setOpen] = useState(true);
-
+  const [isOpen, setIsOpen] = useState(true);
   if (products.length === 0) return null;
 
   return (
-    <div className="sp-cat">
-      <button className="sp-cat__header" onClick={() => setOpen(o => !o)}>
-        <div className="sp-cat__header-left">
-          <span className={`sp-cat__chevron ${open ? 'sp-cat__chevron--open' : ''}`}>▸</span>
-          <h3 className="sp-cat__title">{category.label}</h3>
-          <span className="sp-cat__badge">{products.length}</span>
+    <div className="sp-section">
+      <button className="sp-section-header" onClick={() => setIsOpen(!isOpen)}>
+        <div className="sp-section-info">
+          {isOpen ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
+          <h3 className="sp-section-title">{category.label}</h3>
+          <span className="sp-section-count">{products.length} Items</span>
         </div>
       </button>
 
-      <div className={`sp-cat__body-wrap ${open ? 'sp-cat__body-wrap--open' : ''}`}>
-        <div className="sp-cat__body-inner">
+      {isOpen && (
+        <div className="sp-table-wrapper">
           <table className="sp-table">
             <thead>
               <tr>
-                <th>#</th>
-                <th>Product Name</th>
+                <th style={{ width: '60px' }}>ID</th>
+                <th>Product</th>
                 <th>Colors</th>
-                <th>Added</th>
-                <th>Actions</th>
+                <th>Created</th>
+                <th style={{ textAlign: 'right' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {products.map((product, idx) => (
-                <tr key={product.id}>
-                  <td className="sp-table__num">{idx + 1}</td>
-                  <td className="sp-table__name">{product.productName}</td>
+              {products.map((p, idx) => (
+                <tr key={p.id}>
+                  <td className="sp-mono">#{(idx + 1).toString().padStart(2, '0')}</td>
                   <td>
-                    {(product.availableColors?.length || product.colors?.length)
-                      ? <div className="sp-color-pills">
-                          {(product.availableColors || product.colors).slice(0,4).map((c, i) => (
-                            <span key={i} className="sp-color-pill">{c}</span>
-                          ))}
-                          {(product.availableColors || product.colors).length > 4 && (
-                            <span className="sp-color-pill sp-color-pill--more">
-                              +{(product.availableColors || product.colors).length - 4}
-                            </span>
-                          )}
-                        </div>
-                      : <span className="sp-table__muted">—</span>
-                    }
-                  </td>
-                  <td className="sp-table__muted sp-table__date">
-                    {product.createdAt
-                      ? new Date(product.createdAt).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'2-digit' })
-                      : '—'}
+                    <div className="sp-name-cell">
+                      <span className="sp-pname">{p.productName}</span>
+                    </div>
                   </td>
                   <td>
-                    <div className="sp-table__actions">
-                      <button className="sp-act sp-act--view"   onClick={() => onView(product)}>View</button>
-                      <button className="sp-act sp-act--edit"   onClick={() => onEdit(product)}>Edit</button>
-                      <button className="sp-act sp-act--delete" onClick={() => onDelete(product.id)}>Delete</button>
+                    <div className="sp-color-list">
+                      {(p.availableColors || p.colors || []).slice(0, 3).map((c, i) => (
+                        <span key={i} className="sp-color-tag">{c}</span>
+                      ))}
+                      {(p.availableColors || p.colors || []).length > 3 && (
+                        <span className="sp-color-more">+{(p.availableColors || p.colors || []).length - 3}</span>
+                      )}
+                    </div>
+                  </td>
+                  <td className="sp-date">
+                    {p.createdAt ? new Date(p.createdAt).toLocaleDateString('en-GB') : '—'}
+                  </td>
+                  <td>
+                    <div className="sp-actions">
+                      <button className="sp-icon-btn" onClick={() => onView(p)} title="View Detail"><Eye size={16} /></button>
+                      <button className="sp-icon-btn" onClick={() => onEdit(p)} title="Edit"><Edit3 size={16} /></button>
+                      <button className="sp-icon-btn sp-icon-btn--red" onClick={() => onDelete(p.id)} title="Delete"><Trash2 size={16} /></button>
                     </div>
                   </td>
                 </tr>
@@ -80,161 +80,86 @@ function CategoryTable({ category, products, onView, onEdit, onDelete }) {
             </tbody>
           </table>
         </div>
-      </div>
+      )}
     </div>
   );
 }
 
-// ── View Modal (2-column: slideshow + info) ─────────────────────
+// ── View Modal ──────────────────────────────────────────────────
 function ViewModal({ product, onClose }) {
-  const [imgIdx, setImgIdx] = useState(0);
-  const touchStartX = useRef(null);
+  // Get all unique images (main + additionals)
+  const images = useMemo(() => {
+    const all = [product.mainImagePath, ...(product.images || []).map(img => img.imagePath)].filter(Boolean);
+    return [...new Set(all)];
+  }, [product]);
 
-  // Collect all available images: main + additional (ordered by imageOrder)
-  const images = [
-    product.mainImagePath,
-    ...(product.images || []).map(img => img.imagePath),
-  ].filter(Boolean);
-
-  const prev = () => setImgIdx(i => (i - 1 + images.length) % images.length);
-  const next = () => setImgIdx(i => (i + 1) % images.length);
-
-  // Keyboard: ← → navigate, Esc closes
-  useEffect(() => {
-    const handleKey = (e) => {
-      if (e.key === 'ArrowLeft')  setImgIdx(i => (i - 1 + images.length) % images.length);
-      if (e.key === 'ArrowRight') setImgIdx(i => (i + 1) % images.length);
-      if (e.key === 'Escape')     onClose();
-    };
-    window.addEventListener('keydown', handleKey);
-    return () => window.removeEventListener('keydown', handleKey);
-  }, [images.length, onClose]);
-
-  // Touch swipe: drag > 45px horizontally triggers prev/next
-  const handleTouchStart = (e) => { touchStartX.current = e.touches[0].clientX; };
-  const handleTouchEnd   = (e) => {
-    if (touchStartX.current === null) return;
-    const diff = touchStartX.current - e.changedTouches[0].clientX;
-    if (Math.abs(diff) > 45) diff > 0 ? next() : prev();
-    touchStartX.current = null;
-  };
-
-  const fmtLabel = s => s.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-  const colors   = product.availableColors || product.colors || [];
+  const [activeImg, setActiveImg] = useState(0);
 
   return createPortal(
-    <div className="sp-modal-overlay" onClick={onClose}>
-      <div className="sp-view" onClick={e => e.stopPropagation()}>
-
-        {/* ── Left: Image gallery ── */}
-        <div className="sp-view__gallery">
-          <div
-            className="sp-view__img-wrap"
-            onTouchStart={handleTouchStart}
-            onTouchEnd={handleTouchEnd}
-          >
-            {images.length > 0 ? (
-              <img
-                key={imgIdx}
-                src={images[imgIdx]}
-                alt={`${product.productName} — photo ${imgIdx + 1}`}
-                className="sp-view__img"
-              />
-            ) : (
-              <div className="sp-view__no-img">No image available</div>
-            )}
-
-            {/* Navigation arrows */}
-            {images.length > 1 && (
-              <>
-                <button className="sp-view__arrow sp-view__arrow--prev" onClick={e => { e.stopPropagation(); prev(); }}>&#8249;</button>
-                <button className="sp-view__arrow sp-view__arrow--next" onClick={e => { e.stopPropagation(); next(); }}>&#8250;</button>
-              </>
-            )}
-
-            {/* Counter badge */}
-            {images.length > 1 && (
-              <span className="sp-view__counter">{imgIdx + 1} / {images.length}</span>
-            )}
+    <div className="sp-overlay" onClick={onClose}>
+      <div className="sp-modal sp-modal--view" onClick={e => e.stopPropagation()}>
+        <div className="sp-view-grid">
+          <div className="sp-view-media">
+             <div className="sp-view-main-img">
+                {images[activeImg] ? (
+                  <img src={images[activeImg]} alt="Product" className="sp-fade-in" key={activeImg} />
+                ) : (
+                  <div className="sp-no-img">No Image Available</div>
+                )}
+             </div>
+             {images.length > 1 && (
+               <div className="sp-view-thumbs">
+                  {images.map((img, i) => (
+                    <button 
+                      key={i} 
+                      className={`sp-view-thumb ${i === activeImg ? 'active' : ''}`} 
+                      onClick={() => setActiveImg(i)}
+                    >
+                      <img src={img} alt="" />
+                    </button>
+                  ))}
+               </div>
+             )}
           </div>
+          <div className="sp-view-content">
+            <header className="sp-view-header">
+              <h2 className="sp-view-title">{product.productName}</h2>
+              <button className="sp-close-btn" onClick={onClose}><X size={20} /></button>
+            </header>
+            
+            <div className="sp-view-body">
+              <div className="sp-view-meta">
+                <div className="sp-view-meta-item">
+                  <span className="label">Category</span>
+                  <span className="value">{fmtCat(product.category)}</span>
+                </div>
+                <div className="sp-view-meta-item">
+                  <span className="label">Gender</span>
+                  <span className="value">{fmtGender(product.gender)}</span>
+                </div>
+              </div>
 
-          {/* Thumbnail strip */}
-          {images.length > 1 && (
-            <div className="sp-view__thumbs">
-              {images.map((src, i) => (
-                <button
-                  key={i}
-                  className={`sp-view__thumb ${i === imgIdx ? 'sp-view__thumb--active' : ''}`}
-                  onClick={() => setImgIdx(i)}
-                >
-                  <img src={src} alt={`thumb ${i + 1}`} />
-                </button>
-              ))}
-            </div>
-          )}
+              <div className="sp-view-section">
+                <h4 className="section-title">Description</h4>
+                <p className="section-text">{product.description || "No description provided."}</p>
+              </div>
 
-          {/* Swipe hint (only on touch devices, fades after first swipe) */}
-          {images.length > 1 && (
-            <p className="sp-view__swipe-hint">Swipe or use ← → keys</p>
-          )}
-        </div>
-
-        {/* ── Right: Info panel ── */}
-        <div className="sp-view__info">
-          <div className="sp-view__info-top">
-            <h2 className="sp-view__name">{product.productName}</h2>
-            <button className="sp-view__close" onClick={onClose}>✕</button>
-          </div>
-
-          <div className="sp-view__meta-grid">
-            <div className="sp-view__meta-item">
-              <span className="sp-view__meta-label">Category</span>
-              <span className="sp-view__meta-value">{fmtLabel(product.category)}</span>
-            </div>
-            <div className="sp-view__meta-item">
-              <span className="sp-view__meta-label">Gender</span>
-              <span className="sp-view__meta-value">{product.gender === 'MALE' ? 'Men' : 'Women'}</span>
-            </div>
-            <div className="sp-view__meta-item">
-              <span className="sp-view__meta-label">Added</span>
-              <span className="sp-view__meta-value">
-                {product.createdAt
-                  ? new Date(product.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
-                  : '—'}
-              </span>
-            </div>
-            <div className="sp-view__meta-item">
-              <span className="sp-view__meta-label">Images</span>
-              <span className="sp-view__meta-value">{images.length} photo{images.length !== 1 ? 's' : ''}</span>
-            </div>
-          </div>
-
-          {colors.length > 0 && (
-            <div className="sp-view__section">
-              <span className="sp-view__meta-label">Available Colors</span>
-              <div className="sp-view__chips">
-                {colors.map((c, i) => (
-                  <span key={i} className="sp-view__chip">{c}</span>
-                ))}
+              <div className="sp-view-section">
+                <h4 className="section-title">Colors</h4>
+                <div className="sp-color-chips">
+                  {(product.availableColors || product.colors || []).map((c, i) => (
+                    <span key={i} className="chip">{c}</span>
+                  ))}
+                </div>
               </div>
             </div>
-          )}
 
-          {product.description && (
-            <div className="sp-view__section">
-              <span className="sp-view__meta-label">Description</span>
-              <p className="sp-view__desc">{product.description}</p>
-            </div>
-          )}
-
-          <div className="sp-view__footer">
-            <button className="sp-btn sp-btn--ghost" onClick={onClose}>Close</button>
-            <button
-              className="sp-btn sp-btn--primary"
-              onClick={() => { onClose(); window.open(`/product/${product.id}`, '_blank'); }}
-            >
-              View Live Page &rarr;
-            </button>
+            <footer className="sp-view-footer">
+              <button className="sp-btn sp-btn--outline" onClick={onClose}>Close</button>
+              <button className="sp-btn sp-btn--primary" onClick={() => window.open(`/product/${product.id}`, '_blank')}>
+                View Live <ExternalLink size={14} />
+              </button>
+            </footer>
           </div>
         </div>
       </div>
@@ -243,36 +168,38 @@ function ViewModal({ product, onClose }) {
   );
 }
 
-// ── Main component ────────────────────────────────────────────────
+// ── Main SupplierProducts ────────────────────────────────────────
 export default function SupplierProducts() {
-  const [seller,       setSeller]       = useState(null);
-  const [products,     setProducts]     = useState([]);
-  const [loading,      setLoading]      = useState(false);
-  const [error,        setError]        = useState('');
-  const [success,      setSuccess]      = useState('');
-  const [search,       setSearch]       = useState('');
+  const [seller, setSeller] = useState(null);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [activeGender, setActiveGender] = useState('MALE');
-
-  // ── Add form ───────────────────────────────────────────────────
-  const [showAddForm, setShowAddForm] = useState(false);
-  const [submitting,  setSubmitting]  = useState(false);
-  const [formData, setFormData] = useState({
-    productName: '', category: 'CASUAL_WEAR', gender: 'MALE', description: '', availableColors: [],
+  const [search, setSearch] = useState('');
+  const [showAdd, setShowAdd] = useState(false);
+  const [viewProduct, setViewProduct] = useState(null);
+  const [editProduct, setEditProduct] = useState(null);
+  
+  const [formData, setFormData] = useState({ 
+    productName: '', 
+    category: 'CASUAL_WEAR', 
+    gender: 'MALE', 
+    description: '', 
+    availableColors: [],
+    additionalImagePaths: [null, null, null]
   });
-  const [mainImageFile,         setMainImageFile]         = useState(null);
-  const [additionalImageFiles,  setAdditionalImageFiles]  = useState([null, null, null]);
-  const [mainPreviewUrl,        setMainPreviewUrl]        = useState('');
-  const [additionalPreviewUrls, setAdditionalPreviewUrls] = useState(['', '', '']);
   const [colorInput, setColorInput] = useState('');
+  const [mainImagePath, setMainImagePath] = useState('');
+  const [previews, setPreviews] = useState({ main: null, subs: [null, null, null] });
+  const [submitting, setSubmitting] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [editing, setEditing] = useState(false);
 
-  // ── View / Edit modals ─────────────────────────────────────────
-  const [viewProduct,    setViewProduct]    = useState(null);
-  const [editProduct,    setEditProduct]    = useState(null);
-  const [editForm,       setEditForm]       = useState({});
-  const [editColorInput, setEditColorInput] = useState('');
-  const [editSaving,     setEditSaving]     = useState(false);
+  useEffect(() => {
+    const isModalOpen = showAdd || editProduct || viewProduct;
+    document.body.style.overflow = isModalOpen ? 'hidden' : 'auto';
+    return () => { document.body.style.overflow = 'auto'; };
+  }, [showAdd, editProduct, viewProduct]);
 
-  // ── Fetch ──────────────────────────────────────────────────────
   useEffect(() => {
     const stored = localStorage.getItem('seller');
     if (stored) {
@@ -287,367 +214,493 @@ export default function SupplierProducts() {
     try {
       const res = await fetch(`/api/products/supplier/${sellerId}`);
       if (res.ok) setProducts(await res.json());
-      else setError('Failed to fetch products');
-    } catch { setError('Error fetching products'); }
-    finally   { setLoading(false); }
+    } catch (err) { console.error(err); }
+    finally { setLoading(false); }
   };
-
-  // ── Search + grouping (scoped to active gender) ────────────────
-  const byActiveGender = useMemo(
-    () => products.filter(p => p.gender === activeGender),
-    [products, activeGender]
-  );
 
   const filtered = useMemo(() => {
-    const q = search.trim().toLowerCase();
-    if (!q) return byActiveGender;
-    return byActiveGender.filter(p =>
-      p.productName.toLowerCase().includes(q) ||
-      fmtCat(p.category).toLowerCase().includes(q)
-    );
-  }, [byActiveGender, search]);
+    return products.filter(p => {
+      const matchesGender = p.gender === activeGender;
+      const matchesSearch = p.productName.toLowerCase().includes(search.toLowerCase()) || fmtCat(p.category).toLowerCase().includes(search.toLowerCase());
+      return matchesGender && matchesSearch;
+    });
+  }, [products, activeGender, search]);
 
-  const grouped = useMemo(() =>
-    CATEGORIES.reduce((acc, cat) => {
+  const grouped = useMemo(() => {
+    return CATEGORIES.reduce((acc, cat) => {
       acc[cat.key] = filtered.filter(p => p.category === cat.key);
       return acc;
-    }, {}),
-  [filtered]);
+    }, {});
+  }, [filtered]);
 
-  const totalVisible = filtered.length;
-  const menCount     = products.filter(p => p.gender === 'MALE').length;
-  const womenCount   = products.filter(p => p.gender === 'FEMALE').length;
-  const hasAny       = products.length > 0;
-  const hasFiltered  = filtered.length > 0;
-
-  // ── Add form helpers ───────────────────────────────────────────
-  const handleInputChange = e => setFormData(p => ({ ...p, [e.target.name]: e.target.value }));
-  const handleAddColor    = () => { if (colorInput.trim() && formData.availableColors.length < 7) { setFormData(p => ({ ...p, availableColors: [...p.availableColors, colorInput.trim()] })); setColorInput(''); } };
-  const handleRemoveColor = i  => setFormData(p => ({ ...p, availableColors: p.availableColors.filter((_, idx) => idx !== i) }));
-  const handleMainPick    = e  => { const f = e.target.files[0]; if (f) { setMainImageFile(f); setMainPreviewUrl(URL.createObjectURL(f)); } };
-  const handleAddlPick    = (e, i) => { const f = e.target.files[0]; if (!f) return; const nf=[...additionalImageFiles]; nf[i]=f; setAdditionalImageFiles(nf); const nu=[...additionalPreviewUrls]; nu[i]=URL.createObjectURL(f); setAdditionalPreviewUrls(nu); };
-  const resetForm = () => { setFormData({ productName:'', category:'CASUAL_WEAR', gender:'MALE', description:'', availableColors:[] }); setMainImageFile(null); setAdditionalImageFiles([null,null,null]); setMainPreviewUrl(''); setAdditionalPreviewUrls(['','','']); setColorInput(''); setError(''); };
-
-  const uploadFile = async (file) => {
-    const fd = new FormData();
-    fd.append('file', file);
-    fd.append('gender',      formData.gender.toLowerCase());
-    fd.append('category',    formData.category.toLowerCase());
-    fd.append('sellerName',  seller?.storeName || 'seller');
-    fd.append('productName', formData.productName.trim() || 'product');
-    const token = localStorage.getItem('sellerToken');
-    const res = await fetch('/api/upload/image', { method:'POST', headers: token ? { Authorization:`Bearer ${token}` } : {}, body:fd });
-    if (!res.ok) { const e = await res.json().catch(()=>({})); throw new Error(e.error || `Upload failed (${res.status})`); }
-    return (await res.json()).url;
+  const handleDelete = async (id) => {
+    if (!window.confirm("Permanent delete this product?")) return;
+    try {
+      const token = localStorage.getItem('sellerToken');
+      const res = await fetch(`/api/products/${id}`, { method: 'DELETE', headers: token ? { Authorization: `Bearer ${token}` } : {} });
+      if (res.ok) fetchProducts(seller.id);
+    } catch (err) { console.error(err); }
   };
 
-  const handleSubmitProduct = async (e) => {
+  const handleImageUpload = async (e, index = -1) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Create local preview
+    const localUrl = URL.createObjectURL(file);
+    if (index === -1) {
+      setPreviews(prev => ({ ...prev, main: localUrl }));
+    } else {
+      const newSubs = [...previews.subs];
+      newSubs[index] = localUrl;
+      setPreviews(prev => ({ ...prev, subs: newSubs }));
+    }
+
+    setUploading(true);
+    const data = new FormData();
+    data.append('file', file);
+    data.append('gender', formData.gender);
+    data.append('category', formData.category);
+    data.append('sellerName', seller.storeName || seller.username || 'unknown');
+    data.append('productName', formData.productName || 'product');
+
+    try {
+      const res = await fetch('/api/upload/image', { method: 'POST', body: data });
+      if (res.ok) {
+        const result = await res.json();
+        if (index === -1) {
+          setMainImagePath(result.url);
+        } else {
+          const newPaths = [...formData.additionalImagePaths];
+          newPaths[index] = result.url;
+          setFormData({ ...formData, additionalImagePaths: newPaths });
+        }
+      }
+    } catch (err) { console.error('Upload Error:', err); }
+    finally { setUploading(false); }
+  };
+
+  const addColor = () => {
+    if (!colorInput.trim()) return;
+    if (formData.availableColors.includes(colorInput.trim())) return;
+    setFormData({ ...formData, availableColors: [...formData.availableColors, colorInput.trim()] });
+    setColorInput('');
+  };
+
+  const removeColor = (color) => {
+    setFormData({ ...formData, availableColors: formData.availableColors.filter(c => c !== color) });
+  };
+
+  const removeImage = (index = -1) => {
+    if (index === -1) {
+      setMainImagePath('');
+      setPreviews(prev => ({ ...prev, main: null }));
+    } else {
+      const newPaths = [...formData.additionalImagePaths];
+      newPaths[index] = null;
+      setFormData({ ...formData, additionalImagePaths: newPaths });
+      
+      const newPreviews = [...previews.subs];
+      newPreviews[index] = null;
+      setPreviews(prev => ({ ...prev, subs: newPreviews }));
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(''); setSuccess('');
-    if (!formData.productName.trim()) { setError('Product name is required'); return; }
-    if (!mainImageFile)               { setError('Main image is required');    return; }
+    if (!mainImagePath) return alert("Please upload a product image.");
+    
     setSubmitting(true);
     try {
-      const mainImagePath         = await uploadFile(mainImageFile);
-      const additionalImagePaths  = [];
-      for (const f of additionalImageFiles) { if (f) additionalImagePaths.push(await uploadFile(f)); }
       const token = localStorage.getItem('sellerToken');
-      const res = await fetch(`/api/products/add?sellerId=${seller.id}`, {
-        method:'POST',
-        headers:{ 'Content-Type':'application/json', ...(token?{Authorization:`Bearer ${token}`}:{}) },
-        body: JSON.stringify({ ...formData, mainImagePath, additionalImagePaths }),
+      const response = await fetch(`/api/products/add?sellerId=${seller.id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
+        },
+        body: JSON.stringify({
+          ...formData,
+          mainImagePath,
+          additionalImagePaths: formData.additionalImagePaths.filter(p => p !== null)
+        })
       });
-      if (res.ok) {
-        setSuccess('Product added! It will now appear in the customer catalogue.');
-        resetForm(); setShowAddForm(false); fetchProducts(seller.id);
-        setTimeout(() => setSuccess(''), 4000);
+
+      if (response.ok) {
+        setShowAdd(false);
+        setFormData({ 
+          productName: '', 
+          category: 'CASUAL_WEAR', 
+          gender: 'MALE', 
+          description: '', 
+          availableColors: [],
+          additionalImagePaths: [null, null, null]
+        });
+        setMainImagePath('');
+        setPreviews({ main: null, subs: [null, null, null] });
+        fetchProducts(seller.id);
       } else {
-        let msg = 'Failed to add product';
-        try { const d = await res.json(); msg = d.message || msg; } catch { msg = res.status===403 ? 'Unauthorised – please log in again' : `Error (${res.status})`; }
-        setError(msg);
+        const err = await response.json();
+        alert(err.message || "Failed to add product");
       }
-    } catch(err) { setError(err.message || 'Error adding product'); }
-    finally       { setSubmitting(false); }
+    } catch (err) { console.error('Create Error:', err); }
+    finally { setSubmitting(false); }
   };
 
-  const handleDeleteProduct = async (productId) => {
-    if (!window.confirm('Delete this product? This cannot be undone.')) return;
+  const openEdit = (p) => {
+    setEditProduct(p);
+    const additionals = [null, null, null];
+    if (p.additionalImagePaths) {
+      p.additionalImagePaths.forEach((path, i) => { if (i < 3) additionals[i] = path; });
+    }
+    setFormData({
+      productName: p.productName,
+      category: p.category,
+      gender: p.gender,
+      description: p.description,
+      availableColors: p.availableColors || [],
+      additionalImagePaths: additionals
+    });
+    setMainImagePath(p.mainImagePath);
+    setPreviews({ main: p.mainImagePath, subs: additionals });
+  };
+
+  const handleSaveEdit = async (e) => {
+    e.preventDefault();
+    setEditing(true);
     try {
       const token = localStorage.getItem('sellerToken');
-      const res = await fetch(`/api/products/${productId}`, { method:'DELETE', headers: token ? { Authorization:`Bearer ${token}` } : {} });
-      if (res.ok) { setSuccess('Product deleted.'); fetchProducts(seller.id); setTimeout(()=>setSuccess(''),3000); }
-      else          setError('Failed to delete product');
-    } catch { setError('Error deleting product'); }
-  };
-
-  const openEdit = (product) => {
-    setEditProduct(product);
-    setEditForm({ productName: product.productName, category: product.category, gender: product.gender, description: product.description||'', availableColors: [...(product.availableColors||product.colors||[])] });
-    setEditColorInput('');
-  };
-  const closeEdit = () => { setEditProduct(null); setEditForm({}); };
-  const handleEditInputChange  = e => setEditForm(p => ({ ...p, [e.target.name]: e.target.value }));
-  const handleEditAddColor     = () => { if (editColorInput.trim() && editForm.availableColors?.length < 7) { setEditForm(p=>({...p, availableColors:[...p.availableColors, editColorInput.trim()]})); setEditColorInput(''); } };
-  const handleEditRemoveColor  = i  => setEditForm(p=>({...p, availableColors:p.availableColors.filter((_,idx)=>idx!==i)}));
-
-  const handleSaveEdit = async () => {
-    setEditSaving(true); setError('');
-    try {
-      const token = localStorage.getItem('sellerToken');
-      const res = await fetch(`/api/products/${editProduct.id}`, {
-        method:'PUT',
-        headers:{ 'Content-Type':'application/json', ...(token?{Authorization:`Bearer ${token}`}:{}) },
-        body: JSON.stringify(editForm),
+      const response = await fetch(`/api/products/${editProduct.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
+        },
+        body: JSON.stringify({
+          ...formData,
+          mainImagePath,
+          additionalImagePaths: formData.additionalImagePaths.filter(p => p !== null)
+        })
       });
-      if (res.ok) { setSuccess('Product updated!'); closeEdit(); fetchProducts(seller.id); setTimeout(()=>setSuccess(''),3000); }
-      else { const d = await res.json().catch(()=>({})); setError(d.message||'Failed to update product'); }
-    } catch { setError('Error updating product'); }
-    finally   { setEditSaving(false); }
+
+      if (response.ok) {
+        setEditProduct(null);
+        setFormData({ 
+          productName: '', 
+          category: 'CASUAL_WEAR', 
+          gender: 'MALE', 
+          description: '', 
+          availableColors: [],
+          additionalImagePaths: [null, null, null]
+        });
+        setMainImagePath('');
+        setPreviews({ main: null, subs: [null, null, null] });
+        fetchProducts(seller.id);
+      } else {
+        const err = await response.json();
+        alert(err.message || "Failed to update product");
+      }
+    } catch (err) { console.error('Update Error:', err); }
+    finally { setEditing(false); }
   };
 
-  if (!seller) return <div className="sp-loading">Loading…</div>;
-
-  const safeStoreName = (seller?.storeName||'seller').toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,'');
+  if (!seller) return <div className="sp-sync"><div className="loader" /></div>;
 
   return (
-    <div className="sp">
-
-      {/* ── Page header ── */}
-      <div className="sp__header">
+    <div className="sp-container">
+      <header className="sp-header">
         <div>
-          <h2 className="sp__title">Your Products</h2>
-          <p className="sp__count">
-            {products.length} product{products.length !== 1 ? 's' : ''} total
-            &nbsp;·&nbsp;
-            <span className="sp__count--men">{menCount} men's</span>
-            &nbsp;·&nbsp;
-            <span className="sp__count--women">{womenCount} women's</span>
-          </p>
+          <h1 className="sp-title">Product Catalog</h1>
+          <p className="sp-subtitle">Manage your collections and showcase your items</p>
         </div>
-        <button
-          className={`sp-btn ${showAddForm ? 'sp-btn--cancel' : 'sp-btn--primary'}`}
-          onClick={() => { setShowAddForm(!showAddForm); if (showAddForm) resetForm(); }}
-        >
-          {showAddForm ? '✕ Cancel' : '+ Add Product'}
+        <button className="sp-btn sp-btn--primary" onClick={() => setShowAdd(!showAdd)}>
+          {showAdd ? <X size={18} /> : <Plus size={18} />}
+          {showAdd ? 'Cancel' : 'Add New Product'}
+        </button>
+      </header>
+
+      {/* ── Collection Tabs ── */}
+      <div className="sp-tabs">
+        <button className={`sp-tab ${activeGender === 'MALE' ? 'active' : ''}`} onClick={() => setActiveGender('MALE')}>
+          Men's Collection
+          <span className="sp-tab-badge">{products.filter(p => p.gender === 'MALE').length}</span>
+        </button>
+        <button className={`sp-tab ${activeGender === 'FEMALE' ? 'active' : ''}`} onClick={() => setActiveGender('FEMALE')}>
+          Women's Collection
+          <span className="sp-tab-badge">{products.filter(p => p.gender === 'FEMALE').length}</span>
         </button>
       </div>
 
-      {/* ── Alerts ── */}
-      {error   && <div className="sp-alert sp-alert--error">{error}</div>}
-      {success && <div className="sp-alert sp-alert--success">{success}</div>}
-
-      {/* ══ Add Product Form ══ */}
-      {showAddForm && (
-        <form className="sp-form" onSubmit={handleSubmitProduct}>
-          <div className="sp-form__section">
-            <h3 className="sp-form__section-title">Product Details</h3>
-            <div className="sp-form__row">
-              <div className="sp-form__group">
-                <label>Product Name *</label>
-                <input type="text" name="productName" value={formData.productName} onChange={handleInputChange} placeholder="Enter product name" required />
-              </div>
-              <div className="sp-form__group">
-                <label>Gender *</label>
-                <select name="gender" value={formData.gender} onChange={handleInputChange} required>
-                  {GENDERS.map(g => <option key={g} value={g}>{fmtGender(g)}</option>)}
-                </select>
-              </div>
-            </div>
-            <div className="sp-form__row" style={{marginTop:14}}>
-              <div className="sp-form__group">
-                <label>Category *</label>
-                <select name="category" value={formData.category} onChange={handleInputChange} required>
-                  {CATEGORIES.map(c => <option key={c.key} value={c.key}>{c.label}</option>)}
-                </select>
-              </div>
-            </div>
-            <div className="sp-form__group" style={{marginTop:14}}>
-              <label>Description</label>
-              <textarea name="description" value={formData.description} onChange={handleInputChange} placeholder="Enter product description" rows="3" />
-            </div>
-          </div>
-
-          <div className="sp-form__section">
-            <h3 className="sp-form__section-title">Colors ({formData.availableColors.length}/7)</h3>
-            <div className="sp-color-row">
-              <input type="text" value={colorInput} onChange={e=>setColorInput(e.target.value)} placeholder="e.g. Black, Red, Navy"
-                onKeyDown={e=>e.key==='Enter'&&(e.preventDefault(),handleAddColor())} />
-              <button type="button" className="sp-btn sp-btn--outline" onClick={handleAddColor}>Add</button>
-            </div>
-            <div className="sp-tags">
-              {formData.availableColors.map((c,i) => (
-                <span key={i} className="sp-tag">{c} <button type="button" onClick={()=>handleRemoveColor(i)}>✕</button></span>
-              ))}
-            </div>
-          </div>
-
-          <div className="sp-form__section">
-            <h3 className="sp-form__section-title">Images</h3>
-            <p className="sp-form__hint">
-              Saved to: <code>assets/images/products/{formData.gender.toLowerCase()}/{formData.category.toLowerCase()}/{safeStoreName}/</code>
-            </p>
-            <div className="sp-form__group">
-              <label>Main Display Image *</label>
-              <input type="file" accept="image/*" onChange={handleMainPick} className="sp-file" />
-              {mainPreviewUrl && <img src={mainPreviewUrl} alt="main preview" className="sp-preview" />}
-            </div>
-            <div className="sp-form__group" style={{marginTop:12}}>
-              <label>Additional Images (max 3)</label>
-              {[0,1,2].map(i => (
-                <div key={i} className="sp-addl-upload">
-                  <input type="file" accept="image/*" onChange={e=>handleAddlPick(e,i)} className="sp-file" />
-                  {additionalPreviewUrls[i] && <img src={additionalPreviewUrls[i]} alt={`additional ${i+1}`} className="sp-preview sp-preview--sm" />}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="sp-form__actions">
-            <button type="submit" className="sp-btn sp-btn--primary" disabled={submitting}>
-              {submitting ? 'Saving…' : 'Add Product'}
-            </button>
-            <button type="button" className="sp-btn sp-btn--ghost" onClick={()=>{setShowAddForm(false);resetForm();}} disabled={submitting}>
-              Cancel
-            </button>
-          </div>
-        </form>
-      )}
-
-      {/* ══ Gender tabs ══ */}
-      {hasAny && (
-        <div className="sp-gender-tabs">
-          {[
-            { gender: 'MALE',   label: 'Men',   count: menCount,   mod: 'men'   },
-            { gender: 'FEMALE', label: 'Women', count: womenCount, mod: 'women' },
-          ].map(({ gender, label, count, mod }) => (
-            <button
-              key={gender}
-              className={`sp-gender-tab sp-gender-tab--${mod} ${activeGender === gender ? 'sp-gender-tab--active' : ''}`}
-              onClick={() => { setActiveGender(gender); setSearch(''); }}
-            >
-              <span className={`sp-gender-tab__dot sp-gender-tab__dot--${mod}`} />
-              {label}'s Collection
-              <span className="sp-gender-tab__count">{count}</span>
-            </button>
-          ))}
-        </div>
-      )}
-
-      {/* ══ Search bar ══ */}
-      {hasAny && (
-        <div className="sp-search-bar">
-          <span className="sp-search-bar__icon">⌕</span>
-          <input
-            type="text"
-            className="sp-search-bar__input"
-            placeholder={`Search ${fmtGender(activeGender).toLowerCase()}'s products by name or category…`}
+      {/* ── Control Bar ── */}
+      <div className="sp-controls">
+        <div className="sp-search-wrap">
+          <Search size={18} className="sp-search-icon" />
+          <input 
+            type="text" 
+            placeholder="Search products by name or category..." 
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
-          {search && (
-            <button className="sp-search-bar__clear" onClick={() => setSearch('')}>✕</button>
-          )}
-          {search && (
-            <span className="sp-search-bar__result">
-              {totalVisible} result{totalVisible !== 1 ? 's' : ''}
-            </span>
-          )}
         </div>
+      </div>
+
+      {/* ── Add Form (Simplified Redesign UI) ── */}
+      {showAdd && (
+        <form className="sp-add-form" onSubmit={handleSubmit}>
+           <div className="sp-form-grid">
+              <div className="sp-form-section">
+                 <h4 className="sp-form-label">General Information</h4>
+                 <div className="sp-input-group">
+                    <label>Product Name</label>
+                    <input 
+                      type="text" 
+                      placeholder="e.g. Classic Linen Shirt" 
+                      required 
+                      value={formData.productName}
+                      onChange={e => setFormData({...formData, productName: e.target.value})}
+                    />
+                 </div>
+                 <div className="sp-input-row">
+                    <div className="sp-input-group">
+                       <label>Category</label>
+                       <select 
+                         value={formData.category}
+                         onChange={e => setFormData({...formData, category: e.target.value})}
+                       >
+                          {CATEGORIES.map(c => <option key={c.key} value={c.key}>{c.label}</option>)}
+                       </select>
+                    </div>
+                    <div className="sp-input-group">
+                       <label>Gender</label>
+                       <select value={formData.gender} onChange={e => setFormData({...formData, gender: e.target.value})}>
+                          {GENDERS.map(g => <option key={g} value={g}>{fmtGender(g)}</option>)}
+                       </select>
+                    </div>
+                 </div>
+                 <div className="sp-input-group">
+                    <label>Description</label>
+                    <textarea 
+                      placeholder="Tell your customers more about this product..." 
+                      rows="3" 
+                      value={formData.description}
+                      onChange={e => setFormData({...formData, description: e.target.value})}
+                    />
+                 </div>
+                 <div className="sp-input-group" style={{ marginTop: '10px' }}>
+                    <label>Available Colors</label>
+                    <div className="sp-color-input-wrap">
+                       <input 
+                         type="text" 
+                         placeholder="e.g. Black, White" 
+                         value={colorInput}
+                         onChange={e => setColorInput(e.target.value)}
+                         onKeyPress={e => e.key === 'Enter' && (e.preventDefault(), addColor())}
+                       />
+                       <button type="button" className="sp-btn sp-btn--outline" onClick={addColor}>Add</button>
+                    </div>
+                    <div className="sp-color-chips" style={{ marginTop: '10px' }}>
+                      {formData.availableColors.map(c => (
+                        <span key={c} className="chip">
+                          {c}
+                          <X size={12} onClick={() => removeColor(c)} style={{ cursor: 'pointer', marginLeft: '4px' }} />
+                        </span>
+                      ))}
+                    </div>
+                 </div>
+              </div>
+              <div className="sp-form-section">
+                 <h4 className="sp-form-label">Media & Aesthetics</h4>
+                 <div className="sp-media-grid">
+                    <div className={`sp-upload-area sp-upload-area--main ${previews.main ? 'has-img' : ''}`}>
+                       {previews.main ? (
+                         <>
+                           <img src={previews.main} alt="Preview" className="sp-upload-preview" />
+                           <button type="button" className="sp-remove-img" onClick={() => removeImage(-1)}><X size={14} /></button>
+                         </>
+                       ) : (
+                         <>
+                           <UploadCloud size={24} />
+                           <p>{uploading ? '...' : 'Main Image*'}</p>
+                         </>
+                       )}
+                       <input type="file" hidden id="main-up" onChange={e => handleImageUpload(e, -1)} accept="image/*" />
+                       <label htmlFor="main-up" className="sp-upload-overlay">
+                         {previews.main ? 'Change' : 'Upload'}
+                       </label>
+                    </div>
+
+                    <div className="sp-additional-grid">
+                       {[0, 1, 2].map(idx => (
+                         <div key={idx} className={`sp-upload-area sp-upload-area--sub ${previews.subs[idx] ? 'has-img' : ''}`}>
+                            {previews.subs[idx] ? (
+                              <>
+                                <img src={previews.subs[idx]} alt="" className="sp-upload-preview" />
+                                <button type="button" className="sp-remove-img" onClick={() => removeImage(idx)}><X size={12} /></button>
+                              </>
+                            ) : (
+                              <Plus size={16} />
+                            )}
+                            <input type="file" hidden id={`sub-up-${idx}`} onChange={e => handleImageUpload(e, idx)} accept="image/*" />
+                            <label htmlFor={`sub-up-${idx}`} className="sp-upload-overlay">
+                              {previews.subs[idx] ? 'Edit' : 'Add'}
+                            </label>
+                         </div>
+                       ))}
+                    </div>
+                 </div>
+              </div>
+           </div>
+           <div className="sp-form-footer">
+              <button type="button" className="sp-btn sp-btn--ghost" onClick={() => setShowAdd(false)}>Discard</button>
+              <button type="submit" className="sp-btn sp-btn--primary" disabled={submitting}>
+                {submitting ? 'Saving...' : 'Publish Product'}
+              </button>
+           </div>
+        </form>
       )}
 
-      {/* ══ Category tables ══ */}
-      {loading ? (
-        <p className="sp__empty">Loading products…</p>
-      ) : !hasAny ? (
-        <div className="sp__empty-state">
-          <p className="sp__empty-state__icon">No products yet</p>
-          <p className="sp__empty-state__text">Click "+ Add Product" to add your first product.</p>
-        </div>
-      ) : search && totalVisible === 0 ? (
-        <div className="sp__empty-state">
-          <p className="sp__empty-state__text">No results for "{search}"</p>
-          <p className="sp__empty-state__sub">Try a different search term.</p>
-        </div>
-      ) : !hasFiltered && !search ? (
-        <div className="sp__empty-state">
-          <p className="sp__empty-state__text">No {fmtGender(activeGender)}'s products added yet.</p>
-          <p className="sp__empty-state__sub">
-            Switch to{' '}
-            <button className="sp__empty-state__link" onClick={() => setActiveGender(activeGender === 'MALE' ? 'FEMALE' : 'MALE')}>
-              {activeGender === 'MALE' ? "Women's Collection" : "Men's Collection"}
-            </button>
-            {' '}or click "+ Add Product".
-          </p>
-        </div>
-      ) : (
-        <div className="sp-cats" key={activeGender}>
-          {CATEGORIES.map(cat => (
-            <CategoryTable
+      {/* ── Tables ── */}
+      <div className="sp-sections">
+        {loading ? (
+          <div className="sp-empty">Syncing catalog...</div>
+        ) : filtered.length === 0 ? (
+          <div className="sp-empty">
+            <Package size={48} />
+            <h3>No products found</h3>
+            <p>Your search or category didn't match any items in your collection.</p>
+          </div>
+        ) : (
+          CATEGORIES.map(cat => (
+            <CategoryTable 
               key={cat.key}
               category={cat}
               products={grouped[cat.key] || []}
-              onView={p => setViewProduct(p)}
+              onView={setViewProduct}
               onEdit={openEdit}
-              onDelete={handleDeleteProduct}
+              onDelete={handleDelete}
             />
-          ))}
-        </div>
+          ))
+        )}
+      </div>
+
+      {/* ── Modals (Portal to Body) ── */}
+      {viewProduct && createPortal(
+        <ViewModal product={viewProduct} onClose={() => setViewProduct(null)} />,
+        document.body
       )}
-
-      {/* ══ VIEW Modal ══ */}
-      {viewProduct && <ViewModal key={viewProduct.id} product={viewProduct} onClose={() => setViewProduct(null)} />}
-
-      {/* ══ EDIT Modal — portal so it's always centred in viewport ══ */}
+      
       {editProduct && createPortal(
-        <div className="sp-modal-overlay" onClick={closeEdit}>
-          <div className="sp-modal" onClick={e => e.stopPropagation()}>
-            <div className="sp-modal__header">
-              <h3 className="sp-modal__title">Edit Product</h3>
-              <button className="sp-modal__close" onClick={closeEdit}>✕</button>
-            </div>
-            <div className="sp-modal__body">
-              <div className="sp-form__row">
-                <div className="sp-form__group">
-                  <label>Product Name *</label>
-                  <input type="text" name="productName" value={editForm.productName} onChange={handleEditInputChange} />
-                </div>
-                <div className="sp-form__group">
-                  <label>Gender</label>
-                  <select name="gender" value={editForm.gender} onChange={handleEditInputChange}>
-                    {GENDERS.map(g => <option key={g} value={g}>{fmtGender(g)}</option>)}
-                  </select>
+        <div className="sp-overlay" onClick={() => setEditProduct(null)}>
+          <div className="sp-modal sp-modal--edit" onClick={e => e.stopPropagation()}>
+            <header className="sp-modal-header">
+              <h3 className="sp-modal-title">Edit Product Details</h3>
+              <button className="sp-close-btn" onClick={() => setEditProduct(null)}><X size={20} /></button>
+            </header>
+            <form onSubmit={handleSaveEdit}>
+              <div className="sp-modal-body">
+                <div className="sp-form-grid">
+                  <div className="sp-form-section">
+                    <h4 className="sp-form-label">Product Identity</h4>
+                    <div className="sp-input-group">
+                      <label>Product Name</label>
+                      <input 
+                        value={formData.productName} 
+                        onChange={e => setFormData({...formData, productName: e.target.value})} 
+                        required 
+                      />
+                    </div>
+                    <div className="sp-input-row">
+                      <div className="sp-input-group">
+                        <label>Category</label>
+                        <select 
+                          value={formData.category} 
+                          onChange={e => setFormData({...formData, category: e.target.value})}
+                        >
+                          {CATEGORIES.map(c => <option key={c.key} value={c.key}>{c.label}</option>)}
+                        </select>
+                      </div>
+                      <div className="sp-input-group">
+                        <label>Gender</label>
+                        <select 
+                          value={formData.gender} 
+                          onChange={e => setFormData({...formData, gender: e.target.value})}
+                        >
+                          {GENDERS.map(g => <option key={g} value={g}>{fmtGender(g)}</option>)}
+                        </select>
+                      </div>
+                    </div>
+                    <div className="sp-input-group">
+                      <label>Description</label>
+                      <textarea 
+                        value={formData.description || ''} 
+                        onChange={e => setFormData({...formData, description: e.target.value})} 
+                        rows="4"
+                      />
+                    </div>
+                    <div className="sp-input-group" style={{ marginTop: '10px' }}>
+                      <label>Colors</label>
+                      <div className="sp-color-input-wrap">
+                         <input 
+                           type="text" 
+                           placeholder="Add color" 
+                           value={colorInput}
+                           onChange={e => setColorInput(e.target.value)}
+                           onKeyPress={e => e.key === 'Enter' && (e.preventDefault(), addColor())}
+                         />
+                         <button type="button" className="sp-btn sp-btn--outline" onClick={addColor}>Add</button>
+                      </div>
+                      <div className="sp-color-chips" style={{ marginTop: '10px' }}>
+                        {formData.availableColors.map(c => (
+                          <span key={c} className="chip">
+                            {c}
+                            <X size={12} onClick={() => removeColor(c)} style={{ cursor: 'pointer', marginLeft: '4px' }} />
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="sp-form-section">
+                    <h4 className="sp-form-label">Visuals & Meta</h4>
+                    <div className="sp-media-grid" style={{ marginBottom: '20px' }}>
+                      <div className={`sp-upload-area sp-upload-area--main ${previews.main ? 'has-img' : ''}`}>
+                        {previews.main ? (
+                          <>
+                            <img src={previews.main} alt="" className="sp-upload-preview" />
+                            <button type="button" className="sp-remove-img" onClick={() => removeImage(-1)}><X size={14} /></button>
+                          </>
+                        ) : (
+                          <UploadCloud size={24} />
+                        )}
+                        <input type="file" hidden id="edit-main" onChange={e => handleImageUpload(e, -1)} accept="image/*" />
+                        <label htmlFor="edit-main" className="sp-upload-overlay">Main</label>
+                      </div>
+                      <div className="sp-additional-grid">
+                        {[0, 1, 2].map(idx => (
+                          <div key={idx} className={`sp-upload-area sp-upload-area--sub ${previews.subs[idx] ? 'has-img' : ''}`}>
+                            {previews.subs[idx] ? (
+                              <>
+                                <img src={previews.subs[idx]} alt="" className="sp-upload-preview" />
+                                <button type="button" className="sp-remove-img" onClick={() => removeImage(idx)}><X size={12} /></button>
+                              </>
+                            ) : (
+                              <Plus size={16} />
+                            )}
+                            <input type="file" hidden id={`edit-sub-${idx}`} onChange={e => handleImageUpload(e, idx)} accept="image/*" />
+                            <label htmlFor={`edit-sub-${idx}`} className="sp-upload-overlay">+{idx+1}</label>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div className="sp-form__group" style={{marginTop:16}}>
-                <label>Category</label>
-                <select name="category" value={editForm.category} onChange={handleEditInputChange}>
-                  {CATEGORIES.map(c => <option key={c.key} value={c.key}>{c.label}</option>)}
-                </select>
-              </div>
-              <div className="sp-form__group" style={{marginTop:16}}>
-                <label>Description</label>
-                <textarea name="description" value={editForm.description} onChange={handleEditInputChange} rows="3" />
-              </div>
-              <div className="sp-form__group" style={{marginTop:16}}>
-                <label>Colors ({editForm.availableColors?.length||0}/7)</label>
-                <div className="sp-color-row">
-                  <input type="text" value={editColorInput} onChange={e=>setEditColorInput(e.target.value)}
-                    placeholder="Add a color" onKeyDown={e=>e.key==='Enter'&&(e.preventDefault(),handleEditAddColor())} />
-                  <button type="button" className="sp-btn sp-btn--outline" onClick={handleEditAddColor}>Add</button>
-                </div>
-                <div className="sp-tags" style={{marginTop:8}}>
-                  {editForm.availableColors?.map((c,i) => (
-                    <span key={i} className="sp-tag">{c} <button type="button" onClick={()=>handleEditRemoveColor(i)}>✕</button></span>
-                  ))}
-                </div>
-              </div>
-            </div>
-            <div className="sp-modal__footer">
-              <button className="sp-btn sp-btn--ghost" onClick={closeEdit} disabled={editSaving}>Cancel</button>
-              <button className="sp-btn sp-btn--primary" onClick={handleSaveEdit} disabled={editSaving}>
-                {editSaving ? 'Saving…' : 'Save Changes'}
-              </button>
-            </div>
+              <footer className="sp-modal-footer">
+                <button type="button" className="sp-btn sp-btn--ghost" onClick={() => setEditProduct(null)}>Discard Changes</button>
+                <button type="submit" className="sp-btn sp-btn--primary" disabled={editing}>
+                  {editing ? 'Syncing...' : 'Save Changes'}
+                </button>
+              </footer>
+            </form>
           </div>
         </div>,
         document.body
@@ -655,3 +708,4 @@ export default function SupplierProducts() {
     </div>
   );
 }
+

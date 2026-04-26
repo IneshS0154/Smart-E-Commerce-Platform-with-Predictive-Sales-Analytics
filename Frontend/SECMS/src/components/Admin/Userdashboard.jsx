@@ -1,64 +1,145 @@
 import { useState, useEffect } from 'react';
+import AdminSidebar from "./AdminSidebar";
 import { useNavigate } from 'react-router-dom';
 import customerAPI from '../../api/customerAPI';
+import authService from '../../api/authService';
+import { 
+    Search as SearchIcon, Plus,
+    Eye, Edit2, UserMinus, Trash2, X,
+    CheckCircle, User, Mail, Phone, MapPin, 
+    ChevronDown, ShieldCheck, AlertCircle
+} from 'lucide-react';
+import { useToast } from '../../context/ToastContext';
+import ConfirmModal from '../common/ConfirmModal';
 import './Userdashboard.css';
+import DarkVeil from '../ui/DarkVeil';
 
-export default function Userdashboard({ activeNav: activeNavProp, onNavChange }) {
+// ── MOVE COMPONENTS OUTSIDE TO PREVENT RE-RENDER FLICKER ──
+
+const ModalWrapper = ({ children, title, onClose, footer }) => (
+    <div className="vault-modal-overlay" onClick={onClose}>
+        <div className="vault-modal-card" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+                <div>
+                    <h2 className="modal-title">{title}</h2>
+                    <div className="modal-title-line"></div>
+                </div>
+                <button className="modal-close" onClick={onClose}><X size={20} /></button>
+            </div>
+            <div className="modal-body">
+                {children}
+            </div>
+            {footer && <div className="modal-footer">{footer}</div>}
+        </div>
+    </div>
+);
+
+const ViewUserModal = ({ user, onClose }) => {
+    if (!user) return null;
+    return (
+        <ModalWrapper title="User Profile" onClose={onClose}>
+            <div className="profile-view-grid">
+                <div className="profile-avatar-large">
+                    {user.firstName?.[0]}{user.lastName?.[0]}
+                </div>
+                <div className="profile-main-info">
+                    <h3>{user.firstName} {user.lastName}</h3>
+                    <p>@{user.username}</p>
+                    <span className={`status-badge ${user.deactivated ? 'off' : 'on'}`}>
+                        {user.deactivated ? 'Suspended' : 'Verified Partner'}
+                    </span>
+                </div>
+            </div>
+            
+            <div className="profile-details-section">
+                <div className="detail-item">
+                    <Mail size={16} />
+                    <div>
+                        <label>Email Address</label>
+                        <p>{user.email}</p>
+                    </div>
+                </div>
+                <div className="detail-item">
+                    <Phone size={16} />
+                    <div>
+                        <label>Phone Number</label>
+                        <p>{user.phoneNumber || 'Not provided'}</p>
+                    </div>
+                </div>
+                <div className="detail-item">
+                    <MapPin size={16} />
+                    <div>
+                        <label>Region</label>
+                        <p>Anywear Global</p>
+                    </div>
+                </div>
+            </div>
+        </ModalWrapper>
+    );
+};
+
+const UserFormFields = ({ data, setData }) => (
+    <div className="form-grid-2">
+        <div className="modal-form-group">
+            <label className="modal-label">First Name</label>
+            <input type="text" className="modal-input" value={data.firstName || ''} onChange={e => setData({...data, firstName: e.target.value})} required />
+        </div>
+        <div className="modal-form-group">
+            <label className="modal-label">Last Name</label>
+            <input type="text" className="modal-input" value={data.lastName || ''} onChange={e => setData({...data, lastName: e.target.value})} required />
+        </div>
+        <div className="modal-form-group">
+            <label className="modal-label">Email</label>
+            <input type="email" className="modal-input" value={data.email || ''} onChange={e => setData({...data, email: e.target.value})} required />
+        </div>
+        <div className="modal-form-group">
+            <label className="modal-label">Username</label>
+            <input type="text" className="modal-input" value={data.username || ''} onChange={e => setData({...data, username: e.target.value})} required />
+        </div>
+        <div className="modal-form-group">
+            <label className="modal-label">Phone</label>
+            <input type="text" className="modal-input" value={data.phoneNumber || ''} onChange={e => setData({...data, phoneNumber: e.target.value})} />
+        </div>
+        {!data.id && (
+            <div className="modal-form-group">
+                <label className="modal-label">Temp Password</label>
+                <input type="password" className="modal-input" value={data.password || ''} onChange={e => setData({...data, password: e.target.value})} required />
+            </div>
+        )}
+    </div>
+);
+
+export default function Userdashboard({ activeNav: activeNavProp, onNavChange, showSidebar = true }) {
     const navigate = useNavigate();
+    const toast = useToast();
     const [activeNav, setActiveNav] = useState(activeNavProp ?? 'Users');
     const [search, setSearch] = useState('');
-    const [showModal, setShowModal] = useState(false);
-    const [showUserMenu, setShowUserMenu] = useState(false);
-    const [showViewModal, setShowViewModal] = useState(false);
-    const [showEditModal, setShowEditModal] = useState(false);
-    const [viewUser, setViewUser] = useState(null);
-    const [editUser, setEditUser] = useState(null);
+    const [statusFilter, setStatusFilter] = useState('All Statuses');
+    
+    // UI State
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [newUser, setNewUser] = useState({
-        firstName: '', lastName: '', email: '', password: '',
-        phoneNumber: '', address: '', city: '', postalCode: ''
+    
+    // Modals State
+    const [showAddModal, setShowAddModal] = useState(false);
+    const [showViewModal, setShowViewModal] = useState(false);
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [selectedUser, setSelectedUser] = useState(null);
+    const [pendingDeleteId, setPendingDeleteId] = useState(null);
+
+    // Form State
+    const [userForm, setUserForm] = useState({
+        firstName: '', lastName: '', email: '', 
+        username: '', phoneNumber: '', password: ''
     });
-
-    const admin = JSON.parse(localStorage.getItem('admin') || '{}') || {};
-    const adminUsername = admin?.username || admin?.name || 'Admin';
-
-    const handleLogout = () => {
-        localStorage.removeItem('admin');
-        localStorage.removeItem('seller');
-        localStorage.removeItem('customer');
-        localStorage.removeItem('customerToken');
-        localStorage.removeItem('customerUsername');
-        localStorage.removeItem('rememberSellerLogin');
-        localStorage.removeItem('rememberCustomerLogin');
-        navigate('/');
-    };
 
     const fetchUsers = async () => {
         setLoading(true);
-        setError(null);
         try {
-            const response = await customerAPI.getAllCustomers();
-            const formatted = (Array.isArray(response) ? response : []).map(user => ({
-                id: user.id,
-                firstName: user.firstName,
-                lastName: user.lastName,
-                username: user.username,
-                email: user.email,
-                phoneNumber: user.phoneNumber || 'N/A',
-                address: user.address || 'N/A',
-                status: user.status === 'ACTIVE' ? 'Active' :
-                        user.status === 'DEACTIVATED' ? 'Deactivated' : user.status,
-                role: user.role,
-                date: user.createdAt ? new Date(user.createdAt).toLocaleDateString('en-GB', {
-                    day: '2-digit', month: '2-digit', year: '2-digit'
-                }) : 'N/A',
-            }));
-            setUsers(formatted);
-        } catch (error) {
-            console.error('Error fetching users:', error);
-            setError(error.response?.data?.message || error.message || 'Failed to fetch customers');
+            const data = await customerAPI.getAllCustomers();
+            setUsers(data || []);
+        } catch (err) {
+            console.error('Error fetching users:', err);
         } finally {
             setLoading(false);
         }
@@ -68,325 +149,239 @@ export default function Userdashboard({ activeNav: activeNavProp, onNavChange })
         fetchUsers();
     }, []);
 
-    const handleNavClick = (label) => {
-        setActiveNav(label);
-        if (onNavChange) onNavChange(label);
+    const handleDeleteUser = async () => {
+        if (!pendingDeleteId) return;
+        try {
+            await customerAPI.deleteCustomer(pendingDeleteId);
+            setUsers(prev => prev.filter(u => u.id !== pendingDeleteId));
+            toast.success('User Deleted', 'Account has been permanently removed.');
+        } catch (err) {
+            console.error('Error deleting user:', err);
+            toast.error('Deletion Failed', 'System was unable to wipe the account.');
+        } finally {
+            setPendingDeleteId(null);
+        }
     };
 
-    const filtered = users.filter(u =>
-        (u.firstName + ' ' + u.lastName).toLowerCase().includes(search.toLowerCase()) ||
-        u.email.toLowerCase().includes(search.toLowerCase())
+    const handleToggleStatus = async (user) => {
+        const action = user.deactivated ? 'activate' : 'deactivate';
+        try {
+            if (user.deactivated) {
+                await customerAPI.activateCustomer(user.id);
+                toast.success('Account Restored', 'The user can now access their account.');
+            } else {
+                await customerAPI.deactivateCustomer(user.id);
+                toast.info('Account Suspended', 'The user has been restricted from the platform.');
+            }
+            fetchUsers();
+        } catch (err) {
+            console.error(`Error ${action}ing user:`, err);
+            toast.error('Action Failed', 'Backend synchronization failed.');
+        }
+    };
+
+    const handleAddUser = async (e) => {
+        e.preventDefault();
+        try {
+            await authService.register(userForm);
+            setShowAddModal(false);
+            setUserForm({ firstName: '', lastName: '', email: '', username: '', phoneNumber: '', password: '' });
+            fetchUsers();
+            toast.success('Account Created', 'New user has been successfully registered.');
+        } catch (err) {
+            console.error('Error adding user:', err);
+            toast.error('Registration Failed', 'Email or Username may already be in use.');
+        }
+    };
+
+    const handleEditUser = async (e) => {
+        e.preventDefault();
+        try {
+            await customerAPI.updateCustomer(selectedUser.id, selectedUser);
+            setShowEditModal(false);
+            fetchUsers();
+            toast.success('Profile Updated', 'User records have been synchronized.');
+        } catch (err) {
+            console.error('Error updating user:', err);
+            toast.error('Update Failed', 'Changes could not be saved.');
+        }
+    };
+
+    const filteredUsers = users.filter(user => {
+        const matchesSearch = !search || 
+            `${user.firstName} ${user.lastName} ${user.email} ${user.username}`.toLowerCase().includes(search.toLowerCase());
+        const matchesStatus = statusFilter === 'All Statuses' || 
+            (statusFilter === 'Active' && !user.deactivated) || 
+            (statusFilter === 'Deactivated' && user.deactivated);
+        return matchesSearch && matchesStatus;
+    });
+
+    const handleNavClick = (nav) => {
+        setActiveNav(nav);
+        if (onNavChange) onNavChange(nav);
+    };
+
+    const handleLogout = () => {
+        authService.logout();
+        navigate('/');
+    };
+
+    const renderContent = () => (
+        <div className="admin-vault-content">
+            <div className="vault-header">
+                <div className="vault-header-left">
+                    <h1 className="vault-title-main">Users</h1>
+                    <p className="ov-text-subtitle">Platform-wide customer management and verification.</p>
+                </div>
+                <button className="vault-btn-primary" onClick={() => setShowAddModal(true)}>
+                    <Plus size={18} />
+                    <span>Create Account</span>
+                </button>
+            </div>
+
+            <div className="vault-filters-bar">
+                <div className="vault-search-wrapper">
+                    <SearchIcon size={18} className="vault-search-icon" />
+                    <input 
+                        type="text" 
+                        placeholder="Search by name, email or handle..." 
+                        className="vault-search-input"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                    />
+                </div>
+                
+                <div className="vault-select-wrapper">
+                    <ChevronDown size={14} className="select-arrow" />
+                    <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="vault-select-clean">
+                        <option>All Statuses</option>
+                        <option>Active</option>
+                        <option>Deactivated</option>
+                    </select>
+                </div>
+            </div>
+
+            <div className="vault-table-card">
+                <div className="vault-table-container">
+                    <table className="vault-table">
+                        <thead>
+                            <tr>
+                                <th>USER</th>
+                                <th>CONTACT</th>
+                                <th>JOINED</th>
+                                <th>STATUS</th>
+                                <th style={{ textAlign: 'right' }}>ACTIONS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {loading ? (
+                                <tr><td colSpan="5" className="table-loading">Syncing records...</td></tr>
+                            ) : filteredUsers.length === 0 ? (
+                                <tr><td colSpan="5" className="table-empty">No matching users found</td></tr>
+                            ) : (
+                                filteredUsers.map((user) => (
+                                    <tr key={user.id}>
+                                        <td>
+                                            <div className="vault-user-cell">
+                                                <div className="user-avatar">{user.firstName?.[0]}{user.lastName?.[0]}</div>
+                                                <div className="user-info">
+                                                    <span className="user-name">{user.firstName} {user.lastName}</span>
+                                                    <span className="user-handle">@{user.username}</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div className="vault-contact-cell">
+                                                <span className="email">{user.email}</span>
+                                                <span className="phone">{user.phoneNumber || '--'}</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span className="date-cell">
+                                                {user.createdAt ? new Date(user.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : '--'}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span className={`ov-status-dot ${user.deactivated ? 'ov-status-dot--deactivated' : 'ov-status-dot--active'}`}>
+                                                {user.deactivated ? 'Suspended' : 'Active'}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div className="vault-action-group">
+                                                <button className="vault-action-icon" title="View Details" onClick={() => { setSelectedUser(user); setShowViewModal(true); }}>
+                                                    <Eye size={18} />
+                                                </button>
+                                                <button className="vault-action-icon" title="Edit Profile" onClick={() => { setSelectedUser(user); setShowEditModal(true); }}>
+                                                    <Edit2 size={18} />
+                                                </button>
+                                                <button className="vault-action-icon delete" title="Wipe Account" onClick={() => setPendingDeleteId(user.id)}>
+                                                    <Trash2 size={18} />
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            {/* Modals - Components now outside so they don't remount on state change */}
+            {showViewModal && <ViewUserModal user={selectedUser} onClose={() => setShowViewModal(false)} />}
+            
+            {showAddModal && (
+                <ModalWrapper title="Create New Account" onClose={() => setShowAddModal(false)} footer={
+                    <>
+                        <button className="btn-secondary" onClick={() => setShowAddModal(false)}>Cancel</button>
+                        <button className="btn-primary" onClick={handleAddUser}>Create User</button>
+                    </>
+                }>
+                    <UserFormFields data={userForm} setData={setUserForm} />
+                </ModalWrapper>
+            )}
+
+            {showEditModal && (
+                <ModalWrapper title="Modify Profile" onClose={() => setShowEditModal(false)} footer={
+                    <>
+                        <button className="btn-secondary" onClick={() => setShowEditModal(false)}>Cancel</button>
+                        <button className="btn-primary" onClick={handleEditUser}>Save Changes</button>
+                    </>
+                }>
+                    <UserFormFields data={selectedUser} setData={setSelectedUser} />
+                </ModalWrapper>
+            )}
+
+            <ConfirmModal 
+                isOpen={!!pendingDeleteId}
+                title="Permanent Wiping"
+                message="Are you absolutely sure? This will permanently remove this user and all associated records from the Vault."
+                confirmText="Wipe Account"
+                onConfirm={handleDeleteUser}
+                onCancel={() => setPendingDeleteId(null)}
+            />
+        </div>
     );
 
-    const totalUsers = users.length;
-    const activeUsers = users.filter(u => u.status === 'Active').length;
-    const deactivatedUsers = users.filter(u => u.status === 'Deactivated').length;
-
-    const handleAddUser = async () => {
-        const { firstName, lastName, email, password } = newUser;
-        if (!firstName || !lastName || !email || !password) {
-            alert('Please fill in all required fields (first name, last name, email, password).');
-            return;
-        }
-        try {
-            await customerAPI.getAllCustomers();
-            alert('Customer registration should be done through the customer signup page.');
-            setShowModal(false);
-            setNewUser({ firstName: '', lastName: '', email: '', password: '', phoneNumber: '', address: '', city: '', postalCode: '' });
-        } catch (error) {
-            console.error('Error adding user:', error);
-            alert('Failed to add user');
-        }
-    };
-
-    const handleViewUser = (user) => {
-        setViewUser(user);
-        setShowViewModal(true);
-    };
-
-    const handleEditUser = (user) => {
-        setEditUser({ ...user });
-        setShowEditModal(true);
-    };
-
-    const handleUpdateUser = async () => {
-        if (!editUser) return;
-        try {
-            const updated = await customerAPI.updateCustomer(editUser.id, {
-                firstName: editUser.firstName,
-                lastName: editUser.lastName,
-                email: editUser.email,
-                phoneNumber: editUser.phoneNumber,
-                address: editUser.address,
-                city: editUser.city,
-                postalCode: editUser.postalCode,
-            });
-            setUsers(prev => prev.map(u => u.id === updated.id ? {
-                ...u,
-                firstName: updated.firstName,
-                lastName: updated.lastName,
-                email: updated.email,
-                phoneNumber: updated.phoneNumber || 'N/A',
-                address: updated.address || 'N/A',
-                city: updated.city || 'N/A',
-                postalCode: updated.postalCode || 'N/A',
-            } : u));
-            setShowEditModal(false);
-            setEditUser(null);
-            alert('User updated successfully');
-        } catch (error) {
-            console.error('Error updating user:', error);
-            alert('Failed to update user');
-        }
-    };
-
-    const handleDeactivateUser = async (userId) => {
-        if (!confirm('Are you sure you want to deactivate this user?')) return;
-        try {
-            await customerAPI.deactivateCustomer(userId);
-            setUsers(prev => prev.map(u => u.id === userId ? { ...u, status: 'Deactivated' } : u));
-            alert('User deactivated successfully');
-        } catch (error) {
-            console.error('Error deactivating user:', error);
-            alert('Failed to deactivate user');
-        }
-    };
-
-    const handleActivateUser = async (userId) => {
-        try {
-            await customerAPI.activateCustomer(userId);
-            setUsers(prev => prev.map(u => u.id === userId ? { ...u, status: 'Active' } : u));
-            alert('User activated successfully');
-        } catch (error) {
-            console.error('Error activating user:', error);
-            alert('Failed to activate user');
-        }
-    };
-
-    const handleDeleteUser = async (userId) => {
-        if (!confirm('Are you sure you want to permanently delete this user? This action cannot be undone.')) return;
-        try {
-            await customerAPI.deleteCustomer(userId);
-            setUsers(prev => prev.filter(u => u.id !== userId));
-            alert('User deleted successfully');
-        } catch (error) {
-            console.error('Error deleting user:', error);
-            alert('Failed to delete user');
-        }
-    };
-
-    const navItems = [
-    { label: "Overview" },
-    { label: "Users" },
-    { label: "Suppliers" },
-    { label: "Orders" },
-    { label: "Payments" },
-    { label: "Reviews" },
-];
+    if (!showSidebar) return renderContent();
 
     return (
-        <div className="admin-layout">
-            <aside className="admin-sidebar">
-                <div className="sidebar-brand">
-                    <span className="brand-name" style={{ fontFamily: "'NORD', sans-serif", fontWeight: 700, letterSpacing: '0.12em' }}>ANYWEAR</span>
-                </div>
-                <nav className="sidebar-nav">
-                    {navItems.map(item => (
-                        <button
-                            key={item.label}
-                            className={`nav-item ${activeNav === item.label ? 'nav-item--active' : ''}`}
-                            onClick={() => handleNavClick(item.label)}
-                            style={{ fontFamily: "'Grift', sans-serif" }}
-                        >
-                            <span className="nav-icon">{item.icon}</span>
-                            <span>{item.label}</span>
-                        </button>
-                    ))}
-                </nav>
-            </aside>
-
-            <main className="admin-main">
-                <header className="admin-topbar">
-                    <h1 className="topbar-title">Admin Dashboard</h1>
-                    <div className="topbar-user" style={{ position: 'relative' }}>
-                        <button
-                            className="user-menu-button"
-                            onClick={() => setShowUserMenu(prev => !prev)}
-                            style={{ display: 'flex', alignItems: 'center', gap: '10px', border: 'none', background: 'transparent', cursor: 'pointer', padding: 0 }}
-                        >
-                            <div className="user-avatar">{(adminUsername || 'A')[0].toUpperCase()}</div>
-                            <div className="user-info">
-                                <span className="user-name">{adminUsername}</span>
-                                <span className="user-role">admin</span>
-                            </div>
-                        </button>
-                        {showUserMenu && (
-                            <div className="user-dropdown" style={{ position: 'absolute', right: 0, top: 'calc(100% + 8px)', background: '#fff', boxShadow: '0 10px 25px rgba(0,0,0,0.12)', borderRadius: '8px', zIndex: 20, minWidth: '150px', border: '1px solid #e5e5e5' }}>
-                                <button onClick={handleLogout} style={{ width: '100%', border: 'none', background: 'transparent', padding: '10px 14px', textAlign: 'left', cursor: 'pointer' }}>
-                                    Logout
-                                </button>
-                            </div>
-                        )}
-                    </div>
-                </header>
-
-                <div className="admin-content">
-                    <div className="section-header">
-                        <h2 className="section-title">Customer Management</h2>
-                        <p style={{ color: '#6b7280', fontSize: '14px', marginTop: '4px' }}>
-                            Manage registered customers. New customers register through the signup page.
-                        </p>
-                    </div>
-
-                    <div className="stats-grid">
-                        <div className="stat-card">
-                            <p className="stat-label">Total Customers</p>
-                            <p className="stat-value">{totalUsers}</p>
-                        </div>
-                        <div className="stat-card stat-card--active">
-                            <p className="stat-label stat-label--active">Active Customers</p>
-                            <p className="stat-value">{activeUsers}</p>
-                        </div>
-                        <div className="stat-card" style={{ borderLeft: '4px solid #f59e0b' }}>
-                            <p className="stat-label" style={{ color: '#f59e0b' }}>Deactivated</p>
-                            <p className="stat-value">{deactivatedUsers}</p>
-                        </div>
-                    </div>
-
-                    <div className="table-section">
-                        <h3 className="table-title">Registered Customers</h3>
-                        <div className="table-card">
-                            <div className="table-header">
-                                <div>
-                                    <p className="table-card-title">Customer list</p>
-                                    <p className="table-card-sub">A list of all registered customers</p>
-                                </div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                    <div className="search-box">
-                                        <input
-                                            className="search-input"
-                                            placeholder="Search customers"
-                                            value={search}
-                                            onChange={e => setSearch(e.target.value)}
-                                            style={{ width: '180px' }}
-                                        />
-                                    </div>
-                                    <button onClick={fetchUsers} className="action-btn action-btn-view">Refresh</button>
-                                </div>
-                            </div>
-                            {error && (
-                                <div style={{ padding: '12px', backgroundColor: '#fee2e2', color: '#dc2626', borderRadius: '6px', marginBottom: '10px' }}>
-                                    {error}
-                                </div>
-                            )}
-                            <table className="supplier-table">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Name</th>
-                                        <th>Username</th>
-                                        <th>Email</th>
-                                        <th>Phone</th>
-                                        <th>Address</th>
-                                        <th>Status</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {loading ? (
-                                        <tr><td colSpan="8" style={{ textAlign: 'center', padding: '20px' }}>Loading...</td></tr>
-                                    ) : filtered.length === 0 ? (
-                                        <tr><td colSpan="8" style={{ textAlign: 'center', padding: '20px' }}>No customers found</td></tr>
-                                    ) : (
-                                        filtered.map(u => (
-                                            <tr key={u.id}>
-                                                <td>{u.id}</td>
-                                                <td>{u.firstName} {u.lastName}</td>
-                                                <td>{u.username}</td>
-                                                <td>{u.email}</td>
-                                                <td>{u.phoneNumber}</td>
-                                                <td>{u.address}</td>
-                                                <td>
-                                                    <span className={`status-badge status-badge--${(u.status || '').toLowerCase()}`}>
-                                                        {u.status === 'Active' && '✔ '}
-                                                        {u.status === 'Deactivated' && '⊗ '}
-                                                        {u.status}
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                    <div className="action-group">
-                                                        <button onClick={() => handleViewUser(u)} className="action-btn action-btn-view">View</button>
-                                                        <button onClick={() => handleEditUser(u)} className="action-btn action-btn-edit">Edit</button>
-                                                    </div>
-                                                    <div className="action-group action-group-secondary">
-                                                        {u.status === 'Active' && (
-                                                            <button onClick={() => handleDeactivateUser(u.id)} className="action-btn action-btn-deactivate">Deactivate</button>
-                                                        )}
-                                                        {u.status === 'Deactivated' && (
-                                                            <button onClick={() => handleActivateUser(u.id)} className="action-btn action-btn-activate">Activate</button>
-                                                        )}
-                                                        <button onClick={() => handleDeleteUser(u.id)} className="action-btn action-btn-delete">Delete</button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        ))
-                                    )}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+        <div className="admin-vault-frame">
+            <div className="auth-bg-wrapper">
+                <DarkVeil 
+                    speed={0.6} 
+                    noiseIntensity={0.01} 
+                    scanlineIntensity={0.05} 
+                    warpAmount={0.1}
+                    grayscale={1.0}
+                />
+            </div>
+            <AdminSidebar activeNav={activeNav} setActiveNav={handleNavClick} handleLogout={handleLogout} />
+            <main className="admin-vault-main">
+                <div key={activeNav} className="vault-page-transition">
+                    {renderContent()}
                 </div>
             </main>
-
-            {showViewModal && viewUser && (
-                <div className="modal-overlay" onClick={() => setShowViewModal(false)}>
-                    <div className="modal" onClick={e => e.stopPropagation()}>
-                        <h2 className="modal-title">Customer Details</h2>
-                        <div className="view-grid">
-                            <p><strong>ID:</strong> {viewUser.id}</p>
-                            <p><strong>First Name:</strong> {viewUser.firstName}</p>
-                            <p><strong>Last Name:</strong> {viewUser.lastName}</p>
-                            <p><strong>Username:</strong> {viewUser.username}</p>
-                            <p><strong>Email:</strong> {viewUser.email}</p>
-                            <p><strong>Phone:</strong> {viewUser.phoneNumber}</p>
-                            <p><strong>Address:</strong> {viewUser.address}</p>
-                            <p><strong>Status:</strong> {viewUser.status}</p>
-                            <p><strong>Registered:</strong> {viewUser.date}</p>
-                        </div>
-                        <div className="modal-actions">
-                            <button className="btn-cancel" onClick={() => setShowViewModal(false)}>Close</button>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {showEditModal && editUser && (
-                <div className="modal-overlay" onClick={() => setShowEditModal(false)}>
-                    <div className="modal" onClick={e => e.stopPropagation()}>
-                        <h2 className="modal-title">Edit Customer</h2>
-                        {[
-                            { key: 'firstName', label: 'First Name' },
-                            { key: 'lastName', label: 'Last Name' },
-                            { key: 'email', label: 'Email' },
-                            { key: 'phoneNumber', label: 'Phone Number' },
-                            { key: 'address', label: 'Address' },
-                        ].map(field => (
-                            <div className="modal-field" key={field.key}>
-                                <label className="modal-label">{field.label}</label>
-                                <input
-                                    className="modal-input"
-                                    value={editUser[field.key] || ''}
-                                    onChange={e => setEditUser({ ...editUser, [field.key]: e.target.value })}
-                                />
-                            </div>
-                        ))}
-                        <div className="modal-actions">
-                            <button className="btn-cancel" onClick={() => setShowEditModal(false)}>Cancel</button>
-                            <button className="btn-add" onClick={handleUpdateUser}>Save Changes</button>
-                        </div>
-                    </div>
-                </div>
-            )}
         </div>
     );
 }

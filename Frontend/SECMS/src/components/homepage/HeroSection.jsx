@@ -19,7 +19,7 @@ function HeroSection() {
 
       <div className="hero__overlay">
         <h1 className="hero__title" ref={titleRef}>
-          Wear it everywhere, anywhere
+          Wear It Everywhere, ANYWHERE
         </h1>
         <Link to="/shop" className="hero__cta" ref={buttonRef}>Shop Now</Link>
       </div>

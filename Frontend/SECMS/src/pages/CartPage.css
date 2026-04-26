@@ -22,7 +22,7 @@
 .cart-loading {
     text-align: center;
     padding: 80px 0;
-    font-family: 'NORD', sans-serif;
+    font-family: 'Grift', sans-serif;
     font-size: 14px;
     color: #888;
 }
@@ -89,7 +89,7 @@
     padding: 16px 24px;
     background: #f8f8f6;
     border-bottom: 1px solid #ebebeb;
-    font-family: 'NORD', sans-serif;
+    font-family: 'Grift', sans-serif;
     font-size: 11px;
     font-weight: 700;
     color: #666;
@@ -137,7 +137,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'NORD', sans-serif;
+    font-family: 'Grift', sans-serif;
     font-size: 10px;
     color: #aaa;
 }
@@ -156,7 +156,7 @@
 }
 
 .cart-item-supplier {
-    font-family: 'NORD', sans-serif;
+    font-family: 'Grift', sans-serif;
     font-size: 11px;
     color: #888;
     margin: 0 0 10px;
@@ -165,7 +165,7 @@
 .cart-item-remove {
     background: none;
     border: none;
-    font-family: 'NORD', sans-serif;
+    font-family: 'Grift', sans-serif;
     font-size: 11px;
     color: #db2777;
     cursor: pointer;
@@ -185,7 +185,7 @@
 }
 
 .cart-item-size-label {
-    font-family: 'NORD', sans-serif;
+    font-family: 'Grift', sans-serif;
     font-size: 10px;
     color: #aaa;
     text-transform: uppercase;
@@ -235,6 +235,7 @@
     color: #1a1a1a;
     font-size: 16px;
     font-weight: 600;
+    font-family: 'Grift', sans-serif;
     cursor: pointer;
     border-radius: 6px;
     display: flex;
@@ -257,7 +258,7 @@
 }
 
 .cart-item-price {
-    font-family: 'NORD', sans-serif;
+    font-family: 'Grift', sans-serif;
     font-size: 14px;
     font-weight: 600;
     color: #1a1a1a;
@@ -344,7 +345,7 @@
     color: #666;
     border: 1px solid #ddd;
     border-radius: 8px;
-    font-family: 'NORD', sans-serif;
+    font-family: 'Grift', sans-serif;
     font-size: 12px;
     font-weight: 600;
     cursor: pointer;
@@ -361,20 +362,20 @@
     .cart-content {
         grid-template-columns: 1fr;
     }
-    
+
     .cart-summary-section {
         position: static;
     }
-    
+
     .cart-items-header {
         display: none;
     }
-    
+
     .cart-item {
         grid-template-columns: 1fr;
         gap: 16px;
     }
-    
+
     .cart-item-size,
     .cart-item-quantity,
     .cart-item-price {
@@ -386,7 +387,7 @@
     .cart-container {
         padding: 24px 20px 60px;
     }
-    
+
     .cart-title {
         font-size: 1.5rem;
     }

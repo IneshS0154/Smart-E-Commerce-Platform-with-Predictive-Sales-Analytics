@@ -26,13 +26,20 @@
   max-height: 85vh;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
   animation: slideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes slideDown {
-  from { transform: translateY(-20px); opacity: 0; }
-  to   { transform: translateY(0); opacity: 1; }
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 /* ── Header / Search Box ── */
@@ -65,6 +72,7 @@
   background: transparent;
   padding: 10px 0;
 }
+
 .search-overlay__input::placeholder {
   color: #c9c9c9;
 }
@@ -87,6 +95,7 @@
   align-items: center;
   transition: opacity 0.2s;
 }
+
 .search-overlay__btn:hover {
   opacity: 1;
 }
@@ -123,17 +132,19 @@
   border: 1px solid #ebebeb;
   border-radius: 4px;
   padding: 6px 14px;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 12px;
   color: #555;
   cursor: pointer;
   transition: border-color 0.2s, background 0.2s;
 }
+
 .search-overlay__pill:hover {
   background: #eaeaea;
   border-color: #d0d0d0;
   color: #1a1a1a;
 }
+
 .search-overlay__highlight {
   background-color: #fce83a;
   color: #1a1a1a;
@@ -185,17 +196,22 @@
 }
 
 .search-overlay__card-no-img {
-  width: 100%; height: 100%;
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'NORD', sans-serif; font-size: 11px; color: #aaa;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Grift', sans-serif;
+  font-size: 11px;
+  color: #aaa;
 }
 
-.search-overlay__card-sale-tag {
+/* .search-overlay__card-sale-tag {
   position: absolute;
   top: 10px; left: 10px;
   background: #111;
   color: #00ff2a;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 9px;
   font-weight: 800;
   padding: 4px 8px;
@@ -209,14 +225,14 @@
   bottom: 10px; left: 10px;
   background: #fff;
   color: #00b31e;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 10px;
   font-weight: 800;
   padding: 5px 12px;
   border-radius: 20px;
   z-index: 2;
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-}
+} */
 
 .search-overlay__card-info {
   display: flex;
@@ -239,7 +255,7 @@
 }
 
 .search-overlay__card-price {
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 13px;
   font-weight: 700;
   color: #1a1a1a;
@@ -256,11 +272,11 @@
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  border: 1px solid rgba(0,0,0,0.1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .search-overlay__msg {
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 13px;
   color: #777;
   padding: 20px 0;
@@ -286,18 +302,31 @@
   padding: 10px 24px;
   transition: opacity 0.2s;
 }
+
 .search-overlay__see-all:hover {
   opacity: 0.7;
 }
 
 /* ── Responsive ── */
 @media (max-width: 768px) {
-  .search-overlay__header { padding: 16px 20px; }
-  .search-overlay__body { padding: 24px 20px; }
-  .search-overlay__rail { 
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 16px; 
+  .search-overlay__header {
+    padding: 16px 20px;
   }
-  .search-overlay__card-name { font-size: 13px; }
-  .search-overlay__input { font-size: 20px; }
+
+  .search-overlay__body {
+    padding: 24px 20px;
+  }
+
+  .search-overlay__rail {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 16px;
+  }
+
+  .search-overlay__card-name {
+    font-size: 13px;
+  }
+
+  .search-overlay__input {
+    font-size: 20px;
+  }
 }

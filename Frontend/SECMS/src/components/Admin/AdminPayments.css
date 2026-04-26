@@ -1,0 +1,331 @@
+@import './AdminCommon.css';
+
+.admin-payments-dashboard {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    background: #fdfdfd;
+    font-family: 'Grift', sans-serif;
+}
+
+.admin-payments-main {
+    margin-left: var(--ov-sidebar-width);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.admin-payments-content {
+    padding: 40px 48px;
+    max-width: 1400px;
+}
+
+/* ── Header ── */
+.payments-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 40px;
+}
+
+.payments-page-title {
+    font-size: 28px;
+    font-weight: 800;
+    color: #111;
+    margin-bottom: 6px;
+    letter-spacing: -0.01em;
+}
+
+.payments-page-subtitle {
+    font-size: 14px;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.export-report-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #111;
+    color: #fff;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 13.5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.export-report-btn:hover {
+    background: #222;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* ── Stats Grid ── */
+.payments-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    margin-bottom: 40px;
+}
+
+.pmnt-stat-card {
+    background: #fff;
+    border: 1px solid #f1f1f1;
+    border-radius: 24px;
+    padding: 24px;
+    display: flex;
+    gap: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.pmnt-stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.04);
+    border-color: #e5e7eb;
+}
+
+.stat-icon-box {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.stat-icon-box.green { background: #f0fdf4; color: #10b981; }
+.stat-icon-box.blue { background: #f0f7ff; color: #3b82f6; }
+.stat-icon-box.orange { background: #fff7ed; color: #f97316; }
+.stat-icon-box.gray { background: #f9fafb; color: #6b7280; border: 1px solid #eee; }
+
+.stat-info .stat-label {
+    font-size: 10px;
+    font-weight: 800;
+    color: #9ca3af;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+}
+
+.stat-info .stat-value {
+    font-size: 20px;
+    font-weight: 800;
+    color: #111;
+    margin-bottom: 4px;
+    line-height: 1.2;
+}
+
+.stat-info .stat-sub {
+    font-size: 11px;
+    font-weight: 600;
+    color: #9ca3af;
+}
+
+/* ── Filter Bar ── */
+.payments-filter-bar {
+    background: #fff;
+    border: 1px solid #f1f1f1;
+    border-radius: 20px;
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+}
+
+.payments-search-wrapper {
+    position: relative;
+    width: 400px;
+}
+
+.payments-search-wrapper .search-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+}
+
+.payments-search-wrapper input {
+    width: 100%;
+    padding: 12px 16px 12px 48px;
+    background: #fafafa;
+    border: 1px solid #eee;
+    border-radius: 14px;
+    font-size: 14px;
+    font-weight: 500;
+    outline: none;
+    transition: 0.2s;
+}
+
+.payments-search-wrapper input:focus {
+    background: #fff;
+    border-color: #d1d5db;
+    box-shadow: 0 0 0 4px rgba(0,0,0,0.03);
+}
+
+.payments-filter-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.filter-select-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: #fafafa;
+    border: 1px solid #eee;
+    border-radius: 14px;
+    padding: 0 16px;
+}
+
+.filter-select-wrapper .filter-icon {
+    color: #9ca3af;
+}
+
+.filter-select-wrapper select {
+    border: none;
+    background: transparent;
+    padding: 12px 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #4b5563;
+    outline: none;
+    cursor: pointer;
+    min-width: 120px;
+}
+
+/* ── Table Card ── */
+.payments-table-card {
+    background: #fff;
+    border: 1px solid #f1f1f1;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+}
+
+.payments-mgmt-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.payments-mgmt-table th {
+    padding: 20px 24px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 800;
+    color: #9ca3af;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-bottom: 1px solid #f9fafb;
+    background: #fff;
+}
+
+.payments-mgmt-table td {
+    padding: 20px 24px;
+    border-bottom: 1px solid #f9fafb;
+    vertical-align: middle;
+}
+
+.payments-mgmt-table tr:hover td {
+    background: #fafafa;
+}
+
+/* ── Table Cells ── */
+.tx-id-cell {
+    font-size: 13px;
+    font-weight: 700;
+    color: #4b5563;
+}
+
+.pmnt-cust-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.pmnt-cust-cell .cust-name {
+    font-size: 14.5px;
+    font-weight: 800;
+    color: #111;
+}
+
+.pmnt-cust-cell .cust-email {
+    font-size: 12px;
+    color: #9ca3af;
+    font-weight: 500;
+}
+
+.pmnt-date-cell {
+    font-size: 13px;
+    font-weight: 600;
+    color: #6b7280;
+}
+
+.pmnt-amount-cell {
+    font-size: 15px;
+    font-weight: 800;
+    color: #111;
+}
+
+.pmnt-method-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #4b5563;
+}
+
+.method-icon {
+    color: #9ca3af;
+}
+
+.pmnt-status-badge {
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+}
+
+.pmnt-status-badge.success {
+    background: #ecfdf5;
+    color: #10b981;
+}
+
+.table-action-btn {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: #9ca3af;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.table-action-btn:hover {
+    background: #f3f4f6;
+    color: #111;
+}
+
+/* ── States ── */
+.table-loading, .table-error, .table-empty {
+    text-align: center;
+    padding: 60px 0 !important;
+    color: #9ca3af;
+    font-size: 14px;
+    font-weight: 500;
+}

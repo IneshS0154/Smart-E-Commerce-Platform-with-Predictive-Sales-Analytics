@@ -1,6 +1,15 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { createPortal } from 'react-dom';
+import { 
+  User, Mail, Phone, MapPin, 
+  Package, Layers, ShoppingBag, 
+  TrendingUp, Edit3, Save, X,
+  Shield, CheckCircle, Clock, AlertCircle,
+  Store, Globe, Key, Lock
+} from 'lucide-react';
 import './Profile.css';
+import DarkVeil from '../ui/DarkVeil';
 
 const CATEGORIES = [
   { key: 'CASUAL_WEAR',        label: 'Casual Wear'          },
@@ -10,12 +19,12 @@ const CATEGORIES = [
   { key: 'PARTY_EVENING_WEAR', label: 'Party & Evening Wear' },
 ];
 
-const fmtPrice = p => p ? `Rs. ${parseFloat(p).toLocaleString('en-IN')}` : '—';
+const fmtPrice = p => p ? `LKR ${parseFloat(p).toLocaleString('en-LK', { minimumFractionDigits: 2 })}` : 'LKR 0.00';
+
 const statusMeta = status => {
-  if (status === 'ACTIVE')      return { label: 'Active',      cls: 'prof-status--active'  };
-  if (status === 'PENDING')     return { label: 'Pending',     cls: 'prof-status--pending' };
-  if (status === 'DEACTIVATED') return { label: 'Deactivated', cls: 'prof-status--inactive'};
-  return                               { label: 'Rejected',    cls: 'prof-status--inactive'};
+  if (status === 'ACTIVE')      return { label: 'Verified Store', icon: <CheckCircle size={14} />, cls: 'pr-status--active' };
+  if (status === 'PENDING')     return { label: 'Pending Review', icon: <Clock size={14} />,       cls: 'pr-status--pending' };
+  return                        { label: 'Deactivated',   icon: <AlertCircle size={14} />, cls: 'pr-status--inactive' };
 };
 
 export default function Profile() {
@@ -25,8 +34,14 @@ export default function Profile() {
   const [isEditing, setIsEditing] = useState(false);
   const [formData,  setFormData]  = useState({});
   const [isSaving,  setIsSaving]  = useState(false);
-  const [error,     setError]     = useState('');
-  const [success,   setSuccess]   = useState('');
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [passwordFormData, setPasswordFormData] = useState({ newPassword: '', confirmPassword: '' });
+
+  useEffect(() => {
+    const isLocked = isEditing || isChangingPassword;
+    document.body.style.overflow = isLocked ? 'hidden' : 'auto';
+    return () => { document.body.style.overflow = 'auto'; };
+  }, [isEditing, isChangingPassword]);
 
   useEffect(() => {
     const stored = localStorage.getItem('seller');
@@ -47,7 +62,6 @@ export default function Profile() {
     } catch { /* silent */ }
   };
 
-  // ── Computed metrics ──────────────────────────────
   const metrics = useMemo(() => {
     const totalProducts  = products.length;
     const menProducts    = products.filter(p => p.gender === 'MALE').length;
@@ -56,31 +70,21 @@ export default function Profile() {
     const prices         = products.filter(p => p.price).map(p => parseFloat(p.price));
     const avgPrice       = prices.length ? prices.reduce((a, b) => a + b, 0) / prices.length : 0;
     const activeCategories = CATEGORIES.filter(cat => products.some(p => p.category === cat.key)).length;
-    const outOfStock     = products.filter(p => !p.stocks || p.stocks.every(s => s.stockCount === 0)).length;
 
     const categoryBreakdown = CATEGORIES.map(cat => {
       const catProds = products.filter(p => p.category === cat.key);
       return {
         ...cat,
         total:  catProds.length,
-        men:    catProds.filter(p => p.gender === 'MALE').length,
-        women:  catProds.filter(p => p.gender === 'FEMALE').length,
-        units:  catProds.reduce((sum, p) => sum + (p.stocks?.reduce((a, s) => a + s.stockCount, 0) || 0), 0),
         pct:    totalProducts > 0 ? Math.round((catProds.length / totalProducts) * 100) : 0,
       };
-    }).filter(c => c.total > 0);
+    }).filter(c => c.total > 0).sort((a, b) => b.total - a.total);
 
-    return { totalProducts, menProducts, womenProducts, totalUnits, avgPrice, activeCategories, outOfStock, categoryBreakdown };
+    return { totalProducts, menProducts, womenProducts, totalUnits, avgPrice, activeCategories, categoryBreakdown };
   }, [products]);
 
-  // ── Form handlers ─────────────────────────────────
-  const handleInputChange = e => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
   const handleSave = async () => {
-    setIsSaving(true); setError(''); setSuccess('');
+    setIsSaving(true);
     try {
       const res = await fetch(`/api/sellers/${seller.id}/update`, {
         method: 'PUT',
@@ -92,227 +96,298 @@ export default function Profile() {
         setSeller(updated);
         localStorage.setItem('seller', JSON.stringify(updated));
         setIsEditing(false);
-        setSuccess('Profile updated successfully!');
-        setTimeout(() => setSuccess(''), 3000);
-      } else {
-        setError('Failed to update profile');
       }
-    } catch { setError('Error updating profile'); }
-    finally   { setIsSaving(false); }
+    } catch (err) { console.error(err); }
+    finally { setIsSaving(false); }
   };
 
-  if (!seller) return null;
+  const handlePasswordChange = async (e) => {
+    e.preventDefault();
+    if (passwordFormData.newPassword !== passwordFormData.confirmPassword) {
+      return alert("Passwords do not match");
+    }
+    if (passwordFormData.newPassword.length < 6) {
+      return alert("Password must be at least 6 characters");
+    }
+
+    setIsSaving(true);
+    try {
+      const res = await fetch(`/api/sellers/${seller.id}/update`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: passwordFormData.newPassword }),
+      });
+      if (res.ok) {
+        alert("Password updated successfully");
+        setIsChangingPassword(false);
+        setPasswordFormData({ newPassword: '', confirmPassword: '' });
+      } else {
+        alert("Failed to update password");
+      }
+    } catch (err) { console.error(err); }
+    finally { setIsSaving(false); }
+  };
+
+  if (!seller) return <div className="pr-sync"><div className="loader" /></div>;
 
   const initials = (seller.storeName || seller.username || 'S').charAt(0).toUpperCase();
-  const sm       = statusMeta(seller.status);
-  const { totalProducts, menProducts, womenProducts, totalUnits, avgPrice, activeCategories, outOfStock, categoryBreakdown } = metrics;
+  const sm = statusMeta(seller.status);
 
   return (
-    <div className="prof-page">
-
-      {/* ── Hero Banner ── */}
-      <div className="prof-hero">
-        <div className="prof-hero__bg" />
-        <div className="prof-hero__content">
-          <div className="prof-hero__left">
-            <div className="prof-avatar">{initials}</div>
-            <div className="prof-hero__info">
-              <h1 className="prof-hero__name">{seller.storeName}</h1>
-              <p className="prof-hero__meta">
-                @{seller.username}
-                {seller.email && <><span className="prof-hero__dot">·</span>{seller.email}</>}
-                {seller.phoneNumber && <><span className="prof-hero__dot">·</span>{seller.phoneNumber}</>}
-              </p>
-              <span className={`prof-status ${sm.cls}`}>{sm.label}</span>
-            </div>
-          </div>
-          <button
-            className="prof-edit-btn"
-            onClick={() => { setIsEditing(true); setFormData(seller); setError(''); setSuccess(''); }}
-          >
-            ✎ Edit Profile
-          </button>
+    <div className="profile-vault-frame">
+      <div className="auth-bg-wrapper">
+        <DarkVeil 
+            speed={0.6} 
+            noiseIntensity={0.01} 
+            scanlineIntensity={0.05} 
+            warpAmount={0.1}
+            grayscale={1.0}
+        />
+      </div>
+      <div className="pr-container">
+        {/* ── Brand Identity ── */}
+      <div className="pr-header">
+        <div className="pr-brand">
+           <div className="pr-avatar">{initials}</div>
+           <div className="pr-brand-info">
+              <div className="pr-brand-top">
+                <h1 className="pr-store-name">{seller.storeName}</h1>
+                <span className={`pr-badge ${sm.cls}`}>{sm.icon} {sm.label}</span>
+              </div>
+              <p className="pr-brand-sub">@{seller.username} · Member since 2024</p>
+           </div>
         </div>
+        <button className="pr-btn pr-btn--outline" onClick={() => setIsEditing(true)}>
+          <Edit3 size={16} /> Edit Profile
+        </button>
       </div>
 
-      <div className="prof-body">
-
-        {/* ── Alerts ── */}
-        {error   && <div className="prof-alert prof-alert--error">{error}</div>}
-        {success && <div className="prof-alert prof-alert--success">{success}</div>}
-
-        {/* ── Metrics row ── */}
-        <div className="prof-metrics">
-          <div className="prof-metric">
-            <span className="prof-metric__val">{totalProducts}</span>
-            <span className="prof-metric__label">Total Products</span>
-          </div>
-          <div className="prof-metric">
-            <span className="prof-metric__val">{activeCategories}</span>
-            <span className="prof-metric__label">Active Categories</span>
-          </div>
-          <div className="prof-metric">
-            <span className="prof-metric__val">{totalUnits.toLocaleString()}</span>
-            <span className="prof-metric__label">Units in Stock</span>
-          </div>
-          <div className={`prof-metric ${outOfStock > 0 ? 'prof-metric--warn' : ''}`}>
-            <span className="prof-metric__val">{outOfStock}</span>
-            <span className="prof-metric__label">Out of Stock</span>
-          </div>
-          <div className="prof-metric">
-            <span className="prof-metric__val prof-metric__val--sm">{avgPrice > 0 ? fmtPrice(avgPrice) : '—'}</span>
-            <span className="prof-metric__label">Avg. Price</span>
-          </div>
-        </div>
-
-        {/* ── Two-column section ── */}
-        <div className="prof-grid">
-
-          {/* Left column */}
-          <div className="prof-left">
-
-            <div className="prof-card">
-              <h3 className="prof-card__title">Gender Split</h3>
-              {totalProducts === 0 ? (
-                <p className="prof-empty">No products added yet.</p>
-              ) : (
-                <div className="prof-gender-split">
-                  <div className="prof-gender-track">
-                    <div className="prof-gender-fill prof-gender-fill--men"
-                      style={{ width: `${totalProducts > 0 ? (menProducts / totalProducts) * 100 : 0}%` }} />
-                    <div className="prof-gender-fill prof-gender-fill--women"
-                      style={{ width: `${totalProducts > 0 ? (womenProducts / totalProducts) * 100 : 0}%` }} />
-                  </div>
-                  <div className="prof-gender-legend">
-                    <div className="prof-gender-item">
-                      <span className="prof-gender-dot prof-gender-dot--men" />
-                      <span>Men <strong>{menProducts}</strong></span>
-                    </div>
-                    <div className="prof-gender-item">
-                      <span className="prof-gender-dot prof-gender-dot--women" />
-                      <span>Women <strong>{womenProducts}</strong></span>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <div className="prof-card">
-              <h3 className="prof-card__title">Category Breakdown</h3>
-              {categoryBreakdown.length === 0 ? (
-                <p className="prof-empty">No products added yet.</p>
-              ) : (
-                <div className="prof-cats">
-                  {categoryBreakdown.map(cat => (
-                    <div key={cat.key} className="prof-cat-row">
-                      <div className="prof-cat-row__top">
-                        <span className="prof-cat-row__name">{cat.label}</span>
-                        <span className="prof-cat-row__count">{cat.total} product{cat.total !== 1 ? 's' : ''}</span>
-                      </div>
-                      <div className="prof-cat-bar-track">
-                        <div className="prof-cat-bar-fill" style={{ width: `${cat.pct}%` }} />
-                      </div>
-                      <div className="prof-cat-row__bottom">
-                        {cat.men > 0 && <span className="prof-pill prof-pill--men">{cat.men} Men</span>}
-                        {cat.women > 0 && <span className="prof-pill prof-pill--women">{cat.women} Women</span>}
-                        <span className="prof-cat-units">{cat.units.toLocaleString()} units</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Right column */}
-          <div className="prof-right">
-
-            <div className="prof-card">
-              <h3 className="prof-card__title">Account Information</h3>
-              <div className="prof-info-list">
-                {[
-                  { label: 'Account ID',   value: `#${seller.id}` },
-                  { label: 'Username',     value: `@${seller.username}` },
-                  { label: 'Account Type', value: 'Supplier' },
-                ].map(row => (
-                  <div key={row.label} className="prof-info-row">
-                    <span className="prof-info-label">{row.label}</span>
-                    <span className="prof-info-value">{row.value}</span>
-                  </div>
-                ))}
-                <div className="prof-info-row">
-                  <span className="prof-info-label">Status</span>
-                  <span className={`prof-status prof-status--inline ${sm.cls}`}>{sm.label}</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="prof-card">
-              <h3 className="prof-card__title">Contact Details</h3>
-              <div className="prof-info-list">
-                {[
-                  { label: 'Store Name',   value: seller.storeName },
-                  { label: 'Email',        value: seller.email },
-                  { label: 'Phone Number', value: seller.phoneNumber || 'Not provided' },
-                  { label: 'Address',      value: seller.address || 'Not provided' },
-                ].map(row => (
-                  <div key={row.label} className="prof-info-row">
-                    <span className="prof-info-label">{row.label}</span>
-                    <span className="prof-info-value">{row.value}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-          </div>
-        </div>
+      {/* ── Metric Snapshot ── */}
+      <div className="pr-stats-row">
+         <div className="pr-stat-card">
+            <span className="pr-stat-label">Product Catalog</span>
+            <div className="pr-stat-value">{metrics.totalProducts}</div>
+            <span className="pr-stat-desc">Live Listings</span>
+         </div>
+         <div className="pr-stat-card">
+            <span className="pr-stat-label">Active Categories</span>
+            <div className="pr-stat-value">{metrics.activeCategories}</div>
+            <span className="pr-stat-desc">Market Segments</span>
+         </div>
+         <div className="pr-stat-card">
+            <span className="pr-stat-label">Inventory Volume</span>
+            <div className="pr-stat-value">{metrics.totalUnits.toLocaleString()}</div>
+            <span className="pr-stat-desc">Units in Stock</span>
+         </div>
+         <div className="pr-stat-card">
+            <span className="pr-stat-label">Average Price Point</span>
+            <div className="pr-stat-value">{fmtPrice(metrics.avgPrice)}</div>
+            <span className="pr-stat-desc">Catalog Mean</span>
+         </div>
+         <div className="pr-stat-card pr-stat-card--dark">
+            <span className="pr-stat-label">Trust Index</span>
+            <div className="pr-stat-value">98%</div>
+            <span className="pr-stat-desc">Health Score</span>
+         </div>
       </div>
 
-      {/* ── Edit Profile Modal ── */}
-      {isEditing && (
-        <div className="prof-modal-overlay" onClick={() => { setIsEditing(false); setFormData(seller); }}>
-          <div className="prof-modal" onClick={e => e.stopPropagation()}>
-            <div className="prof-modal__header">
-              <h3 className="prof-modal__title">Edit Profile</h3>
-              <button className="prof-modal__close" onClick={() => { setIsEditing(false); setFormData(seller); }}>✕</button>
-            </div>
-            <div className="prof-modal__body">
-              {error   && <div className="prof-alert prof-alert--error">{error}</div>}
-              {success && <div className="prof-alert prof-alert--success">{success}</div>}
-              <div className="prof-form">
-                {[
-                  { name: 'storeName',   label: 'Store Name',   type: 'text', placeholder: 'Enter store name' },
-                  { name: 'phoneNumber', label: 'Phone Number', type: 'tel',  placeholder: 'Enter phone number' },
-                  { name: 'address',     label: 'Address',      type: 'text', placeholder: 'Enter address' },
-                  { name: 'username',    label: 'Username',     type: 'text', placeholder: 'Enter username' },
-                  { name: 'email',       label: 'Email',        type: 'email', placeholder: 'Enter email' },
-                  { name: 'password',    label: 'Password',     type: 'password', placeholder: 'Enter new password (optional)' },
-                ].map(f => (
-                  <div key={f.name} className="prof-form__group">
-                    <label className="prof-form__label">{f.label}</label>
-                    <input
-                      type={f.type}
-                      name={f.name}
-                      value={formData[f.name] || ''}
-                      onChange={handleInputChange}
-                      className="prof-form__input"
-                      placeholder={f.placeholder}
-                    />
+      <div className="pr-grid">
+         {/* ── Profile Information ── */}
+         <div className="pr-col">
+            <div className="pr-section">
+               <h3 className="pr-section-title">Store Information</h3>
+               <div className="pr-info-list">
+                  <div className="pr-info-item">
+                     <Mail size={16} />
+                     <div className="pr-info-content">
+                        <span className="label">Contact Email</span>
+                        <span className="val">{seller.email}</span>
+                     </div>
                   </div>
-                ))}
-              </div>
+                  <div className="pr-info-item">
+                     <Phone size={16} />
+                     <div className="pr-info-content">
+                        <span className="label">Phone Number</span>
+                        <span className="val">{seller.phoneNumber || 'Not provided'}</span>
+                     </div>
+                  </div>
+                  <div className="pr-info-item">
+                     <MapPin size={16} />
+                     <div className="pr-info-content">
+                        <span className="label">Store Address</span>
+                        <span className="val">{seller.address || 'Not provided'}</span>
+                     </div>
+                  </div>
+                  <div className="pr-info-item">
+                     <Shield size={16} />
+                     <div className="pr-info-content">
+                        <span className="label">Account Status</span>
+                        <span className="val">Fully Verified</span>
+                     </div>
+                  </div>
+               </div>
             </div>
-            <div className="prof-modal__footer">
-              <button className="prof-btn prof-btn--ghost" onClick={() => { setIsEditing(false); setFormData(seller); }}>
-                Cancel
-              </button>
-              <button className="prof-btn prof-btn--primary" onClick={handleSave} disabled={isSaving}>
-                {isSaving ? 'Saving…' : 'Save Changes'}
-              </button>
+
+            <div className="pr-section">
+               <h3 className="pr-section-title">Audience Split</h3>
+               <div className="pr-gender-split">
+                  <div className="pr-gender-row">
+                     <span>Men's Apparel</span>
+                     <span>{Math.round((metrics.menProducts / metrics.totalProducts) * 100) || 0}%</span>
+                  </div>
+                  <div className="pr-progress-track">
+                     <div className="pr-progress-fill" style={{ width: `${(metrics.menProducts / metrics.totalProducts) * 100}%` }} />
+                  </div>
+                  <div className="pr-gender-row" style={{ marginTop: '16px' }}>
+                     <span>Women's Apparel</span>
+                     <span>{Math.round((metrics.womenProducts / metrics.totalProducts) * 100) || 0}%</span>
+                  </div>
+                  <div className="pr-progress-track">
+                     <div className="pr-progress-fill" style={{ width: `${(metrics.womenProducts / metrics.totalProducts) * 100}%` }} />
+                  </div>
+               </div>
             </div>
+         </div>
+
+          {/* ── Category Breakdown ── */}
+          <div className="pr-col">
+             <div className="pr-section">
+                <h3 className="pr-section-title">Collection Distribution</h3>
+                <div className="pr-cat-list">
+                   {metrics.categoryBreakdown.map((cat, i) => (
+                     <div key={i} className="pr-cat-item">
+                        <div className="pr-cat-header">
+                           <span className="pr-cat-name">{cat.label}</span>
+                           <span className="pr-cat-pct">{cat.pct}%</span>
+                        </div>
+                        <div className="pr-progress-track pr-progress-track--thin">
+                           <div className="pr-progress-fill" style={{ width: `${cat.pct}%` }} />
+                        </div>
+                     </div>
+                   ))}
+                   {metrics.categoryBreakdown.length === 0 && (
+                     <div className="pr-empty">No products classified yet.</div>
+                   )}
+                </div>
+             </div>
+
+             <div className="pr-section">
+                <h3 className="pr-section-title">Security & Privacy</h3>
+                <div className="pr-security-card">
+                   <div className="pr-security-info">
+                      <Lock size={20} />
+                      <div>
+                         <p className="pr-security-name">Account Password</p>
+                         <p className="pr-security-desc">Last updated recently</p>
+                      </div>
+                   </div>
+                   <button className="pr-btn pr-btn--outline" onClick={() => setIsChangingPassword(true)}>Update</button>
+                </div>
+             </div>
           </div>
-        </div>
+       </div>
+
+      {/* ── Change Password Modal (Portal) ── */}
+      {isChangingPassword && createPortal(
+        <div className="pr-overlay" onClick={() => setIsChangingPassword(false)}>
+           <div className="pr-modal pr-modal--small" onClick={e => e.stopPropagation()}>
+              <header className="pr-modal-header">
+                 <h3 className="pr-modal-title">Update Credentials</h3>
+                 <button className="pr-close-btn" onClick={() => setIsChangingPassword(false)}><X size={18} /></button>
+              </header>
+              <form onSubmit={handlePasswordChange}>
+                 <div className="pr-modal-body">
+                    <div className="pr-password-info">
+                       <Key size={32} />
+                       <p>Change your account password to maintain security. Choose a strong one.</p>
+                    </div>
+                    <div className="pr-field" style={{ marginBottom: '16px' }}>
+                       <label>New Password</label>
+                       <input 
+                         type="password" 
+                         required 
+                         placeholder="••••••••"
+                         value={passwordFormData.newPassword} 
+                         onChange={e => setPasswordFormData({...passwordFormData, newPassword: e.target.value})} 
+                       />
+                    </div>
+                    <div className="pr-field">
+                       <label>Confirm Password</label>
+                       <input 
+                         type="password" 
+                         required 
+                         placeholder="••••••••"
+                         value={passwordFormData.confirmPassword} 
+                         onChange={e => setPasswordFormData({...passwordFormData, confirmPassword: e.target.value})} 
+                       />
+                    </div>
+                 </div>
+                 <footer className="pr-modal-footer">
+                    <button type="button" className="pr-btn pr-btn--ghost" onClick={() => setIsChangingPassword(false)}>Discard</button>
+                    <button type="submit" className="pr-btn pr-btn--primary" disabled={isSaving}>
+                      {isSaving ? 'Syncing...' : 'Update Password'}
+                    </button>
+                 </footer>
+              </form>
+           </div>
+        </div>,
+        document.body
       )}
+
+      {/* ── Edit Profile Modal (Portal) ── */}
+      {isEditing && createPortal(
+        <div className="pr-overlay" onClick={() => setIsEditing(false)}>
+           <div className="pr-modal" onClick={e => e.stopPropagation()}>
+              <header className="pr-modal-header">
+                 <h3 className="pr-modal-title">Edit Store Profile</h3>
+                 <button className="pr-close-btn" onClick={() => setIsEditing(false)}><X size={18} /></button>
+              </header>
+              <div className="pr-modal-body">
+                 <div className="pr-form-section-group">
+                    <div className="pr-section-header-row">
+                       <Store size={16} />
+                       <h4>Store Identity</h4>
+                    </div>
+                    <div className="pr-form-grid">
+                       <div className="pr-field">
+                          <label>Store Name</label>
+                          <input value={formData.storeName || ''} onChange={e => setFormData({...formData, storeName: e.target.value})} />
+                       </div>
+                       <div className="pr-field">
+                          <label>Contact Email</label>
+                          <input value={formData.email || ''} onChange={e => setFormData({...formData, email: e.target.value})} />
+                       </div>
+                    </div>
+                 </div>
+
+                 <div className="pr-form-section-group" style={{ marginTop: '24px' }}>
+                    <div className="pr-section-header-row">
+                       <Globe size={16} />
+                       <h4>Contact & Logistics</h4>
+                    </div>
+                    <div className="pr-form-grid">
+                       <div className="pr-field">
+                          <label>Phone Number</label>
+                          <input value={formData.phoneNumber || ''} onChange={e => setFormData({...formData, phoneNumber: e.target.value})} />
+                       </div>
+                       <div className="pr-field">
+                          <label>Store Address</label>
+                          <input value={formData.address || ''} onChange={e => setFormData({...formData, address: e.target.value})} />
+                       </div>
+                    </div>
+                 </div>
+              </div>
+              <footer className="pr-modal-footer">
+                 <button className="pr-btn pr-btn--ghost" onClick={() => setIsEditing(false)}>Discard</button>
+                 <button className="pr-btn pr-btn--primary" onClick={handleSave} disabled={isSaving}>
+                   {isSaving ? 'Updating...' : 'Save Changes'}
+                 </button>
+              </footer>
+           </div>
+        </div>,
+        document.body
+      )}
+      </div>
     </div>
   );
 }

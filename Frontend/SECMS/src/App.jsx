@@ -74,11 +74,14 @@ function ProtectedRoute({ children, allowedRoles }) {
     return children;
 }
 
+import { ToastProvider } from './context/ToastContext';
+
 function App() {
     return (
-        <BrowserRouter>
-            <PageTransition />
-            <CookieConsent />
+        <ToastProvider>
+            <BrowserRouter>
+                <PageTransition />
+                <CookieConsent />
             <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/login" element={<Login />} />
@@ -143,7 +146,8 @@ function App() {
                 />
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
-        </BrowserRouter>
+            </BrowserRouter>
+        </ToastProvider>
     );
 }
 

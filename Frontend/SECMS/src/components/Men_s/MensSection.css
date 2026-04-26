@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════════
    MensSection.css  — 2-top + 3-bottom editorial grid
-   Fonts: 'Grift' (headings) · 'NORD' (body)
+   Fonts: 'Grift' (headings) · 'Grift' (body)
 ═══════════════════════════════════════════════════ */
 
 .ms {
@@ -20,7 +20,7 @@
 
 .ms__eyebrow {
   display: block;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 11px;
   font-weight: 400;
   letter-spacing: 0.18em;
@@ -46,7 +46,7 @@
 }
 
 .ms__subtitle {
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 14px;
   font-weight: 300;
   color: #6b6b6b;
@@ -168,7 +168,7 @@
 
 .ms__card-tag {
   display: block;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 10px;
   font-weight: 400;
   letter-spacing: 0.18em;
