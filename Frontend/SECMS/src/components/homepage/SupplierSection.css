@@ -39,7 +39,7 @@
   position: absolute;
   top: 24px;
   left: 24px;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 11px;
   font-weight: 800;
   color: #1a1a1a;
@@ -56,7 +56,7 @@
 
 .supplier-cta__eyebrow {
   display: block;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 11px;
   font-weight: 800;
   text-transform: uppercase;
@@ -170,7 +170,7 @@
 }
 
 .growth-card__title {
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.1em;
@@ -255,7 +255,7 @@
 }
 
 .legend-label {
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 9px;
   font-weight: 700;
   text-transform: uppercase;

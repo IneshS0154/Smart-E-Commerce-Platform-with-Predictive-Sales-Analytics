@@ -53,7 +53,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 0.9rem;
   color: #1a1a1a;
   cursor: pointer;
@@ -71,7 +71,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 0.9rem;
   color: #1a1a1a;
 }
@@ -84,7 +84,7 @@
   padding: 6px 10px;
   border: 1px solid #d0d0d0;
   border-radius: 4px;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 0.9rem;
   color: #1a1a1a;
   cursor: pointer;
@@ -104,7 +104,7 @@
 /* ── 3-col product grid ── */
 .arrivals__grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 24px;
 }
 
@@ -155,7 +155,7 @@
   color: white;
   padding: 6px 10px;
   border-radius: 4px;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 0.8rem;
   font-weight: 600;
   z-index: 2;
@@ -192,14 +192,14 @@
 }
 
 .product-card__rating .rating-value {
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 0.8rem;
   font-weight: 500;
   color: #1a1a1a;
 }
 
 .product-card__rating .reviews {
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 0.8rem;
   color: #666;
 }
@@ -209,7 +209,7 @@
 }
 
 .product-card__colors {
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 0.85rem;
   color: #666;
 }
@@ -222,14 +222,14 @@
 }
 
 .product-card__price .price {
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 1rem;
   font-weight: 600;
   color: #1a1a1a;
 }
 
 .product-card__price .original-price {
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 0.85rem;
   color: #999;
   text-decoration: line-through;
@@ -242,7 +242,7 @@
   color: white;
   border: none;
   border-radius: 4px;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 0.9rem;
   font-weight: 500;
   cursor: pointer;
@@ -263,7 +263,7 @@
   text-align: center;
   padding: 40px 20px;
   color: #999;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
 }
 
 /* ── Responsive ── */
@@ -378,7 +378,7 @@
   width: 20px; height: 20px;
   border-radius: 50%;
   font-size: 10px; font-weight: 700;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   background: rgba(255,255,255,0.18);
   color: inherit;
   transition: background 0.15s;
@@ -416,7 +416,7 @@
 .na-card__img-placeholder {
   width: 100%; height: 100%;
   display: flex; align-items: center; justify-content: center;
-  font-family: 'NORD', sans-serif; font-size: 11px; color: #ccc;
+  font-family: 'Grift', sans-serif; font-size: 11px; color: #ccc;
   letter-spacing: 0.05em;
 }
 
@@ -426,7 +426,7 @@
   top: 10px; left: 10px;
   padding: 3px 10px;
   border-radius: 20px;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 10px; font-weight: 700;
   letter-spacing: 0.04em;
   z-index: 2;
@@ -438,7 +438,7 @@
   top: 10px; right: 10px;
   background: #1a1a1a;
   color: #fff;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 9px; font-weight: 800;
   letter-spacing: 0.12em;
   padding: 4px 8px;
@@ -450,7 +450,7 @@
 .na-card__body { padding: 0; }
 
 .na-card__category {
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 10px; font-weight: 600;
   color: #aaa;
   text-transform: uppercase;
@@ -467,7 +467,7 @@
   overflow: hidden;
 }
 .na-card__meta {
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 11px; color: #aaa; margin: 0 0 12px;
 }
 .na-card__bottom {
@@ -478,14 +478,14 @@
   margin-top: 10px;
 }
 .na-card__price {
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 0.95rem; font-weight: 600; color: #1a1a1a;
 }
 .na-card__btn {
   padding: 8px 16px;
   background: #1a1a1a; color: #fff;
   border: none; border-radius: 4px;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 11px; font-weight: 600;
   cursor: pointer;
   transition: background 0.18s, transform 0.1s;
@@ -516,6 +516,6 @@
   grid-column: 1 / -1;
   text-align: center;
   padding: 40px 20px;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 13px; color: #aaa;
 }

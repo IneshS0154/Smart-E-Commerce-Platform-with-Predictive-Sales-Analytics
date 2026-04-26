@@ -47,17 +47,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     
                     if (role == null) {
                         role = "ROLE_CUSTOMER";
+                    } else if (!role.startsWith("ROLE_")) {
+                        role = "ROLE_" + role;
                     }
 
-                    List<SimpleGrantedAuthority> authorities = Arrays.asList(
-                        new SimpleGrantedAuthority(role));
+                    List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(role));
 
                     UsernamePasswordAuthenticationToken authentication = 
                             new UsernamePasswordAuthenticationToken(username, null, authorities);
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     
                     SecurityContextHolder.getContext().setAuthentication(authentication);
-                    logger.info("=== Authentication SET successfully ===");
+                    logger.info("=== Authentication SET with authorities: {} ===", authorities);
                 } else {
                     logger.warn("Token validation FAILED");
                 }

@@ -1,0 +1,359 @@
+@import './AdminCommon.css';
+
+.admin-reviews-dashboard {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    background: transparent;
+    font-family: 'Grift', sans-serif;
+}
+
+.admin-reviews-main {
+    margin-left: var(--ov-sidebar-width);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.admin-reviews-content {
+    padding: 40px 48px;
+    max-width: 1400px;
+}
+
+/* ── Header ── */
+.ar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 40px;
+}
+
+.ar-title {
+    font-size: 28px;
+    font-weight: 800;
+    color: #111;
+    margin-bottom: 6px;
+    letter-spacing: -0.01em;
+}
+
+.ar-subtitle {
+    font-size: 14px;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+/* ── Stats Grid ── */
+.ar-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    margin-bottom: 40px;
+}
+
+.ar-stat-card {
+    background: #fff;
+    border: 1px solid #f1f1f1;
+    border-radius: 24px;
+    padding: 24px;
+    display: flex;
+    gap: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ar-stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.04);
+    border-color: #e5e7eb;
+}
+
+.ar-stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.ar-stat-icon.blue { background: #f0f7ff; color: #3b82f6; }
+.ar-stat-icon.purple { background: #f5f3ff; color: #8b5cf6; }
+.ar-stat-icon.green { background: #f0fdf4; color: #10b981; }
+.ar-stat-icon.gray { background: #f9fafb; color: #6b7280; border: 1px solid #eee; }
+
+.ar-stat-value {
+    font-size: 24px;
+    font-weight: 800;
+    color: #111;
+    line-height: 1.2;
+}
+
+.ar-stat-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #9ca3af;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 4px;
+}
+
+/* ── Filter Bar ── */
+.ar-filter-bar {
+    background: #fff;
+    border: 1px solid #f1f1f1;
+    border-radius: 20px;
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+}
+
+.ar-search-wrapper {
+    position: relative;
+    width: 450px;
+}
+
+.ar-search-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+}
+
+.ar-search-input {
+    width: 100%;
+    padding: 12px 16px 12px 48px;
+    background: #fafafa;
+    border: 1px solid #eee;
+    border-radius: 14px;
+    font-size: 14px;
+    font-weight: 500;
+    outline: none;
+    transition: 0.2s;
+}
+
+.ar-search-input:focus {
+    background: #fff;
+    border-color: #d1d5db;
+    box-shadow: 0 0 0 4px rgba(0,0,0,0.03);
+}
+
+.ar-filters {
+    display: flex;
+    gap: 12px;
+}
+
+.ar-select-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: #fafafa;
+    border: 1px solid #eee;
+    border-radius: 14px;
+    padding: 0 16px;
+}
+
+.ar-filter-icon {
+    color: #9ca3af;
+}
+
+.ar-select {
+    border: none;
+    background: transparent;
+    padding: 12px 8px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #4b5563;
+    outline: none;
+    cursor: pointer;
+}
+
+/* ── Grid & Cards ── */
+.ar-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 24px;
+}
+
+.ar-card {
+    background: #fff;
+    border: 1px solid #f1f1f1;
+    border-radius: 24px;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    transition: all 0.3s ease;
+}
+
+.ar-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.04);
+}
+
+.ar-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.ar-user-info {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+}
+
+.ar-avatar {
+    width: 44px;
+    height: 44px;
+    background: #000;
+    color: #fff;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 16px;
+}
+
+.ar-username {
+    font-size: 15px;
+    font-weight: 800;
+    color: #111;
+    margin-bottom: 4px;
+}
+
+.ar-card-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.ar-delete-btn {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid #f1f1f1;
+    color: #9ca3af;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.ar-delete-btn:hover {
+    background: #fef2f2;
+    color: #ef4444;
+    border-color: #fee2e2;
+}
+
+.sr-stars {
+    display: flex;
+    gap: 2px;
+}
+
+.ar-review-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #ecfdf5;
+    color: #10b981;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.ar-card-body {
+    flex: 1;
+}
+
+.ar-product-name {
+    font-size: 14px;
+    font-weight: 800;
+    color: #111;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.ar-review-text {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #4b5563;
+    font-weight: 500;
+}
+
+.ar-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+    border-top: 1px solid #f9fafb;
+}
+
+.ar-supplier-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.ar-supplier-info .label {
+    font-size: 9px;
+    font-weight: 800;
+    color: #9ca3af;
+    letter-spacing: 0.05em;
+    margin-bottom: 2px;
+}
+
+.ar-supplier-info .value {
+    font-size: 12px;
+    font-weight: 700;
+    color: #111;
+}
+
+.ar-date {
+    font-size: 12px;
+    font-weight: 700;
+    color: #9ca3af;
+}
+
+/* ── States ── */
+.ar-loading, .ar-empty {
+    text-align: center;
+    padding: 80px 0;
+    grid-column: 1 / -1;
+}
+
+.ar-loader {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #111;
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.ar-empty h3 {
+    font-size: 20px;
+    font-weight: 800;
+    margin: 16px 0 8px;
+}
+
+.ar-empty p {
+    color: #9ca3af;
+    font-size: 14px;
+}

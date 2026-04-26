@@ -1,8 +1,17 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authService } from '../../api/authService';
+import {
+    Check, Eye, EyeOff, AlertCircle,
+    ArrowLeft, ShoppingBag, ChevronLeft
+} from 'lucide-react';
 import './Auth.css';
+<<<<<<< Updated upstream
 import SignupImage from '../../assets/images/login_signup/signup.png';
+=======
+import DarkVeil from '../ui/DarkVeil';
+import SignupImage from '../../assets/images/login_signup/Signup.png';
+>>>>>>> Stashed changes
 
 function SignUp() {
     const [firstName, setFirstName] = useState('');
@@ -17,54 +26,23 @@ function SignUp() {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [fieldErrors, setFieldErrors] = useState({});
+    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
 
     const validateForm = () => {
         const errors = {};
-        
-        if (!firstName.trim()) {
-            errors.firstName = 'First name is required';
-        } else if (!/^[A-Za-z\s]+$/.test(firstName)) {
-            errors.firstName = 'First name can only contain letters';
-        }
-
-        if (!lastName.trim()) {
-            errors.lastName = 'Last name is required';
-        } else if (!/^[A-Za-z\s]+$/.test(lastName)) {
-            errors.lastName = 'Last name can only contain letters';
-        }
-
-        if (username.length < 3) {
-            errors.username = 'Username must be at least 3 characters';
-        } else if (!/^[A-Za-z0-9_]+$/.test(username)) {
-            errors.username = 'Username can only contain letters, numbers, and underscores';
-        }
+        if (!firstName.trim()) errors.firstName = 'Required';
+        if (!lastName.trim()) errors.lastName = 'Required';
+        if (username.length < 3) errors.username = 'Too short';
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!email.trim()) {
-            errors.email = 'Email is required';
-        } else if (!emailRegex.test(email)) {
-            errors.email = 'Please enter a valid email address';
-        }
+        if (!email.trim()) errors.email = 'Required';
+        else if (!emailRegex.test(email)) errors.email = 'Invalid email';
 
-        if (phoneNumber && !/^[\d\+\-\s\(\)]+$/.test(phoneNumber)) {
-            errors.phoneNumber = 'Please enter a valid phone number';
-        } else if (phoneNumber && phoneNumber.replace(/\D/g, '').length < 9) {
-            errors.phoneNumber = 'Phone number must have at least 9 digits';
-        }
+        if (!password) errors.password = 'Required';
+        else if (password.length < 8) errors.password = 'Min 8 characters';
 
-        if (!password) {
-            errors.password = 'Password is required';
-        } else if (password.length < 6) {
-            errors.password = 'Password must be at least 6 characters';
-        } else if (!/(?=.*[A-Za-z])(?=.*\d)/.test(password)) {
-            errors.password = 'Password must contain at least one letter and one number';
-        }
-
-        if (!agreeTerms) {
-            errors.agreeTerms = 'You must agree to the Terms & Conditions';
-        }
-
+        if (!agreeTerms) errors.agreeTerms = 'You must agree to continue';
         return errors;
     };
 
@@ -81,7 +59,6 @@ function SignUp() {
         }
 
         setSubmitting(true);
-
         try {
             const response = await authService.register({
                 firstName,
@@ -92,165 +69,137 @@ function SignUp() {
                 phoneNumber,
                 address,
             });
-
-            setSuccess(response.message || 'Registration successful!');
-            setTimeout(() => {
-                navigate('/login');
-            }, 1500);
+            setSuccess(response.message || 'Account created successfully!');
+            setTimeout(() => navigate('/login'), 1500);
         } catch (err) {
-            const message = err?.response?.data?.message || err?.response?.data || 'Registration failed. Please try again.';
-            setError(typeof message === 'string' ? message : JSON.stringify(message));
+            setError(err?.response?.data?.message || 'Registration failed.');
         } finally {
             setSubmitting(false);
         }
     };
 
-    const handleSignInClick = () => {
-        navigate('/login');
-    };
-
     return (
         <div className="auth-container">
-            <div className="back-link-container">
-                <button onClick={() => navigate('/')} className="back-to-home">← Back to Home</button>
+            <button className="back-home-btn" onClick={() => navigate('/')}>
+                <ChevronLeft size={18} />
+                <span>Back to Home</span>
+            </button>
+            <div className="auth-bg-wrapper">
+                <DarkVeil
+                    speed={1.5}
+                    noiseIntensity={0.02}
+                    scanlineIntensity={0.1}
+                    warpAmount={0.25}
+                    grayscale={1.0}
+                />
             </div>
-            <div className="auth-content">
-                <div className="auth-form-wrapper">
-                    <h1 className="auth-title">Create Account</h1>
-                    <p className="auth-subtitle">Join ANYWEAR today</p>
-                    <br></br>
+            <div className="auth-card">
+                {/* Left: Form Side */}
+                <div className="auth-left">
+                    <div className="auth-logo">
+                        <ShoppingBag size={20} color="#000" />
+                    </div>
 
-                    {error && (
-                        <div style={{ color: '#dc2626', backgroundColor: '#fee2e2', padding: '10px', borderRadius: '6px', marginBottom: '12px', fontSize: '14px' }}>
-                            {error}
-                        </div>
-                    )}
-                    {success && (
-                        <div style={{ color: '#16a34a', backgroundColor: '#dcfce7', padding: '10px', borderRadius: '6px', marginBottom: '12px', fontSize: '14px' }}>
-                            {success}
-                        </div>
-                    )}
+                    <div className="auth-header">
+                        <h1>Create account</h1>
+                        <p>Join the ANYWEAR community today.</p>
+                    </div>
+
+                    {error && <div className="alert alert-error"><AlertCircle size={16} /> {error}</div>}
+                    {success && <div className="alert alert-success"><Check size={16} /> {success}</div>}
 
                     <form onSubmit={handleSubmit} className="auth-form">
                         <div className="form-row">
-                            <div className="form-group form-group-half">
-                                <label htmlFor="firstName">First Name</label>
-                                <input
-                                    type="text"
-                                    id="firstName"
-                                    value={firstName}
-                                    onChange={(e) => setFirstName(e.target.value)}
-                                    placeholder="First name"
-                                    style={fieldErrors.firstName ? { borderColor: '#dc2626' } : {}}
-                                />
-                                {fieldErrors.firstName && <span style={{ color: '#dc2626', fontSize: '12px', marginTop: '4px', display: 'block' }}>{fieldErrors.firstName}</span>}
+                            <div className="form-group">
+                                <label>Full Name</label>
+                                <div className="input-wrapper">
+                                    <input
+                                        type="text"
+                                        placeholder="name"
+                                        value={firstName}
+                                        onChange={(e) => setFirstName(e.target.value)}
+                                        className={fieldErrors.firstName ? 'error' : ''}
+                                    />
+                                </div>
+                                {fieldErrors.firstName && <span className="field-error">{fieldErrors.firstName}</span>}
                             </div>
-
-                            <div className="form-group form-group-half">
-                                <label htmlFor="lastName">Last Name</label>
-                                <input
-                                    type="text"
-                                    id="lastName"
-                                    value={lastName}
-                                    onChange={(e) => setLastName(e.target.value)}
-                                    placeholder="Last name"
-                                    style={fieldErrors.lastName ? { borderColor: '#dc2626' } : {}}
-                                />
-                                {fieldErrors.lastName && <span style={{ color: '#dc2626', fontSize: '12px', marginTop: '4px', display: 'block' }}>{fieldErrors.lastName}</span>}
+                            <div className="form-group">
+                                <label>Username</label>
+                                <div className="input-wrapper">
+                                    <input
+                                        type="text"
+                                        placeholder="username"
+                                        value={username}
+                                        onChange={(e) => setUsername(e.target.value)}
+                                    />
+                                    {username.length >= 3 && (
+                                        <div className="input-icon-right">
+                                            <Check size={16} />
+                                        </div>
+                                    )}
+                                </div>
+                                {fieldErrors.username && <span className="field-error">{fieldErrors.username}</span>}
                             </div>
                         </div>
 
                         <div className="form-group">
-                            <label htmlFor="username">Username</label>
-                            <input
-                                type="text"
-                                id="username"
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
-                                placeholder="Choose a username"
-                                style={fieldErrors.username ? { borderColor: '#dc2626' } : {}}
-                            />
-                            {fieldErrors.username && <span style={{ color: '#dc2626', fontSize: '12px', marginTop: '4px', display: 'block' }}>{fieldErrors.username}</span>}
+                            <label>Phone number</label>
+                            <div className="input-wrapper">
+                                <input
+                                    type="tel"
+                                    placeholder="+94 000 000 000"
+                                    value={phoneNumber}
+                                    onChange={(e) => setPhoneNumber(e.target.value)}
+                                />
+                            </div>
                         </div>
 
                         <div className="form-group">
-                            <label htmlFor="email">Email Address</label>
-                            <input
-                                type="email"
-                                id="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                placeholder="Enter your email"
-                                style={fieldErrors.email ? { borderColor: '#dc2626' } : {}}
-                            />
-                            {fieldErrors.email && <span style={{ color: '#dc2626', fontSize: '12px', marginTop: '4px', display: 'block' }}>{fieldErrors.email}</span>}
+                            <label>Password</label>
+                            <div className="input-wrapper">
+                                <input
+                                    type={showPassword ? 'text' : 'password'}
+                                    placeholder="••••••••••••"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                />
+                                <button
+                                    type="button"
+                                    className="password-toggle"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                >
+                                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                </button>
+                            </div>
+                            <p className="password-hint">At least 8 characters</p>
+                            {fieldErrors.password && <span className="field-error">{fieldErrors.password}</span>}
                         </div>
 
-                        <div className="form-group">
-                            <label htmlFor="phoneNumber">Phone Number</label>
-                            <input
-                                type="tel"
-                                id="phoneNumber"
-                                value={phoneNumber}
-                                onChange={(e) => setPhoneNumber(e.target.value)}
-                                placeholder="Enter your phone number"
-                                style={fieldErrors.phoneNumber ? { borderColor: '#dc2626' } : {}}
-                            />
-                            {fieldErrors.phoneNumber && <span style={{ color: '#dc2626', fontSize: '12px', marginTop: '4px', display: 'block' }}>{fieldErrors.phoneNumber}</span>}
-                        </div>
-
-                        <div className="form-group">
-                            <label htmlFor="address">Address</label>
-                            <input
-                                type="text"
-                                id="address"
-                                value={address}
-                                onChange={(e) => setAddress(e.target.value)}
-                                placeholder="Enter your address"
-                            />
-                        </div>
-
-                        <div className="form-group">
-                            <label htmlFor="password">Password</label>
-                            <input
-                                type="password"
-                                id="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                placeholder="Create a password (min 6 characters)"
-                                style={fieldErrors.password ? { borderColor: '#dc2626' } : {}}
-                            />
-                            {fieldErrors.password && <span style={{ color: '#dc2626', fontSize: '12px', marginTop: '4px', display: 'block' }}>{fieldErrors.password}</span>}
-                        </div>
-
-                        <div className="form-group checkbox">
+                        <div className="checkbox-group">
                             <input
                                 type="checkbox"
-                                id="agreeTerms"
+                                id="terms"
                                 checked={agreeTerms}
                                 onChange={(e) => setAgreeTerms(e.target.checked)}
                             />
-                            <label htmlFor="agreeTerms" className="agreeTerms" style={fieldErrors.agreeTerms ? { color: '#dc2626' } : {}}>I agree to the Terms & Conditions</label>
-                            {fieldErrors.agreeTerms && <span style={{ color: '#dc2626', fontSize: '12px', marginTop: '4px', display: 'block', width: '100%' }}>{fieldErrors.agreeTerms}</span>}
+                            <label htmlFor="terms">
+                                I agree to <a href="#">Privacy Policy</a> and <a href="#">Terms of Service</a>.
+                            </label>
                         </div>
 
-                        <button type="submit" className="auth-button" disabled={submitting}>
-                            {submitting ? 'Creating Account...' : 'Create Account'}
+                        <button type="submit" className="btn-primary" disabled={submitting}>
+                            {submitting ? 'Creating Account...' : 'Continue'}
                         </button>
                     </form>
 
-                    <div className="auth-toggle">
-                        <p>Already have an account? <span className="toggle-link" onClick={handleSignInClick}>Sign In</span></p>
+                    <div className="auth-footer">
+                        Already have an account?
+                        <span className="toggle-link" onClick={() => navigate('/login')}>Log in</span>
                     </div>
                 </div>
 
-                <div className="signup-image-wrapper">
-                    <div className="signup-image-placeholder">
-                        <img
-                            src={SignupImage}
-                            alt="Sign Up"
-                        />
-                    </div>
+                <div className="auth-right">
+                    <img src={SignupImage} alt="Lifestyle" />
                 </div>
             </div>
         </div>

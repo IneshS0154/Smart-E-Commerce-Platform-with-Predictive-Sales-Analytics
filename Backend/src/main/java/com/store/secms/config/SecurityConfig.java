@@ -64,6 +64,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/orders/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/coupons/validate").permitAll()
                         .requestMatchers("/api/coupons/**").authenticated()
+                        .requestMatchers("/api/customers/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

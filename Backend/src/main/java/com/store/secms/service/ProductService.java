@@ -143,22 +143,25 @@ public class ProductService {
         // Update images if provided
         if (request.getMainImagePath() != null) {
             product.setMainImagePath(request.getMainImagePath());
-            // Delete and recreate image records
-            productImageRepository.deleteByProductId(productId);
             
+            // Clear existing images list (orphanRemoval=true will delete them from DB)
+            product.getImages().clear();
+            
+            // Create and add new main image
             ProductImage mainImage = new ProductImage();
             mainImage.setProduct(product);
             mainImage.setImagePath(request.getMainImagePath());
             mainImage.setImageOrder(0);
-            productImageRepository.save(mainImage);
+            product.getImages().add(mainImage);
 
+            // Create and add additional images
             if (request.getAdditionalImagePaths() != null && !request.getAdditionalImagePaths().isEmpty()) {
                 for (int i = 0; i < request.getAdditionalImagePaths().size() && i < 3; i++) {
                     ProductImage additionalImage = new ProductImage();
                     additionalImage.setProduct(product);
                     additionalImage.setImagePath(request.getAdditionalImagePaths().get(i));
                     additionalImage.setImageOrder(i + 1);
-                    productImageRepository.save(additionalImage);
+                    product.getImages().add(additionalImage);
                 }
             }
         }

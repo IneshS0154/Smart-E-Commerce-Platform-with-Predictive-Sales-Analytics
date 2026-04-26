@@ -23,7 +23,7 @@
 .checkout-empty {
     text-align: center;
     padding: 80px 0;
-    font-family: 'NORD', sans-serif;
+    font-family: 'Grift', sans-serif;
     font-size: 14px;
     color: #888;
 }
@@ -71,7 +71,7 @@
 }
 
 .checkout-section-subtitle {
-    font-family: 'NORD', sans-serif;
+    font-family: 'Grift', sans-serif;
     font-size: 12px;
     color: #888;
     margin: 0 0 20px;
@@ -83,7 +83,7 @@
 
 .checkout-field label {
     display: block;
-    font-family: 'NORD', sans-serif;
+    font-family: 'Grift', sans-serif;
     font-size: 11px;
     font-weight: 600;
     color: #666;
@@ -99,7 +99,7 @@
     padding: 12px 14px;
     border: 1.5px solid #e0e0e0;
     border-radius: 8px;
-    font-family: 'NORD', sans-serif;
+    font-family: 'Grift', sans-serif;
     font-size: 13px;
     color: #1a1a1a;
     background: #fff;
@@ -132,7 +132,7 @@
 
 .checkout-error {
     display: block;
-    font-family: 'NORD', sans-serif;
+    font-family: 'Grift', sans-serif;
     font-size: 11px;
     color: #dc2626;
     margin-top: 4px;
@@ -140,7 +140,7 @@
 
 .checkout-success {
     display: block;
-    font-family: 'NORD', sans-serif;
+    font-family: 'Grift', sans-serif;
     font-size: 11px;
     color: #16a34a;
     margin-top: 4px;
@@ -156,7 +156,7 @@
     padding: 12px 14px;
     border: 1.5px solid #e0e0e0;
     border-radius: 8px;
-    font-family: 'NORD', sans-serif;
+    font-family: 'Grift', sans-serif;
     font-size: 13px;
 }
 
@@ -171,7 +171,7 @@
     color: #fff;
     border: none;
     border-radius: 8px;
-    font-family: 'NORD', sans-serif;
+    font-family: 'Grift', sans-serif;
     font-size: 12px;
     font-weight: 600;
     cursor: pointer;
@@ -199,7 +199,7 @@
     color: #dc2626;
     padding: 12px 16px;
     border-radius: 8px;
-    font-family: 'NORD', sans-serif;
+    font-family: 'Grift', sans-serif;
     font-size: 12px;
     margin-bottom: 20px;
 }
@@ -211,7 +211,7 @@
     color: #fff;
     border: none;
     border-radius: 8px;
-    font-family: 'NORD', sans-serif;
+    font-family: 'Grift', sans-serif;
     font-size: 13px;
     font-weight: 700;
     letter-spacing: 0.08em;
@@ -294,7 +294,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'NORD', sans-serif;
+    font-family: 'Grift', sans-serif;
     font-size: 9px;
     color: #aaa;
 }
@@ -307,7 +307,7 @@
     height: 20px;
     background: #1a1a1a;
     color: #fff;
-    font-family: 'NORD', sans-serif;
+    font-family: 'Grift', sans-serif;
     font-size: 10px;
     font-weight: 600;
     border-radius: 50%;
@@ -348,13 +348,13 @@
 }
 
 .checkout-item-details p {
-    font-family: 'NORD', sans-serif;
+    font-family: 'Grift', sans-serif;
     font-size: 12px;
     color: #888;
 }
 
 .checkout-item-price {
-    font-family: 'NORD', sans-serif;
+    font-family: 'Grift', sans-serif;
     font-size: 12px;
     font-weight: 600;
     color: #1a1a1a;
@@ -371,7 +371,7 @@
     display: flex;
     justify-content: space-between;
     margin-bottom: 10px;
-    font-family: 'NORD', sans-serif;
+    font-family: 'Grift', sans-serif;
     font-size: 13px;
     color: #666;
 }

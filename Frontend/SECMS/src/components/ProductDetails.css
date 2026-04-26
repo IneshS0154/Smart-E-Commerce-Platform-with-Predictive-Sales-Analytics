@@ -6,7 +6,7 @@
 .pd {
   min-height: 100vh;
   background: #ffffff;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   color: #1a1a1a;
 }
 
@@ -20,7 +20,7 @@
   min-height: 60vh;
   gap: 16px;
   color: #9ca3af;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 13px;
   letter-spacing: 0.04em;
 }
@@ -47,7 +47,7 @@
   color: #fff;
   border: none;
   border-radius: 6px;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -71,7 +71,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 10px;
   color: #bbb;
   letter-spacing: 0.08em;
@@ -186,7 +186,7 @@
   justify-content: center;
   flex-direction: column;
   gap: 10px;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 11px;
   color: #ccc;
   letter-spacing: 0.05em;
@@ -240,7 +240,7 @@
   right: 14px;
   background: rgba(0, 0, 0, 0.42);
   color: #fff;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -262,7 +262,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 9px;
   font-weight: 800;
   letter-spacing: 0.14em;
@@ -293,7 +293,7 @@
 }
 
 .pd__sku {
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 10px;
   color: #bbb;
   letter-spacing: 0.08em;
@@ -315,14 +315,14 @@
 }
 
 .pd__rating-val {
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 13px;
   font-weight: 700;
   color: #1a1a1a;
 }
 
 .pd__rating-count {
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 12px;
   color: #aaa;
 }
@@ -339,7 +339,7 @@
 }
 
 .pd__price {
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 28px;
   font-weight: 700;
   color: #111;
@@ -347,7 +347,7 @@
 }
 
 .pd__price-currency {
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 14px;
   font-weight: 400;
   color: #aaa;
@@ -397,7 +397,7 @@
 .pd__qty span {
   min-width: 36px;
   text-align: center;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 13px;
   font-weight: 700;
   color: #111;
@@ -410,7 +410,7 @@
   color: #fff;
   border: none;
   border-radius: 8px;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 0.1em;
@@ -440,7 +440,7 @@
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 11px;
   font-weight: 600;
   margin-bottom: 4px;
@@ -467,7 +467,7 @@
 
 /* Success message after adding to bag */
 .pd__added-msg {
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 11px;
   font-weight: 700;
   color: #10b981;
@@ -481,7 +481,7 @@
 
 /* Inline bold value next to section labels (e.g. "Colour — Grey") */
 .pd__section-value {
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 10px;
   font-weight: 700;
   color: #1a1a1a;
@@ -491,7 +491,7 @@
 
 /* Section labels */
 .pd__section-label {
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -512,7 +512,7 @@
 .pd__color-chip {
   padding: 7px 18px;
   border-radius: 100px;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 11px;
   font-weight: 600;
   background: #f3f4f6;
@@ -541,7 +541,7 @@
   height: 46px;
   border: 1.5px solid #e5e7eb;
   border-radius: 8px;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 12px;
   font-weight: 700;
   background: #fff;
@@ -588,7 +588,7 @@
   padding: 18px 20px;
   background: #f7f7f5;
   border-radius: 8px;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 13px;
   line-height: 1.8;
   color: #555;
@@ -613,7 +613,7 @@
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.14em;
@@ -639,7 +639,7 @@
 }
 
 .pd__accordion-body {
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 13px;
   color: #666;
   line-height: 1.75;
@@ -661,7 +661,7 @@
 }
 
 .pd__reviews-title {
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 16px;
   font-weight: 800;
   letter-spacing: 0.15em;
@@ -776,7 +776,7 @@
 }
 
 .pd__filter-label {
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 11px;
   font-weight: 700;
   color: #111;
@@ -789,7 +789,7 @@
 }
 
 .pd__filter-count {
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 11px;
   font-weight: 600;
   color: #888;
@@ -807,7 +807,7 @@
   background: #fff;
   border-radius: 12px;
   border: 1px dashed #ebebeb;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 11px;
   color: #888;
   letter-spacing: 0.1em;
@@ -842,7 +842,7 @@
 }
 
 .pd__review-author {
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 12px;
   font-weight: 800;
   color: #111;
@@ -856,7 +856,7 @@
 }
 
 .pd__review-date {
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 10px;
   font-weight: 600;
   color: #aaa;
@@ -875,7 +875,7 @@
 
 .pd__reviews-note {
   text-align: center;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 10px;
   color: #aaa;
   letter-spacing: 0.1em;
@@ -952,7 +952,7 @@
   justify-content: center;
   align-items: center;
   height: 100%;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 10px;
   color: #999;
   letter-spacing: 0.1em;
@@ -965,7 +965,7 @@
   left: 12px;
   padding: 4px 8px;
   border-radius: 4px;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.1em;
@@ -1006,7 +1006,7 @@
 }
 
 .pd__rec-price {
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 12px;
   font-weight: 800;
   color: #111;
@@ -1014,7 +1014,7 @@
 }
 
 .pd__rec-category {
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 11px;
   color: #888;
   margin: 0 0 12px 0;
@@ -1062,7 +1062,7 @@
 }
 
 .pd__faqs-subtitle {
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 14px;
   font-weight: 400;
   color: #111;
@@ -1087,7 +1087,7 @@
   padding: 24px 0;
   background: transparent;
   border: none;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
@@ -1113,7 +1113,7 @@
 }
 
 .pd__faq-body {
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 13px;
   color: #666;
   line-height: 1.7;
@@ -1126,7 +1126,7 @@
 .pd__size-guide-btn {
   background: none;
   border: none;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -1195,7 +1195,7 @@
 }
 
 .pd__sc-title {
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 14px;
   font-weight: 600;
   letter-spacing: 0.08em;
@@ -1236,7 +1236,7 @@
 }
 
 .pd__sc-unit {
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 12px;
   font-weight: 700;
   color: #9ca3af;
@@ -1290,7 +1290,7 @@
   border: 1px solid #ebebeb;
   padding: 12px;
   text-align: center;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 11px;
 }
 
@@ -1311,7 +1311,7 @@
 }
 
 .pd__sc-how-title {
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 18px;
   font-weight: 600;
   letter-spacing: 0.05em;
@@ -1334,7 +1334,7 @@
 }
 
 .pd__sc-instructions li {
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 11px;
   line-height: 1.6;
   color: #555;

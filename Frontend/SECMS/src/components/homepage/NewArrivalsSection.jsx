@@ -96,7 +96,7 @@ function NewArrivalsSection() {
     setLoading(true);
     setError('');
 
-    fetch('/api/products/new-arrivals?limit=3', { signal: controller.signal })
+    fetch('/api/products/new-arrivals?limit=4', { signal: controller.signal })
       .then((res) => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json();
@@ -153,8 +153,8 @@ function NewArrivalsSection() {
       {/* ── Grid ── */}
       <div className="arrivals__grid">
         {loading ? (
-          // Skeleton placeholders — 6 total
-          Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)
+          // Skeleton placeholders — 8 total
+          Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)
         ) : error ? (
           <p className="na-error">{error}</p>
         ) : displayed.length === 0 ? (

@@ -1,0 +1,266 @@
+@import './AdminCommon.css';
+
+.admin-reports-dashboard {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    background: transparent;
+    font-family: 'Grift', sans-serif;
+}
+
+.admin-reports-main {
+    margin-left: var(--ov-sidebar-width);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.admin-reports-content {
+    padding: 40px 48px;
+    max-width: 1400px;
+}
+
+/* ── Header ── */
+.rpt-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 40px;
+}
+
+.rpt-title {
+    font-size: 28px;
+    font-weight: 800;
+    color: #111;
+    margin-bottom: 6px;
+}
+
+.rpt-subtitle {
+    font-size: 14px;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.rpt-export-suite {
+    display: flex;
+    gap: 12px;
+}
+
+.rpt-export-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #fff;
+    color: #111;
+    border: 1px solid #eee;
+    padding: 10px 18px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.rpt-export-btn:hover {
+    background: #f9fafb;
+    border-color: #ddd;
+}
+
+.rpt-export-btn.primary {
+    background: #111;
+    color: #fff;
+    border: none;
+}
+
+.rpt-export-btn.primary:hover {
+    background: #222;
+}
+
+/* ── Metrics Grid ── */
+.rpt-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    margin-bottom: 40px;
+}
+
+.rpt-metric-card {
+    background: #fff;
+    border: 1px solid #f1f1f1;
+    border-radius: 24px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+}
+
+.rpt-metric-card.highlight {
+    background: #111;
+    color: #fff;
+    border: none;
+}
+
+.rpt-metric-card.warning {
+    border-color: #fee2e2;
+}
+
+.rpt-metric-card .label {
+    font-size: 10px;
+    font-weight: 800;
+    color: #9ca3af;
+    letter-spacing: 0.08em;
+}
+
+.rpt-metric-card.highlight .label {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.rpt-metric-card .value {
+    font-size: 20px;
+    font-weight: 800;
+    margin: 8px 0;
+}
+
+.rpt-metric-card .trend {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.rpt-metric-card .trend.up { color: #10b981; }
+.rpt-metric-card .trend.down { color: #ef4444; }
+
+/* ── Charts Row ── */
+.rpt-charts-row {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 24px;
+    margin-bottom: 40px;
+}
+
+.rpt-chart-container {
+    background: #fff;
+    border: 1px solid #f1f1f1;
+    border-radius: 32px;
+    padding: 32px;
+}
+
+.chart-header {
+    margin-bottom: 24px;
+}
+
+.chart-title {
+    font-size: 18px;
+    font-weight: 800;
+    color: #111;
+    margin-bottom: 4px;
+}
+
+.chart-subtitle {
+    font-size: 12px;
+    color: #9ca3af;
+    font-weight: 500;
+}
+
+/* ── Tables Row ── */
+.rpt-tables-row {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 24px;
+}
+
+.rpt-table-box {
+    background: #fff;
+    border: 1px solid #f1f1f1;
+    border-radius: 32px;
+    padding: 32px;
+}
+
+.box-header {
+    margin-bottom: 24px;
+}
+
+.box-title {
+    font-size: 16px;
+    font-weight: 800;
+    color: #111;
+}
+
+.box-subtitle {
+    font-size: 12px;
+    color: #9ca3af;
+}
+
+.rpt-row-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    background: #fafafa;
+    border-radius: 20px;
+    margin-bottom: 12px;
+    border: 1px solid transparent;
+    transition: 0.2s;
+}
+
+.rpt-row-item:hover {
+    background: #fff;
+    border-color: #eee;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+}
+
+.rpt-row-item.warning {
+    background: #fffafa;
+}
+
+.rpt-row-item .info .name {
+    font-size: 14px;
+    font-weight: 800;
+    color: #111;
+    margin-bottom: 4px;
+}
+
+.rpt-row-item .info .meta {
+    font-size: 11px;
+    color: #9ca3af;
+    font-weight: 600;
+}
+
+.rpt-row-item .value {
+    text-align: right;
+}
+
+.rpt-row-item .price {
+    font-size: 14px;
+    font-weight: 800;
+    color: #111;
+}
+
+.rpt-row-item .badge {
+    display: inline-block;
+    padding: 4px 8px;
+    background: #fee2e2;
+    color: #ef4444;
+    border-radius: 6px;
+    font-size: 9px;
+    font-weight: 800;
+    margin-top: 4px;
+}
+
+.prod-img {
+    width: 44px;
+    height: 56px;
+    background: #f5f5f5;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-right: 16px;
+    flex-shrink: 0;
+}
+
+.prod-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}

@@ -14,7 +14,7 @@
   align-items: center;
   gap: 8px;
   margin-bottom: 24px;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 0.9rem;
   color: #666;
 }
@@ -39,7 +39,7 @@
 }
 
 .catalogue__subtitle {
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 1rem;
   font-weight: 300;
   color: #666;
@@ -127,7 +127,7 @@
 .price-display {
   display: flex;
   justify-content: space-between;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 0.9rem;
   color: #666;
   font-weight: 500;
@@ -138,7 +138,7 @@
   align-items: center;
   gap: 10px;
   cursor: pointer;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 0.9rem;
   color: #666;
   transition: all 0.2s ease;
@@ -174,7 +174,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
 }
 
 .sort-container label {
@@ -188,7 +188,7 @@
   border: 1px solid #ddd;
   border-radius: 4px;
   background: white;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 0.9rem;
   color: #1a1a1a;
   cursor: pointer;
@@ -206,7 +206,7 @@
 }
 
 .result-count {
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 0.9rem;
   color: #666;
 }
@@ -252,7 +252,7 @@
   background: linear-gradient(135deg, #f9f9f9 0%, #f0f0f0 100%);
   color: #999;
   font-size: 14px;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   border: 1px dashed #ddd;
 }
 
@@ -266,7 +266,7 @@
   border-radius: 4px;
   font-size: 0.8rem;
   font-weight: 600;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
 }
 
 .product-card__content {
@@ -295,7 +295,7 @@
   align-items: center;
   gap: 6px;
   font-size: 0.8rem;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
 }
 
 .stars {
@@ -327,7 +327,7 @@
 }
 
 .original-price {
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 0.85rem;
   color: #999;
   text-decoration: line-through;
@@ -357,7 +357,7 @@
   padding: 60px 40px;
   text-align: center;
   color: #666;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 1rem;
 }
 
