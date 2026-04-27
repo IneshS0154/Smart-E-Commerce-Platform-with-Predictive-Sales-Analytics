@@ -10,6 +10,7 @@ import NewsletterSection from '../components/homepage/NewsletterSection';
 import Footer from '../components/Footer';
 import MensSection from '../components/Men_s/MensSection';
 import ScrollToTop from '../components/ScrollToTop';
+import ScrollVelocity from '../components/ui/ScrollVelocity/ScrollVelocity';
 
 function HomePage() {
   return (
@@ -21,8 +22,7 @@ function HomePage() {
       <EverydayWearSection />
       <SupplierSection />
       <WomensSection />
-      {/* <CollectionsSection /> */}
-      <MensSection/>
+      <MensSection />
       <NewsletterSection />
       <Footer />
       <ScrollToTop />

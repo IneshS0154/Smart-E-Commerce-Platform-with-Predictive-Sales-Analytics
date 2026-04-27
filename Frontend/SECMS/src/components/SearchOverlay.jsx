@@ -195,7 +195,7 @@ export default function SearchOverlay({ isOpen, onClose }) {
                           {isSoldOut ? (
                             <span className="search-overlay__card-sale-tag" style={{ background: 'rgba(0,0,0,0.8)', color: '#fff', left: 'auto', right: '8px' }}>SOLD OUT</span>
                           ) : (
-                            <span className="search-overlay__card-sale-tag">SALE</span>
+                            <span className="search-overlay__card-sale-tag"></span>
                           )}
                           {!isSoldOut && <span className="search-overlay__card-discount-tag">NEW</span>}
                         </div>

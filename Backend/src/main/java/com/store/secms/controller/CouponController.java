@@ -108,7 +108,13 @@ public class CouponController {
     /** Delete a coupon */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
-        couponRepository.deleteById(id);
-        return ResponseEntity.ok(Map.of("message", "Coupon deleted"));
+        try {
+            couponRepository.deleteById(id);
+            return ResponseEntity.ok(Map.of("message", "Coupon deleted"));
+        } catch (org.springframework.dao.DataIntegrityViolationException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Cannot delete coupon because it has been used in orders. Please use Deactivate instead."));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of("message", "Failed to delete coupon: " + e.getMessage()));
+        }
     }
 }

@@ -71,7 +71,7 @@
 }
 
 .order-success-row span:first-child {
-    font-family: 'NORD', sans-serif;
+    font-family: 'Grift', sans-serif;
     font-size: 12px;
     color: #888;
     text-transform: uppercase;
@@ -86,7 +86,7 @@
 }
 
 .order-success-status {
-    font-family: 'NORD', sans-serif;
+    font-family: 'Grift', sans-serif;
     font-size: 12px;
     font-weight: 600;
     padding: 4px 12px;
@@ -111,7 +111,7 @@
 .order-success-btn {
     padding: 14px 28px;
     border-radius: 8px;
-    font-family: 'NORD', sans-serif;
+    font-family: 'Grift', sans-serif;
     font-size: 12px;
     font-weight: 700;
     letter-spacing: 0.08em;

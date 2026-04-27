@@ -1,0 +1,109 @@
+.confirm-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    animation: fadeIn 0.2s ease;
+}
+
+.confirm-card {
+    background: #fff;
+    width: 100%;
+    max-width: 400px;
+    border-radius: 24px;
+    padding: 32px;
+    box-shadow: 0 40px 100px rgba(0,0,0,0.2);
+    animation: confirmSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    font-family: 'Grift', sans-serif;
+}
+
+.confirm-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+}
+
+.confirm-icon-box {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.confirm-icon-box.danger { background: #fef2f2; color: #ef4444; }
+.confirm-icon-box.warning { background: #fffbeb; color: #f59e0b; }
+
+.confirm-close {
+    background: none;
+    border: none;
+    color: #9ca3af;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 8px;
+    transition: 0.2s;
+}
+
+.confirm-close:hover { background: #f3f4f6; color: #111; }
+
+.confirm-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+}
+
+.confirm-message {
+    font-size: 15px;
+    color: #666;
+    line-height: 1.5;
+    margin-bottom: 32px;
+}
+
+.confirm-footer {
+    display: flex;
+    gap: 12px;
+}
+
+.confirm-btn-secondary {
+    flex: 1;
+    height: 48px;
+    border-radius: 12px;
+    background: #fff;
+    border: 1px solid #eee;
+    font-weight: 700;
+    font-size: 14px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.confirm-btn-secondary:hover { background: #fafafa; border-color: #ddd; }
+
+.confirm-btn-primary {
+    flex: 1.5;
+    height: 48px;
+    border-radius: 12px;
+    border: none;
+    color: #fff;
+    font-weight: 700;
+    font-size: 14px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.confirm-btn-primary.danger { background: #ef4444; }
+.confirm-btn-primary.danger:hover { background: #dc2626; transform: translateY(-1px); }
+
+@keyframes confirmSlideIn {
+    from { transform: translateY(20px) scale(0.95); opacity: 0; }
+    to { transform: translateY(0) scale(1); opacity: 1; }
+}

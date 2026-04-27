@@ -2,7 +2,11 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../api/axiosConfig.js';
 import SellerRegisterImage from '../../assets/images/seller_auth/singup.jpg';
-import '../supplierLogin/Auth.css';
+import './Auth.css';
+import DarkVeil from '../ui/DarkVeil';
+import { 
+    ShoppingBag, AlertCircle, ChevronLeft, CheckCircle2 
+} from 'lucide-react';
 
 export default function Register() {
     const navigate = useNavigate();
@@ -19,6 +23,19 @@ export default function Register() {
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const [fieldErrors, setFieldErrors] = useState({});
+
+    const validateForm = () => {
+        const errors = {};
+        if (!formData.storeName.trim()) errors.storeName = 'Store name is required';
+        if (formData.username.length < 3) errors.username = 'Username too short';
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(formData.email)) errors.email = 'Invalid email address';
+        if (formData.password.length < 6) errors.password = 'Min 6 characters';
+        if (formData.password !== formData.confirmPassword) errors.confirmPassword = 'Passwords do not match';
+        if (!formData.acceptTerms) errors.acceptTerms = 'Required';
+        return errors;
+    };
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -28,15 +45,11 @@ export default function Register() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
-        setSuccess('');
+        setFieldErrors({});
 
-        if (formData.password !== formData.confirmPassword) {
-            setError('Passwords do not match');
-            return;
-        }
-
-        if (!formData.acceptTerms) {
-            setError('Please accept the Terms & Conditions to continue.');
+        const errors = validateForm();
+        if (Object.keys(errors).length > 0) {
+            setFieldErrors(errors);
             return;
         }
 
@@ -44,165 +57,169 @@ export default function Register() {
         try {
             const { confirmPassword, acceptTerms, ...payload } = formData;
             await api.post('/sellers/register', { ...payload, status: 'PENDING' });
-            setSuccess('Registration successful! Please login.');
-            setTimeout(() => {
-                navigate('/signin');
-            }, 1500);
-        } catch (error) {
-            const backendMessage = error?.response?.data?.message || error?.response?.data;
-            setError(typeof backendMessage === 'string' ? backendMessage : 'Registration failed. Please try again.');
+            setSuccess('Registration successful! Redirecting to login...');
+            setTimeout(() => navigate('/signin'), 2000);
+        } catch (err) {
+            setError(err?.response?.data?.message || 'Registration failed.');
         } finally {
             setSubmitting(false);
         }
     };
 
-    const goToLogin = () => {
-        navigate('/signin');
-    };
-
     return (
-        <div className="supplier-auth-container">
-            <div className="back-link-container">
-                <button onClick={() => navigate('/')} className="back-to-home">← Back to Home</button>
+        <div className="auth-container">
+            <button className="back-home-btn" onClick={() => navigate('/')}>
+                <ChevronLeft size={18} />
+                <span>Back to Home</span>
+            </button>
+            <div className="auth-bg-wrapper">
+                <DarkVeil 
+                    speed={1.5} 
+                    noiseIntensity={0.02} 
+                    scanlineIntensity={0.1} 
+                    warpAmount={0.25}
+                    grayscale={1.0}
+                />
             </div>
 
-            <div className="supplier-auth-content">
-                <div className="supplier-auth-form-wrapper">
-                    <h1 className="supplier-auth-title">Create Account</h1>
-                    <p className="supplier-auth-subtitle">Join ANYWEAR as a Supplier.</p>
-                    <br></br>
+            <div className="auth-card">
+                <div className="auth-left">
+                    <div className="auth-logo">
+                        <ShoppingBag size={20} color="#000" />
+                    </div>
 
-                    {error && (
-                        <div style={{ color: '#dc2626', backgroundColor: '#fee2e2', padding: '10px', borderRadius: '6px', marginBottom: '12px', fontSize: '14px' }}>
-                            {error}
-                        </div>
-                    )}
+                    <div className="auth-header">
+                        <h1>Join ANYWEAR</h1>
+                        <p>Register as a Supplier to start selling.</p>
+                    </div>
 
-                    {success && (
-                        <div style={{ color: '#16a34a', backgroundColor: '#dcfce7', padding: '10px', borderRadius: '6px', marginBottom: '12px', fontSize: '14px' }}>
-                            {success}
-                        </div>
-                    )}
+                    {error && <div className="alert alert-error"><AlertCircle size={16} /> {error}</div>}
+                    {success && <div className="alert alert-success"><CheckCircle2 size={16} /> {success}</div>}
 
-                    <form onSubmit={handleSubmit} className="supplier-auth-form">
+                    <form onSubmit={handleSubmit} className="auth-form">
                         <div className="form-row">
-                            <div className="form-group form-group-half">
-                                <label htmlFor="storeName">Store / Brand name</label>
+                            <div className="form-group">
+                                <label>Store / Brand Name</label>
+                                <div className="input-wrapper">
+                                    <input
+                                        type="text"
+                                        name="storeName"
+                                        placeholder="e.g. Anywear Studio"
+                                        value={formData.storeName}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                                {fieldErrors.storeName && <span className="field-error">{fieldErrors.storeName}</span>}
+                            </div>
+                            <div className="form-group">
+                                <label>Username</label>
+                                <div className="input-wrapper">
+                                    <input
+                                        type="text"
+                                        name="username"
+                                        placeholder="Choose a username"
+                                        value={formData.username}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                                {fieldErrors.username && <span className="field-error">{fieldErrors.username}</span>}
+                            </div>
+                        </div>
+
+                        <div className="form-group">
+                            <label>Email Address</label>
+                            <div className="input-wrapper">
                                 <input
-                                    type="text"
-                                    id="storeName"
-                                    value={formData.storeName}
+                                    type="email"
+                                    name="email"
+                                    placeholder="Enter your email"
+                                    value={formData.email}
                                     onChange={handleChange}
-                                    placeholder="e.g. Anywear Studio"
-                                    name="storeName"
-                                    required
                                 />
                             </div>
+                            {fieldErrors.email && <span className="field-error">{fieldErrors.email}</span>}
+                        </div>
 
-                            <div className="form-group form-group-half">
-                                <label htmlFor="username">Username</label>
-                                <input
-                                    type="text"
-                                    id="username"
-                                    value={formData.username}
-                                    onChange={handleChange}
-                                    placeholder="Choose a username"
-                                    name="username"
-                                    required
-                                />
+                        <div className="form-row">
+                            <div className="form-group">
+                                <label>Phone Number</label>
+                                <div className="input-wrapper">
+                                    <input
+                                        type="tel"
+                                        name="phoneNumber"
+                                        placeholder="+94 000 000 000"
+                                        value={formData.phoneNumber}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                            </div>
+                            <div className="form-group">
+                                <label>Address</label>
+                                <div className="input-wrapper">
+                                    <input
+                                        type="text"
+                                        name="address"
+                                        placeholder="City, Country"
+                                        value={formData.address}
+                                        onChange={handleChange}
+                                    />
+                                </div>
                             </div>
                         </div>
 
-                        <div className="form-group">
-                            <label htmlFor="email">Email Address</label>
-                            <input
-                                type="email"
-                                id="email"
-                                value={formData.email}
-                                onChange={handleChange}
-                                placeholder="Enter your email"
-                                name="email"
-                                required
-                            />
+                        <div className="form-row">
+                            <div className="form-group">
+                                <label>Password</label>
+                                <div className="input-wrapper">
+                                    <input
+                                        type="password"
+                                        name="password"
+                                        placeholder="••••••••••••"
+                                        value={formData.password}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                                {fieldErrors.password && <span className="field-error">{fieldErrors.password}</span>}
+                            </div>
+                            <div className="form-group">
+                                <label>Confirm Password</label>
+                                <div className="input-wrapper">
+                                    <input
+                                        type="password"
+                                        name="confirmPassword"
+                                        placeholder="••••••••••••"
+                                        value={formData.confirmPassword}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                                {fieldErrors.confirmPassword && <span className="field-error">{fieldErrors.confirmPassword}</span>}
+                            </div>
                         </div>
 
-                        <div className="form-group">
-                            <label htmlFor="phoneNumber">Phone Number</label>
-                            <input
-                                type="tel"
-                                id="phoneNumber"
-                                value={formData.phoneNumber}
-                                onChange={handleChange}
-                                placeholder="Enter your phone number"
-                                name="phoneNumber"
-                                required
-                            />
-                        </div>
-
-                        <div className="form-group">
-                            <label htmlFor="address">Address</label>
-                            <input
-                                type="text"
-                                id="address"
-                                value={formData.address}
-                                onChange={handleChange}
-                                placeholder="Enter your address"
-                                name="address"
-                                required
-                            />
-                        </div>
-
-                        <div className="form-group">
-                            <label htmlFor="password">Password</label>
-                            <input
-                                type="password"
-                                id="password"
-                                value={formData.password}
-                                onChange={handleChange}
-                                placeholder="Create a strong password"
-                                name="password"
-                                required
-                            />
-                        </div>
-
-                        <div className="form-group">
-                            <label htmlFor="confirmPassword">Confirm Password</label>
-                            <input
-                                type="password"
-                                id="confirmPassword"
-                                value={formData.confirmPassword}
-                                onChange={handleChange}
-                                placeholder="Confirm your password"
-                                name="confirmPassword"
-                                required
-                            />
-                        </div>
-
-                        <div className="form-group checkbox">
+                        <div className="checkbox-group">
                             <input
                                 type="checkbox"
-                                id="acceptTerms"
+                                id="terms"
+                                name="acceptTerms"
                                 checked={formData.acceptTerms}
                                 onChange={handleChange}
-                                name="acceptTerms"
-                                required
                             />
-                            <label htmlFor="acceptTerms" class="acceptTerms">I agree to the Terms & Conditions</label>
+                            <label htmlFor="terms">I agree to the <a href="#">Terms & Conditions</a></label>
                         </div>
 
-                        <button type="submit" className="supplier-auth-button" disabled={submitting}>
+                        <button type="submit" className="btn-primary" disabled={submitting}>
                             {submitting ? 'Creating Account...' : 'Create Account'}
                         </button>
                     </form>
-                    <div className="supplier-auth-toggle">
-                        <p>Already have an account? <span className="toggle-link" onClick={goToLogin}>Sign In</span></p>
+
+                    <div className="auth-footer">
+                        Already have an account?
+                        <span className="toggle-link" onClick={() => navigate('/signin')}>Sign In</span>
                     </div>
                 </div>
 
-                <div className="supplierS-auth-image-wrapper">
-                    <div className="supplierS-auth-image-placeholder">
-                        <img src={SellerRegisterImage} alt="Seller Sign Up" />
-                    </div>
+                <div className="auth-right">
+                    <img src={SellerRegisterImage} alt="Supplier Join" />
                 </div>
             </div>
         </div>

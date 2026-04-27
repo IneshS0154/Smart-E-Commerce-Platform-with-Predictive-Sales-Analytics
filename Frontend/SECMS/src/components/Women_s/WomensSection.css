@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════════
    WomensSection.css  — 3-top + 2-bottom editorial grid
-   Fonts: 'Grift' (headings) · 'NORD' (body)
+   Fonts: 'Grift' (headings) · 'Grift' (body)
 ═══════════════════════════════════════════════════ */
 
 .ws {
@@ -19,7 +19,7 @@
 
 .ws__eyebrow {
   display: block;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 11px;
   font-weight: 400;
   letter-spacing: 0.18em;
@@ -45,7 +45,7 @@
 }
 
 .ws__subtitle {
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 14px;
   font-weight: 300;
   color: #7a7068;
@@ -166,7 +166,7 @@
 
 .ws__card-tag {
   display: block;
-  font-family: 'NORD', sans-serif;
+  font-family: 'Grift', sans-serif;
   font-size: 10px;
   font-weight: 400;
   letter-spacing: 0.18em;

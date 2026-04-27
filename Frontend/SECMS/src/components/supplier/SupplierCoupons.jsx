@@ -1,47 +1,32 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
+import { 
+  Plus, X, Search, Tag, Calendar, 
+  Trash2, Power, AlertCircle, CheckCircle2, 
+  BarChart2, Clock, Info, Layers
+} from 'lucide-react';
 import { couponAPI } from '../../api/orderAPI';
 import './SupplierCoupons.css';
 
 const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
+const fmtPrice = (p) => p ? `LKR ${parseFloat(p).toLocaleString('en-LK', { minimumFractionDigits: 2 })}` : 'LKR 0.00';
 
 function StatusBadge({ status }) {
     const map = {
-        ACTIVE: { label: '✔ Active', color: '#22c55e', bg: '#f0fdf4' },
-        INACTIVE: { label: '⊗ Inactive', color: '#9a9a90', bg: '#f4f4f2' },
-        EXPIRED: { label: '× Expired', color: '#ef4444', bg: '#fef2f2' },
+        ACTIVE: { label: 'Active', icon: <CheckCircle2 size={12} />, className: 'active' },
+        INACTIVE: { label: 'Inactive', icon: <Power size={12} />, className: 'inactive' },
+        EXPIRED: { label: 'Expired', icon: <Clock size={12} />, className: 'expired' },
     };
     const s = map[status] || map.INACTIVE;
     return (
-        <span style={{
-            padding: '4px 10px', borderRadius: '6px', fontSize: '11px',
-            fontFamily: "'NORD', sans-serif", letterSpacing: '0.06em',
-            fontWeight: 700, background: s.bg, color: s.color
-        }}>{s.label}</span>
+        <span className={`sc-badge sc-badge--${s.className}`}>
+            {s.icon} {s.label}
+        </span>
     );
 }
 
 export default function SupplierCoupons() {
     const [seller, setSeller] = useState(null);
-    const [error, setError] = useState(null);
-    
-    useEffect(() => {
-        try {
-            const stored = localStorage.getItem('seller');
-            if (stored) {
-                const parsed = JSON.parse(stored);
-                console.log('SupplierCoupons - seller loaded:', parsed);
-                setSeller(parsed);
-            } else {
-                console.warn('SupplierCoupons - no seller in localStorage');
-            }
-        } catch (err) {
-            console.error('SupplierCoupons - failed to parse seller:', err);
-            setError('Failed to load seller data');
-        }
-    }, []);
-    
-    const sellerId = seller?.id;
-
     const [coupons, setCoupons] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
@@ -49,72 +34,71 @@ export default function SupplierCoupons() {
     const [formError, setFormError] = useState('');
     const [successMsg, setSuccessMsg] = useState('');
 
-    const today = new Date().toISOString().slice(0, 16);
+    const getLocalISOString = () => {
+        const tzoffset = (new Date()).getTimezoneOffset() * 60000; 
+        return (new Date(Date.now() - tzoffset)).toISOString().slice(0, 16);
+    };
+    const today = getLocalISOString();
     const [form, setForm] = useState({
         code: '', description: '', discountPercentage: '', minimumOrderAmount: '',
         maxUsages: '', validFrom: today, validUntil: ''
     });
 
-    const fetchCoupons = async () => {
-        if (!sellerId) {
-            console.log('SupplierCoupons - no sellerId, skipping fetch');
-            setLoading(false);
-            return;
+    useEffect(() => {
+        document.body.style.overflow = showForm ? 'hidden' : 'auto';
+        return () => { document.body.style.overflow = 'auto'; };
+    }, [showForm]);
+
+    useEffect(() => {
+        const stored = localStorage.getItem('seller');
+        if (stored) {
+            const parsed = JSON.parse(stored);
+            setSeller(parsed);
+            fetchCoupons(parsed.id);
         }
+    }, []);
+
+    const fetchCoupons = async (sellerId) => {
+        if (!sellerId) return;
         setLoading(true);
-        setError(null);
         try {
-            console.log('SupplierCoupons - fetching coupons for sellerId:', sellerId);
             const data = await couponAPI.getSellerCoupons(sellerId);
-            console.log('SupplierCoupons - coupons received:', data);
             setCoupons(data || []);
         } catch (e) {
-            console.error('SupplierCoupons - failed to load coupons:', e);
-            setError('Failed to load coupons: ' + (e.message || 'Unknown error'));
-            setCoupons([]);
+            console.error(e);
         } finally {
             setLoading(false);
         }
     };
 
-    useEffect(() => { fetchCoupons(); }, [sellerId]);
-
-    const handleChange = (e) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
-    };
+    const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
     const handleCreate = async (e) => {
         e.preventDefault();
         setFormError('');
         setSuccessMsg('');
 
-        const { code, description, discountPercentage, minimumOrderAmount, maxUsages, validFrom, validUntil } = form;
+        const { code, discountPercentage, minimumOrderAmount, validFrom, validUntil } = form;
         if (!code.trim()) return setFormError('Coupon code is required.');
-        if (!discountPercentage || isNaN(discountPercentage) || +discountPercentage <= 0 || +discountPercentage > 100)
-            return setFormError('Discount must be between 1 and 100%.');
-        if (!minimumOrderAmount || isNaN(minimumOrderAmount) || +minimumOrderAmount < 0)
-            return setFormError('Minimum order amount must be 0 or greater.');
-        if (!validFrom || !validUntil) return setFormError('Please set start and expiry dates.');
-        if (new Date(validUntil) <= new Date(validFrom)) return setFormError('Expiry must be after start date.');
+        if (!discountPercentage || isNaN(discountPercentage)) return setFormError('Valid discount is required.');
+        if (!validFrom || !validUntil) return setFormError('Dates are required.');
 
         setSubmitting(true);
         try {
             await couponAPI.create({
+                ...form,
                 code: code.trim().toUpperCase(),
-                description: description.trim(),
                 discountPercentage: parseFloat(discountPercentage),
-                minimumOrderAmount: parseFloat(minimumOrderAmount),
-                maxUsages: maxUsages ? parseInt(maxUsages) : 100,
-                validFrom: validFrom.length === 16 ? validFrom + ':00' : validFrom,
-                validUntil: validUntil.length === 16 ? validUntil + ':00' : validUntil,
-                sellerId
+                minimumOrderAmount: parseFloat(minimumOrderAmount || 0),
+                maxUsages: form.maxUsages ? parseInt(form.maxUsages) : 100,
+                sellerId: seller.id
             });
-            setSuccessMsg(`Coupon "${code.toUpperCase()}" created successfully!`);
-            setForm({ code: '', description: '', discountPercentage: '', minimumOrderAmount: '', maxUsages: '', validFrom: today, validUntil: '' });
+            setSuccessMsg('Coupon created successfully');
             setShowForm(false);
-            fetchCoupons();
+            setForm({ code: '', description: '', discountPercentage: '', minimumOrderAmount: '', maxUsages: '', validFrom: today, validUntil: '' });
+            fetchCoupons(seller.id);
         } catch (err) {
-            setFormError(err.response?.data?.message || 'Failed to create coupon.');
+            setFormError('Failed to create coupon');
         } finally {
             setSubmitting(false);
         }
@@ -124,176 +108,217 @@ export default function SupplierCoupons() {
         if (!window.confirm('Deactivate this coupon?')) return;
         try {
             await couponAPI.deactivate(id);
-            fetchCoupons();
-        } catch { alert('Failed to deactivate coupon.'); }
+            fetchCoupons(seller.id);
+        } catch { console.error('Deactivate failed'); }
     };
 
     const handleDelete = async (id) => {
-        if (!window.confirm('Permanently delete this coupon? This cannot be undone.')) return;
+        if (!window.confirm('Delete this coupon permanently?')) return;
         try {
             await couponAPI.deleteCoupon(id);
-            fetchCoupons();
-        } catch { alert('Failed to delete coupon.'); }
+            fetchCoupons(seller.id);
+        } catch (err) { alert('Delete failed. Coupon may be in use.'); }
     };
 
-    const active = coupons.filter(c => c.status === 'ACTIVE').length;
-    const inactive = coupons.filter(c => c.status !== 'ACTIVE').length;
+    const activeCount = coupons.filter(c => c.status === 'ACTIVE').length;
+    const usageCount = coupons.reduce((sum, c) => sum + (c.currentUsageCount || 0), 0);
+
+    if (loading && !seller) return <div className="sc-sync"><div className="loader" /></div>;
 
     return (
-        <div className="sc-page">
-            {/* Error Display */}
-            {error && (
-                <div style={{ 
-                    background: '#fef2f2', 
-                    border: '1px solid #fecaca', 
-                    color: '#dc2626', 
-                    padding: '16px', 
-                    borderRadius: '8px', 
-                    marginBottom: '20px' 
-                }}>
-                    <p style={{ margin: '0 0 8px 0', fontWeight: 600 }}>Error:</p>
-                    <p style={{ margin: 0 }}>{error}</p>
-                </div>
-            )}
-
-            {/* Header */}
-            <div className="sc-header">
+        <div className="sc-container">
+            <header className="sc-header">
                 <div>
-                    <h2 className="sc-heading">Coupon Management</h2>
-                    <p className="sc-sub">Create and manage discount coupons for your store</p>
+                    <h1 className="sc-title">Coupon Management</h1>
+                    <p className="sc-subtitle">Configure promotional codes and store-wide discounts</p>
                 </div>
-                <button className="sc-btn-create" onClick={() => { setShowForm(true); setFormError(''); setSuccessMsg(''); }}>
-                    + Create Coupon
+                <button className="sc-btn sc-btn--primary" onClick={() => setShowForm(true)}>
+                    <Plus size={18} /> Create New Coupon
                 </button>
-            </div>
+            </header>
 
-            {/* Stats */}
-            <div className="sc-stats">
-                {[
-                    { label: 'TOTAL COUPONS', value: coupons.length, accent: '#1a1a1a' },
-                    { label: 'ACTIVE', value: active, accent: '#22c55e' },
-                    { label: 'INACTIVE / EXPIRED', value: inactive, accent: '#9a9a90' },
-                ].map(s => (
-                    <div key={s.label} className="sc-stat-card">
-                        <p className="sc-stat-label">{s.label}</p>
-                        <p className="sc-stat-value" style={{ color: s.accent }}>{s.value}</p>
+            {/* ── Stats ── */}
+            <div className="sc-stats-grid">
+                <div className="sc-stat-card">
+                    <div className="sc-stat-icon"><Tag size={20} /></div>
+                    <div className="sc-stat-info">
+                        <span className="sc-stat-label">Active Campaigns</span>
+                        <h2 className="sc-stat-value">{activeCount}</h2>
                     </div>
-                ))}
-            </div>
-
-            {/* Success */}
-            {successMsg && (
-                <div className="sc-success">{successMsg}</div>
-            )}
-
-            {/* Create Form Panel */}
-            {showForm && (
-                <div className="sc-form-card">
-                    <div className="sc-form-header">
-                        <h3 className="sc-form-title">New Coupon</h3>
-                        <button className="sc-btn-close" onClick={() => setShowForm(false)}>✕</button>
-                    </div>
-                    <form onSubmit={handleCreate} className="sc-form">
-                        <div className="sc-form-grid">
-                            <div className="sc-field">
-                                <label>Coupon Code *</label>
-                                <input name="code" value={form.code} onChange={handleChange}
-                                    placeholder="e.g. SUMMER26" style={{ textTransform: 'uppercase' }} />
-                                <span className="sc-hint">Customers enter this at checkout</span>
-                            </div>
-                            <div className="sc-field">
-                                <label>Description</label>
-                                <input name="description" value={form.description} onChange={handleChange}
-                                    placeholder="e.g. Summer sale discount" />
-                            </div>
-                            <div className="sc-field">
-                                <label>Discount % *</label>
-                                <input name="discountPercentage" type="number" min="1" max="100" step="0.01"
-                                    value={form.discountPercentage} onChange={handleChange} placeholder="e.g. 15" />
-                                <span className="sc-hint">Percentage off the order total</span>
-                            </div>
-                            <div className="sc-field">
-                                <label>Minimum Order Amount (Rs.) *</label>
-                                <input name="minimumOrderAmount" type="number" min="0" step="0.01"
-                                    value={form.minimumOrderAmount} onChange={handleChange} placeholder="e.g. 10000" />
-                                <span className="sc-hint">Order must be at least this amount to apply coupon</span>
-                            </div>
-                            <div className="sc-field">
-                                <label>Max Usages</label>
-                                <input name="maxUsages" type="number" min="1"
-                                    value={form.maxUsages} onChange={handleChange} placeholder="100" />
-                                <span className="sc-hint">Leave blank for 100 uses</span>
-                            </div>
-                            <div className="sc-field sc-field--empty" />
-                            <div className="sc-field">
-                                <label>Valid From *</label>
-                                <input name="validFrom" type="datetime-local" value={form.validFrom} onChange={handleChange} />
-                            </div>
-                            <div className="sc-field">
-                                <label>Expires On *</label>
-                                <input name="validUntil" type="datetime-local" value={form.validUntil} onChange={handleChange} />
-                            </div>
-                        </div>
-
-                        {formError && <p className="sc-error">{formError}</p>}
-                        <div className="sc-form-actions">
-                            <button type="button" className="sc-btn-cancel" onClick={() => setShowForm(false)}>Cancel</button>
-                            <button type="submit" className="sc-btn-submit" disabled={submitting}>
-                                {submitting ? 'Creating...' : 'Create Coupon'}
-                            </button>
-                        </div>
-                    </form>
                 </div>
+                <div className="sc-stat-card">
+                    <div className="sc-stat-icon"><BarChart2 size={20} /></div>
+                    <div className="sc-stat-info">
+                        <span className="sc-stat-label">Total Usages</span>
+                        <h2 className="sc-stat-value">{usageCount}</h2>
+                    </div>
+                </div>
+                <div className="sc-stat-card">
+                    <div className="sc-stat-icon"><Clock size={20} /></div>
+                    <div className="sc-stat-info">
+                        <span className="sc-stat-label">Expiring Soon</span>
+                        <h2 className="sc-stat-value">{coupons.filter(c => c.status === 'ACTIVE').length}</h2>
+                    </div>
+                </div>
+            </div>
+
+            {/* ── Form Modal ── */}
+            {/* ── Form Modal (Portal) ── */}
+            {showForm && createPortal(
+                <div className="sc-overlay" onClick={() => setShowForm(false)}>
+                    <div className="sc-modal" onClick={e => e.stopPropagation()}>
+                        <header className="sc-modal-header">
+                            <div>
+                                <h3 className="sc-modal-title">New Promotional Campaign</h3>
+                                <p className="sc-modal-subtitle">Define parameters for your store-wide discount</p>
+                            </div>
+                            <button className="sc-close-btn" onClick={() => setShowForm(false)}><X size={18} /></button>
+                        </header>
+                        
+                        <form onSubmit={handleCreate}>
+                            <div className="sc-modal-body">
+                                {/* Section 1: Identity */}
+                                <div className="sc-form-section">
+                                    <div className="sc-section-head">
+                                        <Tag size={14} />
+                                        <h4>Campaign Identity</h4>
+                                    </div>
+                                    <div className="sc-input-group">
+                                        <label>Coupon Code</label>
+                                        <input name="code" value={form.code} onChange={handleChange} placeholder="e.g. SUMMER25" required />
+                                    </div>
+                                    <div className="sc-input-group">
+                                        <label>Campaign Description</label>
+                                        <input name="description" value={form.description} onChange={handleChange} placeholder="e.g. Store-wide summer seasonal discount" />
+                                    </div>
+                                </div>
+
+                                {/* Section 2: Rules */}
+                                <div className="sc-form-section" style={{ marginTop: '16px' }}>
+                                    <div className="sc-section-head">
+                                        <Layers size={14} />
+                                        <h4>Discount Rules</h4>
+                                    </div>
+                                    <div className="sc-form-row">
+                                        <div className="sc-input-group">
+                                            <label>Discount (%)</label>
+                                            <input name="discountPercentage" type="number" value={form.discountPercentage} onChange={handleChange} placeholder="15" required />
+                                        </div>
+                                        <div className="sc-input-group">
+                                            <label>Min. Order Amount</label>
+                                            <input name="minimumOrderAmount" type="number" value={form.minimumOrderAmount} onChange={handleChange} placeholder="5000" />
+                                        </div>
+                                    </div>
+                                    <div className="sc-input-group">
+                                        <label>Total Usage Limit</label>
+                                        <input name="maxUsages" type="number" value={form.maxUsages} onChange={handleChange} placeholder="100" />
+                                    </div>
+                                </div>
+
+                                {/* Section 3: Validity */}
+                                <div className="sc-form-section" style={{ marginTop: '16px' }}>
+                                    <div className="sc-section-head">
+                                        <Calendar size={14} />
+                                        <h4>Validity Period</h4>
+                                    </div>
+                                    <div className="sc-form-row">
+                                        <div className="sc-input-group">
+                                            <label>Active From</label>
+                                            <input name="validFrom" type="datetime-local" value={form.validFrom} onChange={handleChange} required />
+                                        </div>
+                                        <div className="sc-input-group">
+                                            <label>Active Until</label>
+                                            <input name="validUntil" type="datetime-local" value={form.validUntil} onChange={handleChange} required />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {formError && <div className="sc-error-msg"><AlertCircle size={16} /> {formError}</div>}
+                            </div>
+                            <footer className="sc-modal-footer">
+                                <button type="button" className="sc-btn sc-btn--ghost" onClick={() => setShowForm(false)}>Discard</button>
+                                <button type="submit" className="sc-btn sc-btn--primary" disabled={submitting}>
+                                    {submitting ? 'Creating Campaign...' : 'Publish Campaign'}
+                                </button>
+                            </footer>
+                        </form>
+                    </div>
+                </div>,
+                document.body
             )}
 
-            {/* Coupons Table */}
-            <div className="sc-table-card">
-                <table className="sc-table">
-                    <thead>
-                        <tr>
-                            <th>CODE</th>
-                            <th>DESCRIPTION</th>
-                            <th>DISCOUNT</th>
-                            <th>MIN ORDER</th>
-                            <th>USAGE</th>
-                            <th>VALID FROM</th>
-                            <th>EXPIRES</th>
-                            <th>STATUS</th>
-                            <th>ACTIONS</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {loading ? (
-                            <tr><td colSpan="9" className="sc-empty">Loading...</td></tr>
-                        ) : coupons.length === 0 ? (
-                            <tr><td colSpan="9" className="sc-empty">No coupons yet. Create your first coupon above.</td></tr>
-                        ) : (
-                            coupons.map(c => (
-                                <tr key={c.id}>
-                                    <td><span className="sc-code">{c.code}</span></td>
-                                    <td style={{ color: '#7a7a72', fontSize: '13px' }}>{c.description || '—'}</td>
-                                    <td><strong>{parseFloat(c.discountPercentage).toFixed(1)}%</strong></td>
-                                    <td>Rs. {parseFloat(c.minimumOrderAmount).toLocaleString('en-IN')}</td>
-                                    <td>{c.currentUsageCount} / {c.maxUsages}</td>
-                                    <td style={{ fontSize: '13px', color: '#7a7a72' }}>{fmtDate(c.validFrom)}</td>
-                                    <td style={{ fontSize: '13px', color: '#7a7a72' }}>{fmtDate(c.validUntil)}</td>
-                                    <td><StatusBadge status={c.status} /></td>
-                                    <td>
-                                        <div style={{ display: 'flex', gap: '8px' }}>
-                                            {c.status === 'ACTIVE' && (
-                                                <button className="sc-action-btn sc-action-deactivate"
-                                                    onClick={() => handleDeactivate(c.id)}>Deactivate</button>
-                                            )}
-                                            <button className="sc-action-btn sc-action-delete"
-                                                onClick={() => handleDelete(c.id)}>Delete</button>
+            {/* ── Table ── */}
+            <div className="sc-card">
+                <div className="sc-table-wrapper">
+                    <table className="sc-table">
+                        <thead>
+                            <tr>
+                                <th>Coupon Details</th>
+                                <th>Discount</th>
+                                <th>Min. Order</th>
+                                <th>Usage</th>
+                                <th>Validity</th>
+                                <th>Status</th>
+                                <th style={{ textAlign: 'right' }}>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {loading ? (
+                                <tr><td colSpan="7" className="sc-loading">Updating coupon registry...</td></tr>
+                            ) : coupons.length === 0 ? (
+                                <tr>
+                                    <td colSpan="7">
+                                        <div className="sc-empty">
+                                            <Tag size={40} />
+                                            <p>No coupons found. Launch your first campaign to boost sales.</p>
                                         </div>
                                     </td>
                                 </tr>
-                            ))
-                        )}
-                    </tbody>
-                </table>
+                            ) : (
+                                coupons.map(c => (
+                                    <tr key={c.id}>
+                                        <td>
+                                            <div className="sc-code-info">
+                                                <span className="sc-code-text">{c.code}</span>
+                                                <span className="sc-code-desc">{c.description || 'No description'}</span>
+                                            </div>
+                                        </td>
+                                        <td className="sc-discount">{c.discountPercentage}% OFF</td>
+                                        <td className="sc-min-order">{fmtPrice(c.minimumOrderAmount)}</td>
+                                        <td>
+                                            <div className="sc-usage">
+                                                <span className="count">{c.currentUsageCount}</span>
+                                                <span className="limit">/ {c.maxUsages}</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div className="sc-date-info">
+                                                <span>{fmtDate(c.validFrom)}</span>
+                                                <span className="sep">&rarr;</span>
+                                                <span>{fmtDate(c.validUntil)}</span>
+                                            </div>
+                                        </td>
+                                        <td><StatusBadge status={c.status} /></td>
+                                        <td>
+                                            <div className="sc-actions">
+                                                {c.status === 'ACTIVE' && (
+                                                    <button className="sc-icon-btn" onClick={() => handleDeactivate(c.id)} title="Deactivate">
+                                                        <Power size={16} />
+                                                    </button>
+                                                )}
+                                                <button className="sc-icon-btn sc-icon-btn--danger" onClick={() => handleDelete(c.id)} title="Delete">
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     );
 }
+

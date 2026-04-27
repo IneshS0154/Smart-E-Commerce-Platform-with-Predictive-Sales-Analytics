@@ -1,0 +1,250 @@
+@import './AdminCommon.css';
+
+:root {
+    --sidebar-speed: 0.5s;
+}
+
+/* ── Sidebar ── */
+.ov-sidebar {
+    width: var(--ov-sidebar-width);
+    background: var(--ov-sidebar-bg);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    padding: 32px 16px;
+    z-index: 100;
+    transition: width var(--sidebar-speed) cubic-bezier(0.4, 0, 0.2, 1), padding var(--sidebar-speed) ease;
+}
+
+.ov-sidebar--collapsed {
+    width: 80px;
+    padding: 32px 0;
+}
+
+.ov-brand {
+    padding: 0 0 32px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    justify-content: flex-start;
+}
+
+.ov-sidebar--collapsed .ov-brand {
+    justify-content: center;
+    gap: 0;
+}
+
+.ov-sidebar-toggle {
+    background: none;
+    border: none;
+    color: #ffffff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    border-radius: 8px;
+    transition: background 0.2s;
+    flex-shrink: 0;
+}
+
+.ov-sidebar-toggle:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.ov-brand-name {
+    font-family: 'Grift', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: -0.02em;
+    margin: 0;
+    white-space: nowrap;
+    transition: opacity var(--sidebar-speed) ease, max-width var(--sidebar-speed) ease, transform var(--sidebar-speed) ease;
+    opacity: 1;
+    max-width: 200px;
+}
+
+.ov-sidebar--collapsed .ov-brand-name {
+    opacity: 0;
+    max-width: 0;
+    pointer-events: none;
+    transform: translateX(-10px);
+}
+
+.ov-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    padding: 0 12px;
+    flex: 1;
+}
+
+.ov-sidebar--collapsed .ov-nav {
+    padding: 0;
+}
+
+.ov-nav-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.ov-nav-label-section {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #ffffff;
+    letter-spacing: 0.12em;
+    margin-bottom: 8px;
+    padding-left: 12px;
+    transition: opacity var(--sidebar-speed) ease, max-height var(--sidebar-speed) ease;
+    opacity: 1;
+    max-height: 20px;
+    overflow: hidden;
+}
+
+.ov-sidebar--collapsed .ov-nav-label-section {
+    opacity: 0;
+    max-height: 0;
+    margin: 0;
+}
+
+.ov-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: none;
+    background: transparent;
+    color: #9ca3af;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--sidebar-speed) cubic-bezier(0.4, 0, 0.2, 1);
+    width: 100%;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.ov-sidebar--collapsed .ov-nav-item {
+    width: 48px;
+    height: 48px;
+    margin: 4px auto;
+    padding: 0;
+    justify-content: center;
+    border-radius: 14px;
+    gap: 0;
+}
+
+.ov-sidebar--collapsed .ov-nav-icon {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ov-nav-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #ffffff;
+}
+
+.ov-nav-item--active {
+    background: #ffffff !important;
+    color: #000000 !important;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.ov-nav-text,
+.ov-logout-text {
+    transition: opacity var(--sidebar-speed) ease, transform var(--sidebar-speed) ease, max-width var(--sidebar-speed) ease;
+    opacity: 1;
+    max-width: 150px;
+    display: inline-block;
+}
+
+.ov-sidebar--collapsed .ov-nav-text,
+.ov-sidebar--collapsed .ov-logout-text {
+    opacity: 0;
+    max-width: 0;
+    transform: translateX(-10px);
+}
+
+.ov-sidebar-footer {
+    margin-top: auto;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ov-user-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    margin-bottom: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--ov-radius-sm);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.ov-sidebar--collapsed .ov-user-profile {
+    justify-content: center;
+    padding: 12px 0;
+    background: transparent;
+}
+
+.ov-user-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: #fff;
+    color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    font-family: 'Grift', sans-serif;
+    flex-shrink: 0;
+}
+
+.ov-user-info {
+    display: flex;
+    flex-direction: column;
+    transition: opacity var(--sidebar-speed) ease, max-width var(--sidebar-speed) ease;
+    opacity: 1;
+    color: #ffffff;
+    max-width: 150px;
+}
+
+.ov-sidebar--collapsed .ov-user-info {
+    opacity: 0;
+    max-width: 0;
+    pointer-events: none;
+}
+
+.ov-logout-btn {
+    width: 100%;
+    justify-content: flex-start;
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.ov-sidebar--collapsed .ov-logout-btn {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto;
+    justify-content: center;
+    padding: 0;
+}
+
+.ov-logout-btn:hover {
+    background: rgba(239, 68, 68, 0.1) !important;
+    color: #ef4444 !important;
+}

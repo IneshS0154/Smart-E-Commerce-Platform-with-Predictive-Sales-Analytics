@@ -37,7 +37,7 @@ export const customerAPI = {
     },
 
     deleteCustomer: async (id) => {
-        const response = await api.delete(`/customers/${id}`);
+        const response = await api.delete(`/customers/${id}/delete`);
         return response.data;
     },
 };

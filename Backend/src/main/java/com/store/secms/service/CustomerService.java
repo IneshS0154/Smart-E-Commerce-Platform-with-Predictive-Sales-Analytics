@@ -5,6 +5,11 @@ import com.store.secms.entity.Customer;
 import com.store.secms.entity.CustomerLogin;
 import com.store.secms.repository.CustomerLoginRepository;
 import com.store.secms.repository.CustomerRepository;
+import com.store.secms.repository.OrderRepository;
+import com.store.secms.repository.ReviewRepository;
+import com.store.secms.repository.CartRepository;
+import com.store.secms.entity.Review;
+import com.store.secms.entity.Order;
 import com.store.secms.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,6 +28,15 @@ public class CustomerService {
 
     @Autowired
     private CustomerLoginRepository customerLoginRepository;
+
+    @Autowired
+    private OrderRepository orderRepository;
+
+    @Autowired
+    private ReviewRepository reviewRepository;
+
+    @Autowired
+    private CartRepository cartRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -186,6 +200,20 @@ public class CustomerService {
     public void deleteCustomer(Long id) {
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Customer not found."));
+                
+        // Cascade delete related entities to avoid foreign key constraint violations
+        cartRepository.findByCustomerId(id).ifPresent(cartRepository::delete);
+        
+        List<Order> orders = orderRepository.findByCustomerIdWithDetails(id);
+        if (orders != null && !orders.isEmpty()) {
+            orderRepository.deleteAll(orders);
+        }
+        
+        List<Review> reviews = reviewRepository.findByCustomerId(id);
+        if (reviews != null && !reviews.isEmpty()) {
+            reviewRepository.deleteAll(reviews);
+        }
+
         customerLoginRepository.findByCustomerId(id).ifPresent(customerLoginRepository::delete);
         customerRepository.delete(customer);
     }

@@ -15,8 +15,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -84,6 +86,11 @@ public class SellerController {
             if ("DEACTIVATED".equals(seller.getStatus())) {
                 return ResponseEntity.status(403).body(new MessageResponse("Your account has been deactivated"));
             }
+            
+            // Check if seller is deleted
+            if ("DELETED".equals(seller.getStatus())) {
+                return ResponseEntity.status(403).body(new MessageResponse("Account not found"));
+            }
 
             Optional<SellerLogin> sellerLoginOpt = sellerLoginRepository.findBySeller(seller);
             if (sellerLoginOpt.isPresent() &&
@@ -120,7 +127,14 @@ public class SellerController {
 
     @GetMapping("/all")
     public ResponseEntity<?> getAllSellers() {
-        return ResponseEntity.ok(sellerRepository.findAll());
+        List<Seller> sellers = sellerRepository.findAll().stream()
+                .filter(s -> !"DELETED".equals(s.getStatus()))
+                .collect(Collectors.toList());
+        for (Seller seller : sellers) {
+            Optional<SellerLogin> loginOpt = sellerLoginRepository.findBySeller(seller);
+            loginOpt.ifPresent(login -> seller.setUsername(login.getUsername()));
+        }
+        return ResponseEntity.ok(sellers);
     }
 
     @PutMapping("/{id}/deactivate")
@@ -191,9 +205,59 @@ public class SellerController {
             if (updatedSeller.getAddress() != null) {
                 seller.setAddress(updatedSeller.getAddress());
             }
+            if (updatedSeller.getEmail() != null) {
+                seller.setEmail(updatedSeller.getEmail());
+            }
+            
+            if (updatedSeller.getUsername() != null || (updatedSeller.getPassword() != null && !updatedSeller.getPassword().trim().isEmpty())) {
+                Optional<SellerLogin> loginOpt = sellerLoginRepository.findBySeller(seller);
+                if (loginOpt.isPresent()) {
+                    SellerLogin login = loginOpt.get();
+                    if (updatedSeller.getUsername() != null) {
+                        login.setUsername(updatedSeller.getUsername());
+                    }
+                    if (updatedSeller.getPassword() != null && !updatedSeller.getPassword().trim().isEmpty()) {
+                        login.setPassword(passwordEncoder.encode(updatedSeller.getPassword()));
+                    }
+                    sellerLoginRepository.save(login);
+                }
+            }
+            
             sellerRepository.save(seller);
+            
+            // Set the username back to the object to return updated values
+            Optional<SellerLogin> loginOptReturn = sellerLoginRepository.findBySeller(seller);
+            loginOptReturn.ifPresent(login -> seller.setUsername(login.getUsername()));
+            
             return ResponseEntity.ok(seller);
         }
         return ResponseEntity.status(404).body("Seller not found");
+    }
+
+    @DeleteMapping("/{id}/delete")
+    public ResponseEntity<?> deleteSeller(@PathVariable Long id) {
+        Optional<Seller> sellerOpt = sellerRepository.findById(id);
+        if (sellerOpt.isPresent()) {
+            Seller seller = sellerOpt.get();
+            try {
+                // Try hard delete first (for new sellers with no data)
+                Optional<SellerLogin> loginOpt = sellerLoginRepository.findBySeller(seller);
+                loginOpt.ifPresent(login -> sellerLoginRepository.delete(login));
+                sellerRepository.delete(seller);
+                return ResponseEntity.ok(new MessageResponse("Seller deleted successfully"));
+            } catch (Exception e) {
+                // Fallback to soft delete if constrained (orders, products, etc exist)
+                seller.setStatus("DELETED");
+                sellerRepository.save(seller);
+                // Also deactivate login if it exists
+                Optional<SellerLogin> loginOpt = sellerLoginRepository.findBySeller(seller);
+                loginOpt.ifPresent(login -> {
+                    login.setUsername("deleted_" + seller.getId() + "_" + login.getUsername());
+                    sellerLoginRepository.save(login);
+                });
+                return ResponseEntity.ok(new MessageResponse("Seller removed and archived (Soft Delete)"));
+            }
+        }
+        return ResponseEntity.status(404).body(new MessageResponse("Seller not found"));
     }
 }

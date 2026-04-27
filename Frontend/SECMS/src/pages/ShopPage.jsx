@@ -34,6 +34,7 @@ import m_p2 from '../assets/images/Cat/Men/party/2.webp';
 import slide1 from '../assets/images/Shop_slideshow/1.webp';
 import slide2 from '../assets/images/Shop_slideshow/2.webp';
 import slide3 from '../assets/images/Shop_slideshow/3.webp';
+import ScrollVelocity from '../components/ui/ScrollVelocity/ScrollVelocity';
 
 const SLIDES = [slide1, slide2, slide3];
 
@@ -546,6 +547,12 @@ export default function ShopPage() {
         loading={loadingMens}
         viewAllHref="/mens-casual-wear"
         navigate={navigate}
+      />
+
+      <ScrollVelocity
+        texts={['ANYWEAR']}
+        velocity={50}
+        className="custom-scroll-text"
       />
 
       {/* ── Women's rail ── */}

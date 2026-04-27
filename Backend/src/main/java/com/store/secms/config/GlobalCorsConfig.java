@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Configuration
-public class GlobalCorsConfig {
+public class  GlobalCorsConfig {
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
