@@ -101,4 +101,5 @@ The H2 console is enabled by default for viewing the seeded data and debugging.
 * **User:** `sa` / **Password:** *(blank)*
 
 ## 🤝 Acknowledgements
-Special thanks to [@username](https://github.com/kavinduranthisaru/) for helping with evaluating the UI.
+- [@kavinduranthisaru](https://github.com/kavinduranthisaru/) – Contributions to UI evaluation and product management (product creation)
+- [@ranyahansadee](https://github.com/ranyahansadee) – Contributions to implementing product selection and adding products to the database
