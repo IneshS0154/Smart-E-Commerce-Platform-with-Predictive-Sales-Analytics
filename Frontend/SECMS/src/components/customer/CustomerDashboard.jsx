@@ -175,12 +175,13 @@ export default function CustomerDashboard() {
         try {
             let updated = null;
             
-            // Sequential probing of all likely endpoints
-            updated = await tryPattern(`/customers/${uId}/update`);
-            if (!updated && uId) updated = await tryPattern(`/customers/${uId}`);
-            if (!updated) updated = await tryPattern('/customers/me');
-            if (!updated) updated = await tryPattern('/customers/update');
-            if (!updated) updated = await tryPattern('/auth/update-profile');
+            // Primary choice: Use the /me endpoint which is most robust
+            updated = await tryPattern('/customers/me');
+            
+            // Fallbacks
+            if (!updated) updated = await tryPattern(`/customers/${uId}/update`);
+            if (!updated && uId && !isNaN(uId)) updated = await tryPattern(`/customers/${uId}`);
+            
             if (!updated) {
                 // Last ditch: try Axios one more time with simple pattern
                 const res = await api.put('/customers/me', { ...editForm, role: 'CUSTOMER' });
@@ -217,16 +218,38 @@ export default function CustomerDashboard() {
         }
 
         try {
-            await customerAPI.changePassword(uId, {
+            const token = localStorage.getItem('customerToken');
+            const payload = {
                 currentPassword: passwordForm.currentPassword,
                 newPassword: passwordForm.newPassword
-            });
+            };
+
+            let success = false;
+            
+            // Try /me endpoint first
+            try {
+                const res = await fetch(`http://localhost:8080/api/customers/me/change-password`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': token ? (token.startsWith('Bearer ') ? token : `Bearer ${token}`) : ''
+                    },
+                    body: JSON.stringify(payload)
+                });
+                if (res.ok) success = true;
+            } catch (e) {}
+
+            // Fallback to ID-based
+            if (!success) {
+                await customerAPI.changePassword(uId, payload);
+            }
+
             setShowChangePasswordModal(false);
             setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
             notify('Password updated successfully!');
         } catch (err) {
             console.error('Error changing password:', err);
-            notify(err?.response?.data?.message || 'Failed to change password.', 'error');
+            notify(err?.response?.data?.message || 'Failed to change password. Access restricted.', 'error');
         }
     };
 

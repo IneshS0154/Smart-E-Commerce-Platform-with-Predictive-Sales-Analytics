@@ -39,27 +39,29 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             logger.info("Token: {}...", token.substring(0, Math.min(20, token.length())));
             
             try {
-                if (jwtUtil.validateToken(token)) {
-                    String username = jwtUtil.extractUsername(token);
-                    String role = jwtUtil.extractRole(token);
-                    
-                    logger.info("Username: {}, Role: {}", username, role);
-                    
-                    if (role == null) {
-                        role = "ROLE_CUSTOMER";
-                    } else if (!role.startsWith("ROLE_")) {
-                        role = "ROLE_" + role;
-                    }
+                    if (jwtUtil.validateToken(token)) {
+                        String username = jwtUtil.extractUsername(token);
+                        String role = jwtUtil.extractRole(token);
+                        Long userId = jwtUtil.extractUserId(token);
+                        
+                        logger.info("Username: {}, Role: {}, UserId: {}", username, role, userId);
+                        
+                        if (role == null) {
+                            role = "ROLE_CUSTOMER";
+                        } else if (!role.startsWith("ROLE_")) {
+                            role = "ROLE_" + role;
+                        }
 
-                    List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(role));
+                        List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(role));
 
-                    UsernamePasswordAuthenticationToken authentication = 
-                            new UsernamePasswordAuthenticationToken(username, null, authorities);
-                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                    logger.info("=== Authentication SET with authorities: {} ===", authorities);
-                } else {
+                        UserPrincipal principal = new UserPrincipal(userId, username, "", authorities);
+                        UsernamePasswordAuthenticationToken authentication = 
+                                new UsernamePasswordAuthenticationToken(principal, null, authorities);
+                        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                        logger.info("=== Authentication SET with authorities: {} ===", authorities);
+                    } else {
                     logger.warn("Token validation FAILED");
                 }
             } catch (Exception e) {

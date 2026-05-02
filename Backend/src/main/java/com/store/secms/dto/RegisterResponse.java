@@ -7,21 +7,30 @@ public class RegisterResponse {
     private String lastName;
     private String username;
     private String email;
+    private String phoneNumber;
+    private String address;
     private String status;
     private String role;
+    private String token;
+    private long expiresIn;
     private String message;
 
     public RegisterResponse() {}
 
     public RegisterResponse(Long id, String firstName, String lastName, String username, String email,
-                            String status, String role, String message) {
+                            String phoneNumber, String address, String status, String role,
+                            String token, long expiresIn, String message) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
         this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.address = address;
         this.status = status;
         this.role = role;
+        this.token = token;
+        this.expiresIn = expiresIn;
         this.message = message;
     }
 
@@ -65,6 +74,22 @@ public class RegisterResponse {
         this.email = email;
     }
 
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     public String getStatus() {
         return status;
     }
@@ -79,6 +104,22 @@ public class RegisterResponse {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public long getExpiresIn() {
+        return expiresIn;
+    }
+
+    public void setExpiresIn(long expiresIn) {
+        this.expiresIn = expiresIn;
     }
 
     public String getMessage() {

@@ -6,12 +6,8 @@ import {
     ShoppingBag, Lock, ChevronLeft
 } from 'lucide-react';
 import './Auth.css';
-<<<<<<< Updated upstream
-import LoginImage from '../../assets/images/login_signup/login.png';
-=======
 import DarkVeil from '../ui/DarkVeil';
 import LoginImage from '../../assets/images/login_signup/Login.png';
->>>>>>> Stashed changes
 
 const API_BASE = 'http://localhost:8080/api';
 
@@ -109,13 +105,14 @@ export default function Login() {
             <div className="auth-card">
                 {/* Left: Form Side */}
                 <div className="auth-left">
-                    <div className="auth-logo">
-                        <ShoppingBag size={20} color="#000" />
-                    </div>
-
                     <div className="auth-header">
-                        <h1>Welcome back</h1>
-                        <p>Sign in to your ANYWEAR account.</p>
+                        <div className="auth-logo">
+                            <ShoppingBag size={18} color="#000" />
+                        </div>
+                        <div className="header-text">
+                            <h1>Welcome back</h1>
+                            <p>Sign in to your ANYWEAR account.</p>
+                        </div>
                     </div>
 
                     {errorMsg && <div className="alert alert-error"><AlertCircle size={16} /> {errorMsg}</div>}

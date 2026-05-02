@@ -73,14 +73,20 @@ public class CustomerService {
         customerLogin.setCustomer(savedCustomer);
         customerLoginRepository.save(customerLogin);
 
+        String token = jwtUtil.generateToken(savedCustomer.getUsername(), savedCustomer.getRole(), savedCustomer.getId());
+
         RegisterResponse response = new RegisterResponse();
         response.setId(savedCustomer.getId());
         response.setFirstName(savedCustomer.getFirstName());
         response.setLastName(savedCustomer.getLastName());
         response.setUsername(savedCustomer.getUsername());
         response.setEmail(savedCustomer.getEmail());
+        response.setPhoneNumber(savedCustomer.getPhoneNumber());
+        response.setAddress(savedCustomer.getAddress());
         response.setStatus(savedCustomer.getStatus());
         response.setRole(savedCustomer.getRole());
+        response.setToken(token);
+        response.setExpiresIn(jwtUtil.getExpirationMs());
         response.setMessage("Registration successful! Welcome to ANYWEAR.");
         return response;
     }

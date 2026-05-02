@@ -6,12 +6,8 @@ import {
     ArrowLeft, ShoppingBag, ChevronLeft
 } from 'lucide-react';
 import './Auth.css';
-<<<<<<< Updated upstream
-import SignupImage from '../../assets/images/login_signup/signup.png';
-=======
 import DarkVeil from '../ui/DarkVeil';
 import SignupImage from '../../assets/images/login_signup/Signup.png';
->>>>>>> Stashed changes
 
 function SignUp() {
     const [firstName, setFirstName] = useState('');
@@ -69,8 +65,30 @@ function SignUp() {
                 phoneNumber,
                 address,
             });
-            setSuccess(response.message || 'Account created successfully!');
-            setTimeout(() => navigate('/login'), 1500);
+
+            if (response.token) {
+                // Save auth data
+                localStorage.setItem('customer', JSON.stringify(response));
+                localStorage.setItem('customerToken', response.token);
+                localStorage.setItem('customerUsername', response.username);
+                localStorage.setItem('customerEmail', response.email);
+
+                // Clear other roles to prevent conflict
+                localStorage.removeItem('admin');
+                localStorage.removeItem('adminToken');
+                localStorage.removeItem('seller');
+                localStorage.removeItem('sellerToken');
+
+                setSuccess(response.message || 'Account created successfully! Logging you in...');
+                setTimeout(() => {
+                    navigate('/');
+                    // Optional: window.location.reload() if navbar doesn't update, 
+                    // but since Navbar is in HomePage, it should mount fresh.
+                }, 1500);
+            } else {
+                setSuccess(response.message || 'Account created successfully!');
+                setTimeout(() => navigate('/login'), 1500);
+            }
         } catch (err) {
             setError(err?.response?.data?.message || 'Registration failed.');
         } finally {
@@ -96,13 +114,14 @@ function SignUp() {
             <div className="auth-card">
                 {/* Left: Form Side */}
                 <div className="auth-left">
-                    <div className="auth-logo">
-                        <ShoppingBag size={20} color="#000" />
-                    </div>
-
                     <div className="auth-header">
-                        <h1>Create account</h1>
-                        <p>Join the ANYWEAR community today.</p>
+                        <div className="auth-logo">
+                            <ShoppingBag size={18} color="#000" />
+                        </div>
+                        <div className="header-text">
+                            <h1>Create account</h1>
+                            <p>Join the ANYWEAR community today.</p>
+                        </div>
                     </div>
 
                     {error && <div className="alert alert-error"><AlertCircle size={16} /> {error}</div>}
@@ -111,11 +130,11 @@ function SignUp() {
                     <form onSubmit={handleSubmit} className="auth-form">
                         <div className="form-row">
                             <div className="form-group">
-                                <label>Full Name</label>
+                                <label>First Name</label>
                                 <div className="input-wrapper">
                                     <input
                                         type="text"
-                                        placeholder="name"
+                                        placeholder="John"
                                         value={firstName}
                                         onChange={(e) => setFirstName(e.target.value)}
                                         className={fieldErrors.firstName ? 'error' : ''}
@@ -124,55 +143,94 @@ function SignUp() {
                                 {fieldErrors.firstName && <span className="field-error">{fieldErrors.firstName}</span>}
                             </div>
                             <div className="form-group">
+                                <label>Last Name</label>
+                                <div className="input-wrapper">
+                                    <input
+                                        type="text"
+                                        placeholder="Doe"
+                                        value={lastName}
+                                        onChange={(e) => setLastName(e.target.value)}
+                                        className={fieldErrors.lastName ? 'error' : ''}
+                                    />
+                                </div>
+                                {fieldErrors.lastName && <span className="field-error">{fieldErrors.lastName}</span>}
+                            </div>
+                        </div>
+
+                        <div className="form-row">
+                            <div className="form-group">
+                                <label>Email Address</label>
+                                <div className="input-wrapper">
+                                    <input
+                                        type="email"
+                                        placeholder="john@example.com"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        className={fieldErrors.email ? 'error' : ''}
+                                    />
+                                </div>
+                                {fieldErrors.email && <span className="field-error">{fieldErrors.email}</span>}
+                            </div>
+                            <div className="form-group">
+                                <label>Phone number</label>
+                                <div className="input-wrapper">
+                                    <input
+                                        type="tel"
+                                        placeholder="+94 77 123 4567"
+                                        value={phoneNumber}
+                                        onChange={(e) => setPhoneNumber(e.target.value)}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="form-group">
+                            <label>Shipping Address</label>
+                            <div className="input-wrapper">
+                                <input
+                                    type="text"
+                                    placeholder="123 Street, Colombo"
+                                    value={address}
+                                    onChange={(e) => setAddress(e.target.value)}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="form-row">
+                            <div className="form-group">
                                 <label>Username</label>
                                 <div className="input-wrapper">
                                     <input
                                         type="text"
-                                        placeholder="username"
+                                        placeholder="johndoe123"
                                         value={username}
                                         onChange={(e) => setUsername(e.target.value)}
+                                        className={fieldErrors.username ? 'error' : ''}
                                     />
-                                    {username.length >= 3 && (
-                                        <div className="input-icon-right">
-                                            <Check size={16} />
-                                        </div>
-                                    )}
                                 </div>
                                 {fieldErrors.username && <span className="field-error">{fieldErrors.username}</span>}
                             </div>
-                        </div>
 
-                        <div className="form-group">
-                            <label>Phone number</label>
-                            <div className="input-wrapper">
-                                <input
-                                    type="tel"
-                                    placeholder="+94 000 000 000"
-                                    value={phoneNumber}
-                                    onChange={(e) => setPhoneNumber(e.target.value)}
-                                />
+                            <div className="form-group">
+                                <label>Password</label>
+                                <div className="input-wrapper">
+                                    <input
+                                        type={showPassword ? 'text' : 'password'}
+                                        placeholder="••••••••••••"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        className={fieldErrors.password ? 'error' : ''}
+                                    />
+                                    <button
+                                        type="button"
+                                        className="password-toggle"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                    >
+                                        {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                                    </button>
+                                </div>
+                                {fieldErrors.password && <span className="field-error">{fieldErrors.password}</span>}
                             </div>
-                        </div>
-
-                        <div className="form-group">
-                            <label>Password</label>
-                            <div className="input-wrapper">
-                                <input
-                                    type={showPassword ? 'text' : 'password'}
-                                    placeholder="••••••••••••"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                />
-                                <button
-                                    type="button"
-                                    className="password-toggle"
-                                    onClick={() => setShowPassword(!showPassword)}
-                                >
-                                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                                </button>
-                            </div>
-                            <p className="password-hint">At least 8 characters</p>
-                            {fieldErrors.password && <span className="field-error">{fieldErrors.password}</span>}
                         </div>
 
                         <div className="checkbox-group">
@@ -186,6 +244,7 @@ function SignUp() {
                                 I agree to <a href="#">Privacy Policy</a> and <a href="#">Terms of Service</a>.
                             </label>
                         </div>
+                        {fieldErrors.agreeTerms && <span className="field-error">{fieldErrors.agreeTerms}</span>}
 
                         <button type="submit" className="btn-primary" disabled={submitting}>
                             {submitting ? 'Creating Account...' : 'Continue'}

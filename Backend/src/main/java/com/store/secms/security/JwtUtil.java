@@ -97,6 +97,15 @@ public class JwtUtil {
         return claims.get("role", String.class);
     }
 
+    public Long extractUserId(String token) {
+        Claims claims = extractAllClaims(token);
+        Object userId = claims.get("userId");
+        if (userId instanceof Number) {
+            return ((Number) userId).longValue();
+        }
+        return null;
+    }
+
     public long getExpirationMs() {
         return expirationMs;
     }
