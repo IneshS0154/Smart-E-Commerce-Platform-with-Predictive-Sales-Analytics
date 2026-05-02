@@ -104,7 +104,7 @@ export default function ProductDetails() {
   const [selectedColor, setSelectedColor] = useState('');
   const [selectedSize, setSelectedSize] = useState('');
   const [qty, setQty] = useState(1);
-  const [addedMsg, setAddedMsg] = useState('');
+  const [addedMsg, setAddedMsg] = useState(null);
   const [isAdding, setIsAdding] = useState(false);
   const [filterRating, setFilterRating] = useState(null);
 
@@ -232,11 +232,16 @@ export default function ProductDetails() {
   const totalStock = Object.values(stockMap).reduce((a, b) => a + b, 0);
 
   const handleAddToCart = async () => {
-    if (!selectedSize) { alert('Please select a size'); return; }
+    if (!selectedSize) { 
+      setAddedMsg({ text: 'Please select a size', type: 'error' });
+      setTimeout(() => setAddedMsg(null), 3500);
+      return; 
+    }
 
     const token = localStorage.getItem('customerToken');
     if (!token) {
-      alert('Please login to add items to cart');
+      setAddedMsg({ text: 'Please login to add items to bag', type: 'error' });
+      setTimeout(() => setAddedMsg(null), 3500);
       return;
     }
 
@@ -244,10 +249,11 @@ export default function ProductDetails() {
     const result = await addToCart(product.id, selectedSize, qty);
 
     if (result.success) {
-      setAddedMsg(`Added ${qty}× ${product.productName} (${selectedSize}) to bag`);
-      setTimeout(() => setAddedMsg(''), 3500);
+      setAddedMsg({ text: `Added ${qty}× ${product.productName} (${selectedSize}) to bag`, type: 'success' });
+      setTimeout(() => setAddedMsg(null), 3500);
     } else {
-      alert(result.error || 'Failed to add to cart');
+      setAddedMsg({ text: result.error || 'Failed to add to cart', type: 'error' });
+      setTimeout(() => setAddedMsg(null), 3500);
     }
     setIsAdding(false);
   };
@@ -367,7 +373,7 @@ export default function ProductDetails() {
               </div>
 
               {/* Success toast */}
-              {addedMsg && <p className="pd__added-msg">{addedMsg}</p>}
+              {addedMsg && <p className={`pd__added-msg ${addedMsg.type}`}>{addedMsg.text}</p>}
 
               {/* Stock indicator */}
               {totalStock > 0 && (

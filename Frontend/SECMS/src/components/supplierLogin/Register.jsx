@@ -84,13 +84,14 @@ export default function Register() {
 
             <div className="auth-card">
                 <div className="auth-left">
-                    <div className="auth-logo">
-                        <ShoppingBag size={20} color="#000" />
-                    </div>
-
                     <div className="auth-header">
-                        <h1>Join ANYWEAR</h1>
-                        <p>Register as a Supplier to start selling.</p>
+                        <div className="auth-logo">
+                            <ShoppingBag size={18} color="#000" />
+                        </div>
+                        <div className="header-text">
+                            <h1>Join ANYWEAR</h1>
+                            <p>Register as a Supplier to start selling.</p>
+                        </div>
                     </div>
 
                     {error && <div className="alert alert-error"><AlertCircle size={16} /> {error}</div>}

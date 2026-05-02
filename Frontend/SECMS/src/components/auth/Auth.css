@@ -34,10 +34,9 @@
   justify-content: center;
   background-color: transparent;
   /* Show DarkVeil behind */
-  padding: 20px;
+  padding: 40px 20px;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   position: relative;
-  overflow: hidden;
 }
 
 .auth-bg-wrapper {
@@ -48,6 +47,7 @@
   height: 100%;
   z-index: -1;
   background-color: #000;
+  position: fixed; /* Keep background fixed while scrolling */
 }
 
 .auth-card {
@@ -56,6 +56,7 @@
   max-width: 1000px;
   /* Reduced from 1100px */
   min-height: 620px;
+  max-height: 90vh; /* Don't let it be taller than viewport */
   /* Reduced from 700px */
   background: var(--auth-white);
   border-radius: var(--auth-radius);
@@ -67,53 +68,52 @@
 /* Left Side: Form */
 .auth-left {
   flex: 1;
-  padding: 48px 60px;
-  /* Reduced top/bottom from 60px */
+  padding: 40px 50px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   position: relative;
-}
-
-.auth-logo {
-  position: absolute;
-  top: 15px;
-  left: 20px;
-  width: 40px;
-  height: 40px;
-  background: #ffffff;
-  /* Tennis green color from design */
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-
-.auth-logo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  overflow-y: auto;
 }
 
 .auth-header {
-  margin-bottom: 32px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.auth-logo {
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  background: #ffffff;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  border: 1px solid #f0f0f0;
+}
+
+.header-text {
+  display: flex;
+  flex-direction: column;
 }
 
 .auth-header h1 {
   font-size: 28px;
-  /* Reduced from 32px */
   font-weight: 800;
   color: var(--auth-black);
   margin-bottom: 4px;
-  /* Reduced from 8px */
-  letter-spacing: -0.5px;
+  letter-spacing: -0.8px;
+  line-height: 1.1;
 }
 
 .auth-header p {
   color: var(--auth-text-sub);
   font-size: 14px;
-  /* Reduced from 15px */
+  font-weight: 500;
 }
 
 /* Social Buttons */
@@ -127,28 +127,25 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  /* Reduced from 20px */
 }
 
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  /* Reduced from 16px */
+  gap: 16px;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  /* Reduced from 8px */
+  gap: 5px;
 }
 
 .form-group label {
   font-size: 12px;
-  /* Reduced from 13px */
-  font-weight: 700;
-  color: var(--auth-black);
+  font-weight: 600;
+  color: var(--auth-text-main);
+  letter-spacing: 0.1px;
 }
 
 .input-wrapper {
@@ -159,15 +156,18 @@
 
 .input-wrapper input {
   width: 100%;
-  padding: 12px 14px;
-  /* Reduced from 14px 16px */
+  padding: 11px 14px;
   background: var(--auth-input-bg);
-  border: 1px solid transparent;
+  border: 1.5px solid #f0f0f0; /* Subtle border */
   border-radius: var(--auth-inner-radius);
-  font-size: 13px;
-  /* Reduced from 14px */
+  font-size: 13.5px;
   color: var(--auth-black);
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
+}
+
+.input-wrapper input:hover {
+  border-color: #ddd;
+  background: #fdfdfd;
 }
 
 .input-wrapper input:focus {
@@ -175,6 +175,10 @@
   background: var(--auth-white);
   border-color: var(--auth-black);
   box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.05);
+}
+
+.input-wrapper input::placeholder {
+  color: #aaa;
 }
 
 .input-wrapper .input-icon-right {
@@ -202,26 +206,26 @@
 }
 
 .password-hint {
-  font-size: 11px;
+  font-size: 10.5px;
   color: var(--auth-text-sub);
-  margin-top: 4px;
+  margin-top: -8px; /* Adjusted for smaller gap */
+  margin-left: 2px;
 }
 
 /* Checkbox */
 .checkbox-group {
   display: flex;
-  align-items: center; /* Changed from flex-start to align properly with text */
-  gap: 12px;
-  margin-top: 8px;
+  align-items: center; 
+  gap: 10px;
+  margin-top: 0px;
 }
 
 .checkbox-group input[type="checkbox"] {
   width: 18px;
   height: 18px;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
   accent-color: var(--auth-black);
-  margin-top: 0; /* Removed 2px offset to ensure center alignment */
 }
 
 .checkbox-group label {
@@ -233,27 +237,29 @@
 
 .checkbox-group label a {
   color: var(--auth-black);
-  font-weight: 700;
+  font-weight: 600;
   text-decoration: none;
+  border-bottom: 1px solid rgba(0,0,0,0.1);
 }
 
 .checkbox-group label a:hover {
-  text-decoration: underline;
+  border-bottom-color: var(--auth-black);
 }
 
 /* Primary Button */
 .btn-primary {
   width: 100%;
-  padding: 16px;
+  padding: 15px;
   background: var(--auth-black);
   color: var(--auth-white);
   border: none;
   border-radius: var(--auth-inner-radius);
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s ease;
-  margin-top: 10px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-top: 4px;
+  letter-spacing: 0.3px;
 }
 
 .btn-primary:hover {

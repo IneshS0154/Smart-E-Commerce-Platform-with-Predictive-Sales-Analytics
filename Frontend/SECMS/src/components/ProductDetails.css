@@ -479,6 +479,12 @@
   margin-bottom: 14px;
 }
 
+.pd__added-msg.error {
+  color: #ef4444;
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
 /* Inline bold value next to section labels (e.g. "Colour — Grey") */
 .pd__section-value {
   font-family: 'Grift', sans-serif;

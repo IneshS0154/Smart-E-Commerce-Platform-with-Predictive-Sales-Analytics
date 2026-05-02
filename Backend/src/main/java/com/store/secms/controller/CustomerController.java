@@ -42,8 +42,34 @@ public class CustomerController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @PutMapping("/me")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public ResponseEntity<?> updateCurrentCustomer(@RequestBody com.store.secms.dto.CustomerUpdateRequest request) {
+        try {
+            org.springframework.security.core.Authentication auth = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+            com.store.secms.security.UserPrincipal principal = (com.store.secms.security.UserPrincipal) auth.getPrincipal();
+            Customer updated = customerService.updateCustomer(principal.getUserId(), request);
+            return ResponseEntity.ok(updated);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
+        }
+    }
+
+    @PutMapping("/me/change-password")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public ResponseEntity<?> changeCurrentPassword(@RequestBody com.store.secms.dto.ChangePasswordRequest request) {
+        try {
+            org.springframework.security.core.Authentication auth = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+            com.store.secms.security.UserPrincipal principal = (com.store.secms.security.UserPrincipal) auth.getPrincipal();
+            customerService.changePassword(principal.getUserId(), request);
+            return ResponseEntity.ok(new MessageResponse("Password changed successfully."));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
+        }
+    }
+
     @PutMapping("/{id}/update")
-    @PreAuthorize("hasRole('ADMIN') or (hasRole('CUSTOMER') and #id == authentication.principal.userId)")
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('CUSTOMER') and #id == principal.userId)")
     public ResponseEntity<?> updateCustomer(@PathVariable Long id,
             @RequestBody com.store.secms.dto.CustomerUpdateRequest request) {
         try {
@@ -55,7 +81,7 @@ public class CustomerController {
     }
 
     @PutMapping("/{id}/change-password")
-    @PreAuthorize("hasRole('CUSTOMER') and #id == authentication.principal.userId")
+    @PreAuthorize("hasRole('CUSTOMER') and #id == principal.userId")
     public ResponseEntity<?> changePassword(@PathVariable Long id,
             @RequestBody com.store.secms.dto.ChangePasswordRequest request) {
         try {

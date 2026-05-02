@@ -93,13 +93,14 @@ export default function Login() {
 
             <div className="auth-card">
                 <div className="auth-left">
-                    <div className="auth-logo">
-                        <ShoppingBag size={20} color="#000" />
-                    </div>
-
                     <div className="auth-header">
-                        <h1>Supplier Portal</h1>
-                        <p>Welcome back to ANYWEAR (Supplier).</p>
+                        <div className="auth-logo">
+                            <ShoppingBag size={18} color="#000" />
+                        </div>
+                        <div className="header-text">
+                            <h1>Supplier Portal</h1>
+                            <p>Welcome back to ANYWEAR (Supplier).</p>
+                        </div>
                     </div>
 
                     {errorMessage && <div className="alert alert-error"><AlertCircle size={16} /> {errorMessage}</div>}
