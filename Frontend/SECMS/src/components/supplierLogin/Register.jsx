@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../api/axiosConfig.js';
-import SellerRegisterImage from '../../assets/images/seller_auth/singup.jpg';
-import '../supplierLogin/Auth.css';
+import storeBg from '../../assets/seller_auth/singup.jpg';
+import './Register.css';
 
 export default function Register() {
     const navigate = useNavigate();
@@ -16,196 +16,154 @@ export default function Register() {
         confirmPassword: '',
         acceptTerms: false,
     });
+    const [errors, setErrors] = useState({});
     const [submitting, setSubmitting] = useState(false);
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
-        setFormData({ ...formData, [name]: type === 'checkbox' ? checked : value });
+        let newValue = type === 'checkbox' ? checked : value;
+
+        if (name === 'phoneNumber') {
+            newValue = newValue.replace(/\D/g, '').slice(0, 10);
+        }
+
+        setFormData({ ...formData, [name]: newValue });
+        if (errors[name]) {
+            setErrors({ ...errors, [name]: '' });
+        }
+    };
+
+    const validateForm = () => {
+        const newErrors = {};
+        if (!formData.storeName) newErrors.storeName = 'Store name is required';
+        if (!formData.email) newErrors.email = 'Email address is required';
+        if (!formData.phoneNumber) newErrors.phoneNumber = 'Phone number is required';
+        if (!formData.address) newErrors.address = 'Address is required';
+
+        if (!formData.password) {
+            newErrors.password = 'Password is required';
+        } else if (!/(?=.*[A-Z])/.test(formData.password)) {
+            newErrors.password = 'Must include at least 1 capital letter';
+        }
+
+        if (formData.password !== formData.confirmPassword) {
+            newErrors.confirmPassword = 'Passwords do not match';
+        }
+
+        if (!formData.acceptTerms) newErrors.acceptTerms = 'Please accept Terms';
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError('');
-        setSuccess('');
-
-        if (formData.password !== formData.confirmPassword) {
-            setError('Passwords do not match');
-            return;
-        }
-
-        if (!formData.acceptTerms) {
-            setError('Please accept the Terms & Conditions to continue.');
-            return;
-        }
+        if (!validateForm()) return;
 
         setSubmitting(true);
         try {
             const { confirmPassword, acceptTerms, ...payload } = formData;
-            await api.post('/sellers/register', { ...payload, status: 'PENDING' });
-            setSuccess('Registration successful! Please login.');
-            setTimeout(() => {
-                navigate('/signin');
-            }, 1500);
+            await api.post('/register', payload);
+            alert('Registration successful! Please login.');
+            navigate('/signin');
         } catch (error) {
-            const backendMessage = error?.response?.data?.message || error?.response?.data;
-            setError(typeof backendMessage === 'string' ? backendMessage : 'Registration failed. Please try again.');
+            alert('Registration failed: ' + (error.response?.data || 'Unknown error'));
         } finally {
             setSubmitting(false);
         }
     };
 
-    const goToLogin = () => {
-        navigate('/signin');
-    };
-
     return (
-        <div className="supplier-auth-container">
-            <div className="back-link-container">
-                <button onClick={() => navigate('/')} className="back-to-home">← Back to Home</button>
-            </div>
+        <div className="rg-page">
+            <button className="rg-back-btn" onClick={() => navigate('/')}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="15 18 9 12 15 6" />
+                </svg>
+                Back to Home
+            </button>
 
-            <div className="supplier-auth-content">
-                <div className="supplier-auth-form-wrapper">
-                    <h1 className="supplier-auth-title">Create Account</h1>
-                    <p className="supplier-auth-subtitle">Join ANYWEAR as a Supplier.</p>
-                    <br></br>
+            <div className="rg-card">
+                <div className="rg-form-panel">
+                    <div className="rg-brand-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21 15 16 10 5 21"></polyline>
+                        </svg>
+                    </div>
 
-                    {error && (
-                        <div style={{ color: '#dc2626', backgroundColor: '#fee2e2', padding: '10px', borderRadius: '6px', marginBottom: '12px', fontSize: '14px' }}>
-                            {error}
-                        </div>
-                    )}
+                    <div className="rg-heading-block">
+                        <h1 className="rg-title">Join ANYWEAR</h1>
+                        <p className="rg-subtitle">Register as a Supplier to start selling.</p>
+                    </div>
 
-                    {success && (
-                        <div style={{ color: '#16a34a', backgroundColor: '#dcfce7', padding: '10px', borderRadius: '6px', marginBottom: '12px', fontSize: '14px' }}>
-                            {success}
-                        </div>
-                    )}
-
-                    <form onSubmit={handleSubmit} className="supplier-auth-form">
-                        <div className="form-row">
-                            <div className="form-group form-group-half">
-                                <label htmlFor="storeName">Store / Brand name</label>
-                                <input
-                                    type="text"
-                                    id="storeName"
-                                    value={formData.storeName}
-                                    onChange={handleChange}
-                                    placeholder="e.g. Anywear Studio"
-                                    name="storeName"
-                                    required
-                                />
+                    <form className="rg-form" onSubmit={handleSubmit} noValidate>
+                        <div className="rg-form-row">
+                            <div className="rg-form-group">
+                                <label>Store / Brand Name</label>
+                                <input name="storeName" className="rg-input" placeholder="e.g. Anywear Studio" value={formData.storeName} onChange={handleChange} />
+                                <span className="rg-error">{errors.storeName}</span>
                             </div>
-
-                            <div className="form-group form-group-half">
-                                <label htmlFor="username">Username</label>
-                                <input
-                                    type="text"
-                                    id="username"
-                                    value={formData.username}
-                                    onChange={handleChange}
-                                    placeholder="Choose a username"
-                                    name="username"
-                                    required
-                                />
+                            <div className="rg-form-group">
+                                <label>Username</label>
+                                <input name="username" className="rg-input rg-input--blue" placeholder="Alterre" value={formData.username} onChange={handleChange} />
+                                <span className="rg-error">{errors.username}</span>
                             </div>
                         </div>
 
-                        <div className="form-group">
-                            <label htmlFor="email">Email Address</label>
-                            <input
-                                type="email"
-                                id="email"
-                                value={formData.email}
-                                onChange={handleChange}
-                                placeholder="Enter your email"
-                                name="email"
-                                required
-                            />
+                        <div className="rg-form-row">
+                            <div className="rg-form-group">
+                                <label>Email Address</label>
+                                <input name="email" type="email" className="rg-input" placeholder="Enter your email" value={formData.email} onChange={handleChange} />
+                                <span className="rg-error">{errors.email}</span>
+                            </div>
                         </div>
 
-                        <div className="form-group">
-                            <label htmlFor="phoneNumber">Phone Number</label>
-                            <input
-                                type="tel"
-                                id="phoneNumber"
-                                value={formData.phoneNumber}
-                                onChange={handleChange}
-                                placeholder="Enter your phone number"
-                                name="phoneNumber"
-                                maxLength={10}
-                                pattern="[0-9]{10}"
-                                required
-                            />
+                        <div className="rg-form-row">
+                            <div className="rg-form-group">
+                                <label>Phone Number</label>
+                                <input name="phoneNumber" className="rg-input" placeholder="10 digit number" value={formData.phoneNumber} onChange={handleChange} />
+                                <span className="rg-error">{errors.phoneNumber}</span>
+                            </div>
+                            <div className="rg-form-group">
+                                <label>Address</label>
+                                <input name="address" className="rg-input" placeholder="City, Country" value={formData.address} onChange={handleChange} />
+                                <span className="rg-error">{errors.address}</span>
+                            </div>
                         </div>
 
-                        <div className="form-group">
-                            <label htmlFor="address">Address</label>
-                            <input
-                                type="text"
-                                id="address"
-                                value={formData.address}
-                                onChange={handleChange}
-                                placeholder="Enter your address"
-                                name="address"
-                                required
-                            />
+                        <div className="rg-form-row">
+                            <div className="rg-form-group">
+                                <label>Password</label>
+                                <input name="password" type="password" className="rg-input rg-input--blue" placeholder="••••••••••" value={formData.password} onChange={handleChange} />
+                                <span className="rg-error">{errors.password}</span>
+                            </div>
+                            <div className="rg-form-group">
+                                <label>Confirm Password</label>
+                                <input name="confirmPassword" type="password" className="rg-input" placeholder="Confirm your password" value={formData.confirmPassword} onChange={handleChange} />
+                                <span className="rg-error">{errors.confirmPassword}</span>
+                            </div>
                         </div>
 
-                        <div className="form-group">
-                            <label htmlFor="password">Password</label>
-                            <input
-                                type="password"
-                                id="password"
-                                value={formData.password}
-                                onChange={handleChange}
-                                placeholder="Create a strong password"
-                                name="password"
-                                required
-                            />
+                        <div style={{ display: 'flex', flexDirection: 'column' }}>
+                            <label className="rg-remember">
+                                <input type="checkbox" name="acceptTerms" checked={formData.acceptTerms} onChange={handleChange} />
+                                I agree to the Terms & Conditions
+                            </label>
+                            <span className="rg-error">{errors.acceptTerms}</span>
                         </div>
 
-                        <div className="form-group">
-                            <label htmlFor="confirmPassword">Confirm Password</label>
-                            <input
-                                type="password"
-                                id="confirmPassword"
-                                value={formData.confirmPassword}
-                                onChange={handleChange}
-                                placeholder="Confirm your password"
-                                name="confirmPassword"
-                                required
-                            />
-                        </div>
-
-                        <div className="form-group checkbox">
-                            <input
-                                type="checkbox"
-                                id="acceptTerms"
-                                checked={formData.acceptTerms}
-                                onChange={handleChange}
-                                name="acceptTerms"
-                                required
-                            />
-                            <label htmlFor="acceptTerms" class="acceptTerms">I agree to the Terms & Conditions</label>
-                        </div>
-
-                        <button type="submit" className="supplier-auth-button" disabled={submitting}>
-                            {submitting ? 'Creating Account...' : 'Create Account'}
+                        <button className="rg-submit-btn" type="submit" disabled={submitting}>
+                            {submitting ? 'Creating account…' : 'Create Account'}
                         </button>
+
+                        <p className="rg-register-link">
+                            Already have an account? <button type="button" onClick={() => navigate('/signin')}>Sign In</button>
+                        </p>
                     </form>
-                    <div className="supplier-auth-toggle">
-                        <p>Already have an account? <span className="toggle-link" onClick={goToLogin}>Sign In</span></p>
-                    </div>
                 </div>
 
-                <div className="supplierS-auth-image-wrapper">
-                    <div className="supplierS-auth-image-placeholder">
-                        <img src={SellerRegisterImage} alt="Seller Sign Up" />
-                    </div>
-                </div>
+                <div className="rg-image-panel" style={{ backgroundImage: `url(${storeBg})` }} />
             </div>
         </div>
     );
