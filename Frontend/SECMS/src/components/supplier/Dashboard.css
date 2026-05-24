@@ -1,715 +1,456 @@
-/* Dashboard layout and components matching Anywear admin design */
+/* ============================================================
+   Supplier Dashboard
+   ============================================================ */
 
-@font-face {
-    font-family: 'NORD';
-    src: url('../../assets/fonts/NORD-Regular.otf') format('opentype');
-    font-weight: normal;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'NORD';
-    src: url('../../assets/fonts/NORD-Bold.otf') format('opentype');
-    font-weight: bold;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'NORD';
-    src: url('../../assets/fonts/NORD-Light.otf') format('opentype');
-    font-weight: 300;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Grift';
-    src: url('../../assets/fonts/Grift-Regular.otf') format('opentype');
-    font-weight: normal;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Grift';
-    src: url('../../assets/fonts/Grift-Bold.otf') format('opentype');
-    font-weight: bold;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Grift';
-    src: url('../../assets/fonts/Grift-SemiBold.otf') format('opentype');
-    font-weight: 600;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Grift';
-    src: url('../../assets/fonts/Grift-Medium.otf') format('opentype');
-    font-weight: 500;
-    font-style: normal;
-}
-
-
-:root {
-    --bg: #f4f4f2;
-    --sidebar-bg: #ffffff;
-    --card-bg: #ffffff;
-    --border: #e8e8e4;
-    --text-primary: #1a1a1a;
-    --text-secondary: #7a7a72;
-    --accent: #1a1a1a;
-    --active-green: #22c55e;
-    --sidebar-width: 220px;
-    --radius: 16px;
-    --radius-sm: 10px;
-}
-
-*,
-*::before,
-*::after {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text-primary);
-}
-
-/* ── Layout ── */
-.dashboard-layout {
+.ds-layout {
     display: flex;
-    height: 100vh;
-    overflow: hidden;
-}
-
-/* ── Sidebar ── */
-.dashboard-sidebar {
-    width: var(--sidebar-width);
-    background: var(--sidebar-bg);
-    border-right: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    padding: 0 0 24px;
-    z-index: 10;
-}
-
-.sidebar-brand {
-    font-family: 'NORD', sans-serif;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 22px 24px;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 16px;
-    margin-left: 10px;
-}
-
-.brand-icon {
-    font-size: 22px;
-    color: var(--text-primary);
-}
-
-.brand-name {
-    font-family: 'Grift', sans-serif;
-    font-size: 10px;
-    font-weight: 400;
-    letter-spacing: 0.1em;
-}
-
-.sidebar-nav {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    padding: 0 12px;
-    flex: 1;
-}
-
-.nav-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 14px;
-    border-radius: var(--radius-sm);
-    border: none;
-    background: transparent;
-    color: var(--text-secondary);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.18s ease;
-    width: 100%;
-    text-align: left;
-}
-
-.nav-item:hover {
-    background: var(--bg);
-    color: var(--text-primary);
-}
-
-.nav-item--active {
-    background: var(--accent);
-    color: #ffffff;
-}
-
-.nav-item--active:hover {
-    background: #333;
-    color: #ffffff;
-}
-
-.nav-icon {
-    font-size: 16px;
-}
-
-.sidebar-footer {
-    padding: 0 12px;
-    border-top: 1px solid var(--border);
-    padding-top: 16px;
-}
-
-/* ── Main Content ── */
-.dashboard-main {
-    margin-left: var(--sidebar-width);
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    background: var(--bg);
-    height: 100vh;
-    overflow: hidden;
-}
-
-/* ── Topbar ── */
-.dashboard-topbar {
-    background: var(--card-bg);
-    border-bottom: 1px solid var(--border);
-    padding: 18px 36px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 5;
-}
-
-.topbar-title {
-    font-family: 'Grift', sans-serif;
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--text-primary);
-}
-
-.topbar-user {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 8px 12px;
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.topbar-user:hover {
-    background: var(--bg);
-}
-
-.user-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-    font-weight: 600;
-}
-
-.user-info {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-
-.user-name {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-primary);
-}
-
-.user-role {
-    font-size: 11px;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-
-/* ── Content ── */
-.dashboard-content {
-    padding: 32px 36px;
-    overflow-y: auto;
-    flex: 1;
-}
-
-.content-heading {
-    margin-bottom: 24px;
-}
-
-.content-heading h2 {
-    margin: 0;
-    font-family: 'Grift', sans-serif;
-    font-size: 24px;
-    font-weight: 700;
-    color: var(--text-primary);
-}
-
-/* ── KPI Cards ── */
-.kpi-row {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 16px;
-    margin-bottom: 24px;
-}
-
-.kpi-card {
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px;
-    transition: all 0.3s;
-}
-
-.kpi-card:hover {
-    border-color: var(--text-secondary);
-}
-
-.kpi-label {
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--text-secondary);
-    margin-bottom: 8px;
-}
-
-.kpi-value {
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--text-primary);
-}
-
-.kpi-sub {
-    margin-top: 6px;
-    font-size: 12px;
-    color: var(--active-green);
-    font-weight: 500;
-}
-
-/* ── Transactions Card ── */
-.transactions-card {
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 24px;
-}
-
-.transactions-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 20px;
-}
-
-.transactions-header h3 {
-    margin: 0;
-    font-family: 'Grift ', sans-serif;
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--text-primary);
-}
-
-.transactions-header span {
-    font-size: 13px;
-    color: var(--text-secondary);
-}
-
-.transactions-filter {
-    font-size: 12px;
-    padding: 8px 14px;
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--border);
-    background: var(--bg);
-    color: var(--text-secondary);
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.transactions-filter:hover {
-    background: var(--border);
-}
-
-/* ── Table ── */
-.transactions-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 13px;
-}
-
-.transactions-table thead {
-    background: var(--bg);
-}
-
-.transactions-table th,
-.transactions-table td {
-    padding: 12px 14px;
-    border-bottom: 1px solid var(--border);
-    text-align: left;
-}
-
-.transactions-table th {
-    font-weight: 600;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    font-size: 11px;
-}
-
-.transactions-table td {
-    color: var(--text-primary);
-}
-
-.transactions-table tbody tr {
-    transition: all 0.2s;
-}
-
-.transactions-table tbody tr:hover {
-    background: var(--bg);
-}
-
-.transactions-table tbody tr:last-child td {
-    border-bottom: none;
-}
-
-/* ── Loading ── */
-.loading-shell {
     min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--bg);
-    color: var(--text-secondary);
-    font-size: 14px;
+    width: 100%;
+    background: radial-gradient(ellipse 80% 70% at 38% 50%, #f9f9f9 0%, #ebebeb 55%, #e2e2e2 100%) !important;
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif !important;
 }
 
-/* ══════════════════════════════════════════
-   TAB TRANSITION
-   key={activeTab} causes React to remount
-   .dash-tab-content on every switch.
-═══════════════════════════════════════════ */
-@keyframes dashTabIn {
-    from {
-        opacity: 0;
-        transform: translateY(16px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.dash-tab-content {
-    animation: dashTabIn 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
-}
-
-/* Stagger KPI cards on Dashboard overview */
-.kpi-card {
-    animation: dashTabIn 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
-}
-
-.kpi-card:nth-child(1) {
-    animation-delay: 0.04s;
-}
-
-.kpi-card:nth-child(2) {
-    animation-delay: 0.09s;
-}
-
-.kpi-card:nth-child(3) {
-    animation-delay: 0.14s;
-}
-
-.kpi-card:nth-child(4) {
-    animation-delay: 0.19s;
-}
-
-/* Transactions card slides in after KPI cards */
-.transactions-card {
-    animation: dashTabIn 0.3s 0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
-}
-
-/* ── Sidebar nav active transitions ── */
-.nav-item {
-    transition: background 0.16s ease, color 0.16s ease, transform 0.1s ease;
-}
-
-.nav-item:active {
-    transform: scale(0.97);
-}
-
-/* ── Responsive ── */
-@media (max-width: 1024px) {
-    .dashboard-content {
-        padding: 24px 32px;
-    }
-
-    .kpi-row {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-}
-
-@media (max-width: 768px) {
-    .dashboard-sidebar {
-        width: 200px;
-    }
-
-    .dashboard-main {
-        margin-left: 200px;
-    }
-
-    .dashboard-topbar {
-        padding: 16px 24px;
-    }
-
-    .topbar-title {
-        font-size: 18px;
-    }
-
-    .dashboard-content {
-        padding: 20px 24px;
-    }
-
-    .content-heading h2 {
-        font-size: 20px;
-    }
-
-    .kpi-row {
-        gap: 12px;
-    }
-
-    .kpi-card {
-        padding: 16px;
-    }
-
-    .kpi-value {
-        font-size: 24px;
-    }
-
-    .transactions-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 12px;
-    }
-
-    .transactions-header h3 {
-        font-size: 16px;
-    }
-}
-
-@media (max-width: 640px) {
-    .dashboard-sidebar {
-        width: 70px;
-        padding: 12px 0 24px;
-    }
-
-    .dashboard-main {
-        margin-left: 70px;
-    }
-
-    .sidebar-brand {
-        flex-direction: column;
-        padding: 16px 8px;
-        gap: 0;
-    }
-
-    .brand-name {
-        display: none;
-    }
-
-    .brand-icon {
-        font-size: 18px;
-    }
-
-    .nav-item {
-        justify-content: center;
-        padding: 12px 8px;
-    }
-
-    .sidebar-footer {
-        padding: 12px;
-    }
-
-    .dashboard-topbar {
-        flex-direction: column;
-        gap: 12px;
-        padding: 12px 16px;
-    }
-
-    .dashboard-content {
-        padding: 16px 12px;
-    }
-
-    .content-heading h2 {
-        font-size: 18px;
-    }
-
-    .kpi-row {
-        grid-template-columns: 1fr;
-        gap: 12px;
-        margin-bottom: 16px;
-    }
-
-    .kpi-card {
-        padding: 12px 14px;
-    }
-
-    .kpi-value {
-        font-size: 20px;
-    }
-
-    .transactions-card {
-        padding: 16px;
-    }
-
-    .transactions-table {
-        font-size: 11px;
-    }
-
-    .transactions-table th,
-    .transactions-table td {
-        padding: 8px 10px;
-    }
-}
-
-/* Supplier Orders Styles */
-.supplier-orders {
-    padding: 0;
-}
-
-.supplier-section-header {
-    margin-bottom: 24px;
-}
-
-.supplier-section-header h2 {
-    font-family: 'Grift', sans-serif;
-    font-size: 20px;
-    font-weight: 700;
-    color: #1a1a1a;
-    margin: 0 0 4px;
-    text-transform: uppercase;
-    letter-spacing: 0.02em;
-}
-
-.supplier-section-header p {
-    font-family: 'NORD', sans-serif;
-    font-size: 12px;
-    color: #888;
-    margin: 0;
-}
-
-.supplier-loading,
-.supplier-empty {
-    text-align: center;
-    padding: 48px;
-    background: #fff;
-    border-radius: 12px;
-    border: 1px solid #ebebeb;
-    font-family: 'NORD', sans-serif;
-    font-size: 13px;
-    color: #888;
-}
-
-.supplier-orders-list {
+/* ── Sidebar ─────────────────────────────────────────────── */
+.ds-sidebar {
+    width: 240px;
+    background-color: #030303;
+    color: #fff;
     display: flex;
     flex-direction: column;
-    gap: 16px;
-}
-
-.supplier-order-item {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 16px;
-    background: #fff;
-    border-radius: 12px;
-    border: 1px solid #ebebeb;
-}
-
-.supplier-order-image {
-    width: 70px;
-    height: 90px;
-    border-radius: 6px;
-    overflow: hidden;
-    background: #f0f0ee;
+    padding: 24px 20px;
     flex-shrink: 0;
 }
 
-.supplier-order-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+.ds-sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 15px;
+    font-weight: 800;
+    margin-bottom: 40px;
+    letter-spacing: 0.5px;
+}
+.ds-sidebar-brand svg {
+    width: 20px;
+    height: 20px;
 }
 
-.supplier-order-image .no-image {
+.ds-sidebar-section {
+    font-size: 9px;
+    color: #666;
+    font-weight: 700;
+    margin: 24px 0 8px 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.ds-nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
     width: 100%;
-    height: 100%;
+    background: none;
+    border: none;
+    padding: 10px 12px;
+    border-radius: 8px;
+    color: #888;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Inter', sans-serif;
+    text-align: left;
+    margin-bottom: 2px;
+}
+
+.ds-nav-btn:hover {
+    color: #fff;
+    background: rgba(255,255,255,0.05);
+}
+.ds-nav-btn.active {
+    color: #fff;
+    background: rgba(255,255,255,0.1);
+}
+
+.ds-nav-btn svg {
+    width: 16px;
+    height: 16px;
+    stroke-width: 1.5;
+}
+
+.ds-sidebar-footer {
+    margin-top: auto;
+    padding-top: 20px;
+}
+
+.ds-user-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 12px;
+    margin-bottom: 12px;
+}
+.ds-user-avatar {
+    width: 32px;
+    height: 32px;
+    background: #fff;
+    color: #000;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'NORD', sans-serif;
-    font-size: 10px;
-    color: #aaa;
+    font-size: 13px;
+    font-weight: 700;
 }
-
-.supplier-order-details {
-    flex: 1;
+.ds-user-info {
+    display: flex;
+    flex-direction: column;
 }
-
-.supplier-order-details h4 {
-    font-family: 'Grift', sans-serif;
-    font-size: 14px;
-    font-weight: 600;
-    color: #1a1a1a;
-    margin: 0 0 4px;
-}
-
-.supplier-order-details p {
-    font-family: 'NORD', sans-serif;
+.ds-user-name {
     font-size: 12px;
-    color: #666;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 2px;
+}
+.ds-user-role {
+    font-size: 10px;
+    color: #888;
+}
+
+/* ── Main Area ────────────────────────────────────────────── */
+.ds-main {
+    flex: 1;
+    padding: 40px 60px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.ds-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 32px;
+}
+
+.ds-header-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: #111;
+    margin: 0 0 6px 0;
+}
+.ds-header-subtitle {
+    font-size: 12px;
+    color: #777;
     margin: 0;
 }
 
-.supplier-order-details .customer {
-    color: #888;
-    margin-top: 4px;
+.ds-header-actions {
+    display: flex;
+    gap: 12px;
 }
-
-.supplier-order-details .date {
-    color: #aaa;
-    margin-top: 4px;
-}
-
-.supplier-order-price {
-    font-family: 'NORD', sans-serif;
-    font-size: 14px;
+.ds-btn-outline {
+    background: #fbfbfb;
+    border: 1px solid #eaeaea;
+    padding: 10px 18px;
+    border-radius: 12px;
+    font-size: 11px;
     font-weight: 600;
-    color: #1a1a1a;
+    cursor: pointer;
+    color: #111;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+}
+.ds-btn-outline svg {
+    width: 14px;
+    height: 14px;
+}
+.ds-btn-outline:hover {
+    background: #f0f0f0;
+    border-color: #ddd;
+}
+.ds-btn-primary {
+    background: #111;
+    color: #fff;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s;
+}
+.ds-btn-primary svg {
+    width: 14px;
+    height: 14px;
+}
+.ds-btn-primary:hover {
+    background: #333;
+}
+
+/* ── KPI Row ─────────────────────────────────────────────── */
+.ds-kpi-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+.ds-kpi-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+}
+.ds-kpi-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+}
+.ds-kpi-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: #f4f4f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #111;
+}
+.ds-kpi-icon svg {
+    width: 14px;
+    height: 14px;
+    stroke-width: 2;
+}
+.ds-kpi-badge {
+    font-size: 9px;
+    font-weight: 700;
+    padding: 4px 6px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+.ds-kpi-badge.green { color: #16a34a; background: #dcfce7; }
+.ds-kpi-badge.red { color: #dc2626; background: #fee2e2; }
+
+.ds-kpi-label {
+    font-size: 9px;
+    color: #888;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+.ds-kpi-value {
+    font-size: 20px;
+    font-weight: 800;
+    color: #111;
+}
+
+/* ── Chart Area ──────────────────────────────────────────── */
+.ds-chart-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    margin-bottom: 24px;
+}
+.ds-chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+.ds-chart-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #111;
+    margin: 0;
+}
+.ds-chart-dropdown {
+    font-size: 11px;
+    padding: 6px 10px;
+    border: 1px solid #eee;
+    border-radius: 6px;
+    color: #111;
+    background: #fff;
+    cursor: pointer;
+    font-weight: 500;
+    outline: none;
+}
+.ds-chart-placeholder {
+    height: 240px;
+    position: relative;
+    border-bottom: 1px solid #f0f0f0;
+    margin-bottom: 8px;
+}
+.ds-chart-y-axis {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-size: 9px;
+    color: #aaa;
+}
+.ds-chart-curve {
+    width: 100%;
+    height: 100%;
+    margin-left: 30px; /* Offset for Y axis */
+}
+.ds-chart-curve path {
+    fill: none;
+    stroke: #111;
+    stroke-width: 2;
+}
+.ds-chart-x-axis {
+    display: flex;
+    justify-content: space-between;
+    font-size: 9px;
+    color: #aaa;
+    padding-left: 36px;
+}
+
+/* ── Bottom Row ──────────────────────────────────────────── */
+.ds-bottom-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+}
+.ds-table-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+}
+.ds-table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.ds-table-header h3 {
+    font-size: 14px;
+    font-weight: 700;
+    color: #111;
+    margin: 0;
+}
+.ds-table-header button {
+    background: none;
+    border: none;
+    font-size: 10px;
+    font-weight: 700;
+    color: #111;
+    cursor: pointer;
+}
+.ds-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.ds-table th {
+    text-align: left;
+    font-size: 9px;
+    font-weight: 700;
+    color: #aaa;
+    text-transform: uppercase;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #f0f0f0;
+}
+.ds-table td {
+    padding: 16px 0;
+    font-size: 11px;
+    color: #111;
+    border-bottom: 1px solid #f8f8f8;
+}
+.ds-tx-id {
+    font-weight: 700;
+    margin-bottom: 4px;
+    display: block;
+}
+.ds-tx-name {
+    color: #888;
+    font-size: 10px;
+}
+.ds-table td.grey {
+    color: #888;
+}
+.ds-status {
+    font-size: 9px;
+    font-weight: 700;
+    color: #16a34a;
+    background: #dcfce7;
+    padding: 5px 10px;
+    border-radius: 12px;
+    display: inline-block;
+    text-transform: lowercase;
+}
+
+.ds-top-perf {
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+}
+.ds-top-perf h3 {
+    font-size: 14px;
+    font-weight: 700;
+    color: #111;
+    margin: 0 0 24px 0;
+}
+.ds-perf-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+.ds-perf-rank {
+    font-size: 10px;
+    color: #ccc;
+    font-weight: 700;
+    width: 16px;
+}
+.ds-perf-img {
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    background: #f0f0f0;
+    object-fit: cover;
+}
+.ds-perf-info {
+    flex: 1;
+}
+.ds-perf-name {
+    font-size: 11px;
+    font-weight: 600;
+    color: #111;
+    margin: 0 0 4px 0;
+}
+.ds-perf-stock {
+    font-size: 9px;
+    color: #888;
+    margin: 0;
+}
+.ds-perf-sales {
+    text-align: right;
+}
+.ds-perf-sales-val {
+    font-size: 14px;
+    font-weight: 700;
+    color: #111;
+    margin: 0 0 2px 0;
+}
+.ds-perf-sales-lbl {
+    font-size: 8px;
+    color: #888;
+    text-transform: uppercase;
+    margin: 0;
 }
