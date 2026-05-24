@@ -1,69 +1,63 @@
-# 🚀 Spring Boot + React (Axios) Starter Project
+# ANYWEAR | Luxury E-Commerce Platform
 
-A streamlined full-stack starter application designed for scalability and clean separation of concerns.
+A high-end, editorial-style e-commerce platform built with a robust Spring Boot backend and a highly polished React front-end. Designed with a focus on immersive user experience, dynamic data loading, and clean component architecture.
 
-## 🏗 Project Structure
+---
 
+## 🏗 Project Architecture
+
+A monorepo structure separating the RESTful backend from the Vite-powered frontend.
 
 ```text
 project-root/
 │
-├── backend/                # Spring Boot Application
-│   ├── controller/         # REST Endpoints
-│   ├── service/            # Business Logic
-│   ├── repository/         # Data Access Layer (JPA)
+├── Backend/                # Spring Boot REST API
+│   ├── controller/         # API Endpoints (Products, Users, Auth, Cart)
+│   ├── service/            # Business Logic & JWT validation
+│   ├── repository/         # JPA Repositories
 │   ├── entity/             # Database Models
-│   └── config/             # CORS & Security Configs
+│   └── config/             # Spring Security & CORS Config
 │
-└── frontend/               # React (Vite + SWC)
+└── Frontend/SECMS/         # React (Vite + SWC)
     ├── src/
-    │   ├── api/            # Axios Configuration & Services
-    │   ├── App.jsx         # Main UI Component
-    │   └── main.jsx        # Entry Point
-    └── .env                # Environment Variables
+    │   ├── components/     # Reusable UI (Navbar, Hero, Cards, Dashboard)
+    │   ├── pages/          # Unified Catalogue, Shop, Home, Auth
+    │   ├── hooks/          # Custom Hooks (useScrollAnimation)
+    │   └── assets/         # Cinematic Videos, Lottie Animations, Fonts
 ```
-### ⚙️ Tech Stack
 
-| Component | Technology |
+## ✨ Key Features & UX
+
+### 🎨 Editorial Front-End
+- **Cinematic Hero:** Full-bleed, edge-to-edge looping `.mp4` background videos with seamless integration.
+- **Fluid Navigation:** Smart auto-hiding navbar that detects scroll direction and hysteresis to maximize screen real estate.
+- **Micro-interactions:** Custom cubic-bezier CSS animations, hover zooms, and elegant overlay reveals across product grids.
+- **Lottie Transitions:** Smooth, brand-tailored splash screen animations during major route changes.
+- **Dynamic Catalogue Grid:** Real-time array shuffling for everyday wear, preventing stagnant front-page content with skeleton loading states during fetch.
+
+### ⚙️ Robust Back-End
+- **Role-Based Access Control:** Secure JWT authentication isolating three distinct roles: `CUSTOMER`, `SUPPLIER`, and `ADMIN`.
+- **Intelligent Data Seeding:** Built-in `Dataseeder.java` populates the H2 in-memory DB instantly with robust mock data, products, images, and user accounts.
+- **Supplier Dashboard:** Fully functional layout with contained-scrolling to prevent sidebar drift when managing long product lists.
+
+---
+
+## 🛠 Tech Stack
+
+| Layer | Technologies Used |
 | :--- | :--- |
-| **Backend** | Java 17, Spring Boot 3.x, Spring Data JPA, Maven |
-| **Frontend** | React (Vite + SWC), Axios, Node 18 LTS |
-| **Database** | H2 (In-Memory) |
+| **Frontend** | React 18, Vite, React Router DOM, Vanilla CSS (BEM inspired), Lottie |
+| **Backend** | Java 17+, Spring Boot 3.x, Spring Security (JWT), Spring Data JPA |
+| **Database** | H2 (In-Memory for rapid dev/demo) |
+| **Build Tools**| Maven (Backend), npm (Frontend) |
 
 ---
 
-### 🔌 Features Implemented
+## 🚀 Getting Started
 
-* **RESTful API:** Clean `GET` and `POST` implementations.
-* **Layered Architecture:** Strict separation of `Controller → Service → Repository`.
+### 1. Run the Backend
 
-* **Persistent Storage:** H2 in-memory database for rapid development.
-* **API Abstraction:** Centralized Axios instance with environment-based configuration.
-* **Dev-Ready:** Pre-configured CORS and `.env` support.
-
----
-
-### 🗄 Backend API Endpoints
-
-**Base URL:** `http://localhost:8080`
-
-| Method | Endpoint | Description |
-| :--- | :--- | :--- |
-| `GET` | `/api/users` | Fetch all users |
-| `POST` | `/api/users` | Create a new user |
-
-**Request Body Example (POST):**
-```json
-{
-  "name": "John Doe",
-  "email": "john@example.com"
-}
-```
-
-### ▶️ Getting Started
-
-#### 1. Run Backend
-Navigate to the `backend` directory:
+Navigate to the `Backend` directory and start the Spring Boot application. The dataseeder will automatically populate the database on startup.
 
 **Mac / Linux:**
 ```bash
@@ -71,60 +65,30 @@ Navigate to the `backend` directory:
 ```
 
 **Windows:**
-
-**PowerShell**
 ```powershell
 .\mvnw.cmd spring-boot:run
 ```
-#### 2. Run Frontend
-Navigate to the frontend directory:
+*Backend runs on `http://localhost:8080`*
 
-**Bash**
+### 2. Run the Frontend
+
+Open a new terminal, navigate to the `Frontend/SECMS` directory, install dependencies, and start the Vite dev server.
+
 ```bash
+cd Frontend/SECMS
 npm install
 npm run dev
 ```
 
-Frontend URL: http://localhost:5173
-
-Backend URL: http://localhost:8080
-
-### 🧪 Database Administration (H2 Console)
-The H2 console is enabled by default for development debugging.
-
-* **URL:** http://localhost:8080/h2-console
-* **JDBC URL:** `jdbc:h2:mem:testdb`
-* **User:** `sa`
-* **Password:** (leave blank)
+*Frontend runs on `http://localhost:5173`*
 
 ---
 
-### 🌍 Environment Configuration
-The frontend uses Vite's environment handling to prevent hardcoded URLs.
+## 🧪 Database Administration
 
-**.env file:**
-```env
-VITE_API_URL=http://localhost:8080
-```
+The H2 console is enabled by default for viewing the seeded data and debugging.
 
-**api/axiosConfig.js:**
-
-```javascript
-import axios from 'axios';
-
-const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
-  timeout: 5000,
-  headers: { 'Content-Type': 'application/json' }
-});
-
-export default api;
-```
-### 🔮 Future Roadmap
-
-- [ ] **DTO Layer:** Decouple Entities from API Models.
-- [ ] **Validation:** Add `@Valid` and `@NotBlank` constraints.
-- [ ] **Global Handling:** Implement `@ControllerAdvice` for consistent error responses.
-- [ ] **Full CRUD:** Complete Update and Delete operations.
-- [ ] **Security:** Implement JWT Authentication.
-- [ ] **Docker:** Containerize both services for easy deployment.
+* **URL:** `http://localhost:8080/h2-console`
+* **JDBC URL:** `jdbc:h2:mem:testdb`
+* **User:** `sa`
+* **Password:** *(leave blank)*

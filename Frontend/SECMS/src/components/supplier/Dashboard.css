@@ -1,6 +1,54 @@
 /* Dashboard layout and components matching Anywear admin design */
 
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Syne:wght@600;700;800&display=swap');
+@font-face {
+    font-family: 'NORD';
+    src: url('../../assets/fonts/NORD-Regular.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'NORD';
+    src: url('../../assets/fonts/NORD-Bold.otf') format('opentype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'NORD';
+    src: url('../../assets/fonts/NORD-Light.otf') format('opentype');
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Grift';
+    src: url('../../assets/fonts/Grift-Regular.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Grift';
+    src: url('../../assets/fonts/Grift-Bold.otf') format('opentype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Grift';
+    src: url('../../assets/fonts/Grift-SemiBold.otf') format('opentype');
+    font-weight: 600;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Grift';
+    src: url('../../assets/fonts/Grift-Medium.otf') format('opentype');
+    font-weight: 500;
+    font-style: normal;
+}
+
 
 :root {
     --bg: #f4f4f2;
@@ -16,7 +64,9 @@
     --radius-sm: 10px;
 }
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
@@ -31,7 +81,8 @@ body {
 /* ── Layout ── */
 .dashboard-layout {
     display: flex;
-    min-height: 100vh;
+    height: 100vh;
+    overflow: hidden;
 }
 
 /* ── Sidebar ── */
@@ -50,12 +101,14 @@ body {
 }
 
 .sidebar-brand {
+    font-family: 'NORD', sans-serif;
     display: flex;
     align-items: center;
     gap: 10px;
     padding: 22px 24px;
     border-bottom: 1px solid var(--border);
     margin-bottom: 16px;
+    margin-left: 10px;
 }
 
 .brand-icon {
@@ -64,10 +117,10 @@ body {
 }
 
 .brand-name {
-    font-family: 'Syne', sans-serif;
-    font-size: 16px;
-    font-weight: 800;
-    letter-spacing: 0.06em;
+    font-family: 'Grift', sans-serif;
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.1em;
 }
 
 .sidebar-nav {
@@ -128,6 +181,8 @@ body {
     display: flex;
     flex-direction: column;
     background: var(--bg);
+    height: 100vh;
+    overflow: hidden;
 }
 
 /* ── Topbar ── */
@@ -144,7 +199,7 @@ body {
 }
 
 .topbar-title {
-    font-family: 'Syne', sans-serif;
+    font-family: 'Grift', sans-serif;
     font-size: 20px;
     font-weight: 700;
     color: var(--text-primary);
@@ -209,7 +264,7 @@ body {
 
 .content-heading h2 {
     margin: 0;
-    font-family: 'Syne', sans-serif;
+    font-family: 'Grift', sans-serif;
     font-size: 24px;
     font-weight: 700;
     color: var(--text-primary);
@@ -274,7 +329,7 @@ body {
 
 .transactions-header h3 {
     margin: 0;
-    font-family: 'Syne', sans-serif;
+    font-family: 'Grift ', sans-serif;
     font-size: 18px;
     font-weight: 700;
     color: var(--text-primary);
@@ -351,6 +406,62 @@ body {
     background: var(--bg);
     color: var(--text-secondary);
     font-size: 14px;
+}
+
+/* ══════════════════════════════════════════
+   TAB TRANSITION
+   key={activeTab} causes React to remount
+   .dash-tab-content on every switch.
+═══════════════════════════════════════════ */
+@keyframes dashTabIn {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dash-tab-content {
+    animation: dashTabIn 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+/* Stagger KPI cards on Dashboard overview */
+.kpi-card {
+    animation: dashTabIn 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+.kpi-card:nth-child(1) {
+    animation-delay: 0.04s;
+}
+
+.kpi-card:nth-child(2) {
+    animation-delay: 0.09s;
+}
+
+.kpi-card:nth-child(3) {
+    animation-delay: 0.14s;
+}
+
+.kpi-card:nth-child(4) {
+    animation-delay: 0.19s;
+}
+
+/* Transactions card slides in after KPI cards */
+.transactions-card {
+    animation: dashTabIn 0.3s 0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+/* ── Sidebar nav active transitions ── */
+.nav-item {
+    transition: background 0.16s ease, color 0.16s ease, transform 0.1s ease;
+}
+
+.nav-item:active {
+    transform: scale(0.97);
 }
 
 /* ── Responsive ── */
@@ -485,4 +596,120 @@ body {
     .transactions-table td {
         padding: 8px 10px;
     }
+}
+
+/* Supplier Orders Styles */
+.supplier-orders {
+    padding: 0;
+}
+
+.supplier-section-header {
+    margin-bottom: 24px;
+}
+
+.supplier-section-header h2 {
+    font-family: 'Grift', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 0 0 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.supplier-section-header p {
+    font-family: 'NORD', sans-serif;
+    font-size: 12px;
+    color: #888;
+    margin: 0;
+}
+
+.supplier-loading,
+.supplier-empty {
+    text-align: center;
+    padding: 48px;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #ebebeb;
+    font-family: 'NORD', sans-serif;
+    font-size: 13px;
+    color: #888;
+}
+
+.supplier-orders-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.supplier-order-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #ebebeb;
+}
+
+.supplier-order-image {
+    width: 70px;
+    height: 90px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #f0f0ee;
+    flex-shrink: 0;
+}
+
+.supplier-order-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.supplier-order-image .no-image {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'NORD', sans-serif;
+    font-size: 10px;
+    color: #aaa;
+}
+
+.supplier-order-details {
+    flex: 1;
+}
+
+.supplier-order-details h4 {
+    font-family: 'Grift', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0 0 4px;
+}
+
+.supplier-order-details p {
+    font-family: 'NORD', sans-serif;
+    font-size: 12px;
+    color: #666;
+    margin: 0;
+}
+
+.supplier-order-details .customer {
+    color: #888;
+    margin-top: 4px;
+}
+
+.supplier-order-details .date {
+    color: #aaa;
+    margin-top: 4px;
+}
+
+.supplier-order-price {
+    font-family: 'NORD', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1a1a1a;
 }

@@ -1,13 +1,14 @@
 package com.store.secms.controller;
 
 
-
+import com.store.secms.dto.MessageResponse;
 import com.store.secms.entity.Seller;
 import com.store.secms.entity.SellerLogin;
 import com.store.secms.entity.admin;
 import com.store.secms.repository.SellerLoginRepository;
 import com.store.secms.repository.SellerRepository;
 import com.store.secms.repository.adminRepository;
+import com.store.secms.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,7 +21,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/sellers")
-@CrossOrigin(origins = "http://localhost:5173") // Default Vite port
+@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:5174", "http://localhost:5175"})
 public class SellerController {
 
     @Autowired
@@ -34,6 +35,9 @@ public class SellerController {
 
     @Autowired
     private adminRepository adminRepository;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     @PostMapping("/register")
     public ResponseEntity<?> registerSeller(@RequestBody Seller seller) {
@@ -68,26 +72,31 @@ public class SellerController {
 
             // Check if seller is pending
             if ("PENDING".equals(seller.getStatus())) {
-                return ResponseEntity.status(403).body("Your account is pending verification. Please wait until the admin approves your account with these credentials.");
+                return ResponseEntity.status(403).body(new MessageResponse("Your account is pending verification. Please wait until the admin approves your account."));
             }
 
             // Check if seller is rejected
             if ("REJECTED".equals(seller.getStatus())) {
-                return ResponseEntity.status(403).body("Your account has been rejected by the admin");
+                return ResponseEntity.status(403).body(new MessageResponse("Your account has been rejected by the admin"));
             }
 
             // Check if seller is deactivated
             if ("DEACTIVATED".equals(seller.getStatus())) {
-                return ResponseEntity.status(403).body("Your account has been deactivated");
+                return ResponseEntity.status(403).body(new MessageResponse("Your account has been deactivated"));
             }
 
             Optional<SellerLogin> sellerLoginOpt = sellerLoginRepository.findBySeller(seller);
             if (sellerLoginOpt.isPresent() &&
                     passwordEncoder.matches(loginRequest.getPassword(), sellerLoginOpt.get().getPassword())) {
                 seller.setUsername(sellerLoginOpt.get().getUsername());
+                // Generate JWT token
+                String token = jwtUtil.generateToken(seller.getEmail(), "SELLER", seller.getId());
+                // Clear password before returning (security)
+                seller.setPassword(null);
                 // tag the response so the frontend knows the role
                 Map<String, Object> body = new HashMap<>();
                 body.put("role", "SELLER");
+                body.put("token", token);
                 body.put("data", seller);
                 return ResponseEntity.ok(body);
             }
@@ -101,10 +110,12 @@ public class SellerController {
             body.put("role", "ADMIN");
             body.put("id",   adminOpt.get().getId());
             body.put("username", adminOpt.get().getUsername());
+            String token = jwtUtil.generateToken(adminOpt.get().getUsername(), "ADMIN", adminOpt.get().getId());
+            body.put("token", token);
             return ResponseEntity.ok(body);
         }
 
-        return ResponseEntity.status(401).body("Invalid credentials");
+        return ResponseEntity.status(401).body(new MessageResponse("Invalid email or password"));
     }
 
     @GetMapping("/all")

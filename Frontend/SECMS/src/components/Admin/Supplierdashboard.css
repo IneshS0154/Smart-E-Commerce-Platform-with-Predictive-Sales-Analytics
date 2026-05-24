@@ -1,6 +1,53 @@
+@font-face {
+    font-family: 'NORD';
+    src: url('../../assets/fonts/NORD-Regular.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'NORD';
+    src: url('../../assets/fonts/NORD-Bold.otf') format('opentype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'NORD';
+    src: url('../../assets/fonts/NORD-Light.otf') format('opentype');
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Grift';
+    src: url('../../assets/fonts/Grift-Regular.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Grift';
+    src: url('../../assets/fonts/Grift-Bold.otf') format('opentype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Grift';
+    src: url('../../assets/fonts/Grift-SemiBold.otf') format('opentype');
+    font-weight: 600;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Grift';
+    src: url('../../assets/fonts/Grift-Medium.otf') format('opentype');
+    font-weight: 500;
+    font-style: normal;
+}
 
 
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Syne:wght@600;700;800&display=swap');
 
 :root {
     --bg: #f4f4f2;
@@ -18,10 +65,16 @@
     --radius-sm: 10px;
 }
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
 body {
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Grift', sans-serif;
     background: var(--bg);
     color: var(--text-primary);
 }
@@ -29,7 +82,8 @@ body {
 /* ── Layout ── */
 .admin-layout {
     display: flex;
-    min-height: 100vh;
+    height: 100vh;
+    overflow: hidden;
 }
 
 /* ── Sidebar ── */
@@ -40,7 +94,8 @@ body {
     display: flex;
     flex-direction: column;
     position: fixed;
-    top: 0; left: 0;
+    top: 0;
+    left: 0;
     height: 100vh;
     padding: 0 0 24px;
     z-index: 10;
@@ -61,10 +116,10 @@ body {
 }
 
 .brand-name {
-    font-family: 'Syne', sans-serif;
+    font-family: 'NORD', sans-serif;
     font-size: 16px;
     font-weight: 800;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.12em;
 }
 
 .sidebar-nav {
@@ -79,12 +134,12 @@ body {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 10px 14px;
+    padding: 11px 14px;
     border-radius: var(--radius-sm);
     border: none;
     background: transparent;
     color: var(--text-secondary);
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Grift', sans-serif;
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
@@ -108,7 +163,9 @@ body {
     color: #ffffff;
 }
 
-.nav-icon { font-size: 16px; }
+.nav-icon {
+    font-size: 16px;
+}
 
 .sidebar-footer {
     padding: 0 12px;
@@ -122,7 +179,9 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    height: 100vh;
+    overflow-y: auto;
+    background: var(--bg);
 }
 
 /* ── Topbar ── */
@@ -139,7 +198,7 @@ body {
 }
 
 .topbar-title {
-    font-family: 'Syne', sans-serif;
+    font-family: 'NORD', sans-serif;
     font-size: 20px;
     font-weight: 700;
 }
@@ -151,10 +210,13 @@ body {
 }
 
 .user-avatar {
-    width: 40px; height: 40px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     background: #d1d5db;
-    display: flex; align-items: center; justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-weight: 700;
     font-size: 15px;
     color: var(--text-primary);
@@ -189,18 +251,18 @@ body {
 }
 
 .section-title {
-    font-family: 'Syne', sans-serif;
+    font-family: 'NORD', sans-serif;
     font-size: 22px;
     font-weight: 700;
 }
 
 .btn-add {
-    background: var(--accent);
+    background: #000000;
     color: #ffffff;
     border: none;
     padding: 11px 22px;
     border-radius: var(--radius-sm);
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'NORD', sans-serif;
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
@@ -208,7 +270,7 @@ body {
 }
 
 .btn-add:hover {
-    background: #333;
+    background: #000000;
     transform: translateY(-1px);
 }
 
@@ -234,39 +296,44 @@ body {
     margin-bottom: 12px;
 }
 
-.stat-label--active { color: var(--active-green); }
-.stat-label--pending { color: var(--pending-amber); }
+.stat-label--active {
+    color: var(--active-green);
+}
+
+.stat-label--pending {
+    color: var(--pending-amber);
+}
 
 .stat-value {
-    font-family: 'Syne', sans-serif;
+    font-family: 'NORD', sans-serif;
     font-size: 42px;
     font-weight: 700;
     line-height: 1;
 }
 
 /* ── Table Section ── */
-.table-section {}
+
 
 .table-title {
-    font-family: 'Syne', sans-serif;
+    font-family: 'NORD', sans-serif;
     font-size: 17px;
     font-weight: 700;
     margin-bottom: 16px;
 }
 
 .table-card {
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    overflow: visible;
 }
 
 .table-header {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    padding: 22px 24px 18px;
-    border-bottom: 1px solid var(--border);
+    padding: 0 0 24px 0;
+    border-bottom: 2px solid var(--text-primary);
 }
 
 .table-card-title {
@@ -290,108 +357,167 @@ body {
     padding: 8px 14px;
 }
 
-.search-icon { font-size: 14px; }
+.search-icon {
+    font-size: 14px;
+}
 
 .search-input {
     border: none;
     background: transparent;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'NORD', sans-serif;
     font-size: 13px;
     color: var(--text-primary);
     outline: none;
     width: 140px;
 }
 
-.search-input::placeholder { color: var(--text-secondary); }
+.search-input::placeholder {
+    color: var(--text-secondary);
+}
 
 /* ── Table ── */
 .supplier-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 13.5px;
+    font-size: 14.5px;
 }
 
 .supplier-table thead tr {
-    background: var(--bg);
+    background: transparent;
+    border-bottom: 2px solid var(--border);
 }
 
 .supplier-table th {
-    padding: 12px 18px;
+    padding: 24px 18px;
     text-align: left;
-    font-size: 12px;
-    font-weight: 600;
+    font-size: 11px;
+    font-weight: 700;
+    font-family: 'NORD', sans-serif;
     color: var(--text-secondary);
-    letter-spacing: 0.03em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
 }
 
 .supplier-table td {
-    padding: 14px 18px;
-    border-top: 1px solid var(--border);
+    padding: 28px 18px;
+    border-top: none;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
     color: var(--text-primary);
+    font-family: 'Grift', sans-serif;
+    font-weight: 500;
+}
+
+.supplier-table td:last-child {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.supplier-table tbody tr {
+    transition: background 0.3s ease;
 }
 
 .supplier-table tbody tr:hover {
-    background: #fafafa;
+    background: rgba(0,0,0,0.015);
 }
 
 /* ── Status Badges ── */
 .status-badge {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
-    padding: 4px 12px;
+    gap: 6px;
+    padding: 4px 10px;
     border-radius: 999px;
-    font-size: 12px;
-    font-weight: 600;
+    font-size: 11px;
+    font-weight: 700;
+    font-family: 'NORD', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
 }
 
 /* ── Action Buttons ── */
 .action-group {
     display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 8px;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 16px;
+    margin: 0;
 }
 
 .action-group-secondary {
-    margin-top: 4px;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 16px;
+    margin: 0;
 }
 
 .action-btn {
     border: none;
-    border-radius: 4px;
-    color: #fff;
+    background: transparent;
+    color: var(--text-secondary);
     cursor: pointer;
+    font-family: 'Grift', sans-serif;
     font-size: 13px;
-    padding: 6px 10px;
-    transition: transform 0.12s ease, opacity 0.12s ease;
+    font-weight: 700;
+    padding: 4px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: color 0.3s ease;
+    position: relative;
+}
+
+.action-btn::after {
+    content: '';
+    position: absolute;
+    bottom: 0px;
+    left: 0;
+    width: 0%;
+    height: 1px;
+    background: var(--text-primary);
+    transition: width 0.3s ease, background 0.3s ease;
 }
 
 .action-btn:hover {
-    transform: translateY(-1px);
-    opacity: 0.9;
+    color: var(--text-primary);
+    transform: none;
+    box-shadow: none;
 }
 
-.action-btn-view { background: #007bff; }
-.action-btn-edit { background: #17a2b8; }
-.action-btn-approve { background: #28a745; }
-.action-btn-reject { background: #dc3545; }
-.action-btn-deactivate { background: #ef4444; }
-.action-btn-activate { background: #16a34a; }
+.action-btn:hover::after {
+    width: 100%;
+}
+
+.action-btn-approve:hover,
+.action-btn-activate:hover {
+    color: #16a34a;
+}
+.action-btn-approve:hover::after,
+.action-btn-activate:hover::after {
+    background: #16a34a;
+}
+
+.action-btn-reject:hover,
+.action-btn-deactivate:hover {
+    color: #dc2626;
+}
+.action-btn-reject:hover::after,
+.action-btn-deactivate:hover::after {
+    background: #dc2626;
+}
 
 .status-badge--active {
-    background: #dcfce7;
+    background: transparent;
     color: #15803d;
 }
 
 .status-badge--pending {
-    background: #fef9c3;
-    color: #92400e;
+    background: transparent;
+    color: #b45309;
 }
 
 .status-badge--deactive {
-    background: #fee2e2;
+    background: transparent;
     color: #b91c1c;
 }
 
@@ -399,7 +525,7 @@ body {
 .modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.35);
+    background: rgba(0, 0, 0, 0.35);
     backdrop-filter: blur(4px);
     display: flex;
     align-items: center;
@@ -412,11 +538,11 @@ body {
     border-radius: var(--radius);
     padding: 36px;
     width: 440px;
-    box-shadow: 0 24px 60px rgba(0,0,0,0.14);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.14);
 }
 
 .modal-title {
-    font-family: 'Syne', sans-serif;
+    font-family: 'NORD', sans-serif;
     font-size: 20px;
     font-weight: 700;
     margin-bottom: 24px;
@@ -441,7 +567,7 @@ body {
     padding: 10px 14px;
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'NORD', sans-serif;
     font-size: 14px;
     outline: none;
     color: var(--text-primary);
@@ -465,7 +591,7 @@ body {
     border: 1px solid var(--border);
     padding: 10px 20px;
     border-radius: var(--radius-sm);
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'NORD', sans-serif;
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
