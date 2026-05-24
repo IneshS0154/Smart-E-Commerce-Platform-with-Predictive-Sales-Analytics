@@ -1,53 +1,182 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import './Admindashboard.css';
 import Supplierdashboard from './Supplierdashboard';
-import Userdashboard from './Userdashboard';
-import orderAPI from '../../api/orderAPI';
-import reviewAPI from '../../api/reviewAPI';
 
-const fmtPrice = (p) => p ? `Rs. ${parseFloat(p).toLocaleString('en-IN', { minimumFractionDigits: 2 })}` : 'Rs. 0.00';
+/* ── Tiny SVG icons ────────────────────────────────────────── */
+const Icon = {
+    menu: () => (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="21" y2="18" />
+        </svg>
+    ),
+    overview: () => (
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" />
+            <rect x="14" y="14" width="7" height="7" /><rect x="3" y="14" width="7" height="7" />
+        </svg>
+    ),
+    users: () => (
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" />
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" />
+        </svg>
+    ),
+    suppliers: () => (
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+            <polyline points="9 22 9 12 15 12 15 22" />
+        </svg>
+    ),
+    transactions: () => (
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <line x1="12" y1="1" x2="12" y2="23" /><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+        </svg>
+    ),
+    reports: () => (
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <line x1="18" y1="20" x2="18" y2="10" /><line x1="12" y1="20" x2="12" y2="4" />
+            <line x1="6" y1="20" x2="6" y2="14" />
+        </svg>
+    ),
+    reviews: () => (
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+        </svg>
+    ),
+    signout: () => (
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" />
+            <line x1="21" y1="12" x2="9" y2="12" />
+        </svg>
+    ),
+    dollar: () => (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <line x1="12" y1="1" x2="12" y2="23" /><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+        </svg>
+    ),
+    check: () => (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <polyline points="20 6 9 17 4 12" />
+        </svg>
+    ),
+    cart: () => (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <circle cx="9" cy="21" r="1" /><circle cx="20" cy="21" r="1" />
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+        </svg>
+    ),
+    partners: () => (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" />
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" />
+        </svg>
+    ),
+    spark: () => (
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+        </svg>
+    ),
+    trophy: () => (
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <polyline points="8 21 12 21 16 21" /><line x1="12" y1="17" x2="12" y2="21" />
+            <path d="M5 3H3v6a9 9 0 0 0 18 0V3h-2" /><path d="M21 3H3" />
+        </svg>
+    ),
+    tag: () => (
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
+            <line x1="7" y1="7" x2="7.01" y2="7" />
+        </svg>
+    ),
+    intel: () => (
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
+        </svg>
+    ),
+    arrow: () => (
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+            <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
+        </svg>
+    ),
+    supplier_icon: () => (
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <rect x="2" y="7" width="20" height="14" rx="2" /><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
+        </svg>
+    ),
+};
 
-const navItems = [
-    { label: "Overview"},
-    { label: "Users"},
-    { label: "Suppliers"},
-    { label: "Orders"},
-    { label: "Payments"},
-    { label: "Reviews"},
+/* ── Sidebar nav config ────────────────────────────────────── */
+const NAV = [
+    { section: "MAIN", items: [{ id: "Overview", icon: "overview" }] },
+    {
+        section: "MANAGEMENT", items: [
+            { id: "Users", icon: "users" },
+            { id: "Suppliers", icon: "suppliers" },
+        ]
+    },
+    {
+        section: "STORE", items: [
+            { id: "Transactions", icon: "transactions" },
+            { id: "Reports", icon: "reports" },
+            { id: "Reviews", icon: "reviews" },
+        ]
+    },
 ];
 
-const sortOptions = ["Most Recent", "Oldest First", "Highest Amount", "Lowest Amount"];
+/* ── Mini SVG line chart ───────────────────────────────────── */
+function RevenueChart() {
+    const points = [
+        { x: 0, y: 90 }, { x: 16, y: 88 }, { x: 30, y: 85 },
+        { x: 50, y: 80 }, { x: 70, y: 70 }, { x: 90, y: 55 },
+        { x: 110, y: 42 }, { x: 130, y: 35 }, { x: 150, y: 20 },
+        { x: 170, y: 15 }, { x: 185, y: 8 }, { x: 200, y: 5 },
+    ];
+    const pathD = points.map((p, i) => `${i === 0 ? "M" : "L"}${p.x},${p.y}`).join(" ");
+    const fillD = `${pathD} L200,100 L0,100 Z`;
 
+    return (
+        <svg viewBox="0 0 200 100" preserveAspectRatio="none" className="ad-chart-svg">
+            <defs>
+                <linearGradient id="chartFill" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#1a1a1a" stopOpacity="0.08" />
+                    <stop offset="100%" stopColor="#1a1a1a" stopOpacity="0" />
+                </linearGradient>
+            </defs>
+            <path d={fillD} fill="url(#chartFill)" />
+            <path d={pathD} fill="none" stroke="#1a1a1a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+    );
+}
+
+/* ── Product avatar placeholder ────────────────────────────── */
+function ProductAvatar({ name, color }) {
+    return (
+        <div className="ad-prod-avatar" style={{ background: color }}>
+            {name[0]}
+        </div>
+    );
+}
+
+const PRODUCTS = [
+    { name: "Man High Neck Fitted Top", units: "3 units moved", price: "LKR 15,000.00", color: "#e8e0d5" },
+    { name: "Sculpt Bodysuit", units: "2 units moved", price: "LKR 19,998.00", color: "#d5dfe8" },
+    { name: "Unchained Tee", units: "2 units moved", price: "LKR 6,378.00", color: "#dde8d5" },
+    { name: "Fusion Basketball Tank", units: "2 units moved", price: "LKR 9,998.00", color: "#e8d5d5" },
+];
+
+const SUPPLIERS = [
+    { name: "Venom", sub: "15 Units, 75tpcs", revenue: "LKR 62,884.00", badge: "WINNER", badgeClass: "ad-badge--winner" },
+    { name: "Atairu", sub: "4 units shipped", revenue: "LKR 27,993.00", badge: "1ST PLACE", badgeClass: "ad-badge--first" },
+];
+
+/* ── Main Component ────────────────────────────────────────── */
 export default function AdminOverview() {
     const navigate = useNavigate();
     const [activeNav, setActiveNav] = useState("Overview");
-    const [sortBy, setSortBy] = useState("Most Recent");
-    const [showSort, setShowSort] = useState(false);
-    const [search, setSearch] = useState("");
-    const [showUserMenu, setShowUserMenu] = useState(false);
-    const [allOrders, setAllOrders] = useState([]);
-    const [ordersLoading, setOrdersLoading] = useState(false);
-    const [ordersError, setOrdersError] = useState(null);
-    const [orderSearch, setOrderSearch] = useState("");
-    const [expandedOrders, setExpandedOrders] = useState(new Set());
-
-    // Reviews state
-    const [allReviews, setAllReviews] = useState([]);
-    const [reviewsLoading, setReviewsLoading] = useState(false);
-    const [ratingFilter, setRatingFilter] = useState('all');
-
-    const toggleOrderExpand = (orderId) => {
-        setExpandedOrders(prev => {
-            const newSet = new Set(prev);
-            if (newSet.has(orderId)) newSet.delete(orderId);
-            else newSet.add(orderId);
-            return newSet;
-        });
-    };
 
     const admin = JSON.parse(localStorage.getItem("admin") || "{}") || {};
-    const adminUsername = admin?.username || admin?.name || "Admin";
+    const adminUsername = admin?.username || admin?.name || "admin";
 
     const handleLogout = () => {
         localStorage.removeItem("admin");
@@ -56,781 +185,223 @@ export default function AdminOverview() {
         navigate("/");
     };
 
-    const fetchAllOrders = async () => {
-        setOrdersLoading(true);
-        setOrdersError(null);
-        try {
-            const data = await orderAPI.getAllOrders();
-            console.log('Admin orders response:', data);
-            setAllOrders(data || []);
-        } catch (err) {
-            console.error('Error fetching orders:', err);
-            setOrdersError(err?.response?.data?.message || err?.message || 'Failed to load orders');
-            setAllOrders([]);
-        } finally {
-            setOrdersLoading(false);
-        }
-    };
-
-    const fetchAllReviews = async () => {
-        setReviewsLoading(true);
-        try {
-            const data = await reviewAPI.getAllReviews();
-            setAllReviews(data || []);
-        } catch (err) {
-            console.error('Error fetching reviews:', err);
-            setAllReviews([]);
-        } finally {
-            setReviewsLoading(false);
-        }
-    };
-
-    const handleDeleteReview = async (reviewId) => {
-        if (!confirm('Are you sure you want to delete this review?')) return;
-        try {
-            await reviewAPI.deleteReviewAsAdmin(reviewId);
-            alert('Review deleted successfully');
-            fetchAllReviews();
-        } catch (err) {
-            console.error('Error deleting review:', err);
-            alert(err?.response?.data?.message || 'Failed to delete review');
-        }
-    };
-
-    useEffect(() => {
-        if (activeNav === "Orders" || activeNav === "Overview") {
-            fetchAllOrders();
-        }
-        if (activeNav === "Reviews") {
-            fetchAllReviews();
-        }
-    }, [activeNav]);
-
-    // ---- All hooks and derived state must be above early-returns ----
-
-    const filtered = allOrders.filter(o => {
-        const trId = (o?.transactionId || "").toLowerCase();
-        const fName = (o?.customer?.firstName || "").toLowerCase();
-        const lName = (o?.customer?.lastName || "").toLowerCase();
-        const s = search.toLowerCase();
-        return trId.includes(s) || fName.includes(s) || lName.includes(s);
-    });
-
-    const sorted = [...filtered].sort((a, b) => {
-        const dateA = new Date(a?.createdAt || 0).getTime();
-        const dateB = new Date(b?.createdAt || 0).getTime();
-        const amtA = parseFloat(a?.finalAmount) || 0;
-        const amtB = parseFloat(b?.finalAmount) || 0;
-
-        if (sortBy === "Oldest First") return dateA - dateB;
-        if (sortBy === "Highest Amount") return amtB - amtA;
-        if (sortBy === "Lowest Amount") return amtA - amtB;
-        return dateB - dateA;
-    });
-
-    // Core Computations for Overview Widgets
-    const { topSuppliers, topProducts, avgOrderValue } = useMemo(() => {
-        let supplierMap = {};
-        let productMap = {};
-        let totalRev = 0;
-
-        allOrders.forEach(o => {
-            const amt = parseFloat(o?.finalAmount) || 0;
-            totalRev += amt;
-
-            if (Array.isArray(o?.orderItems)) {
-                o.orderItems.forEach(item => {
-                    const supId = item?.product?.seller?.id || 'unknown';
-                    const supName = item?.product?.seller?.storeName || 'Unknown Supplier';
-                    const subT = parseFloat(item?.subtotal) || 0;
-
-                    if (!supplierMap[supId]) supplierMap[supId] = { id: supId, name: supName, revenue: 0, sales: 0 };
-                    supplierMap[supId].revenue += subT;
-                    supplierMap[supId].sales += 1;
-
-                    const prodId = item?.product?.id || 'unknown';
-                    const prodName = item?.product?.productName || 'Unknown Product';
-                    const qty = parseInt(item?.quantity) || 0;
-
-                    if (!productMap[prodId]) productMap[prodId] = { id: prodId, name: prodName, volume: 0, revenue: 0, img: item?.product?.mainImagePath };
-                    productMap[prodId].volume += qty;
-                    productMap[prodId].revenue += subT;
-                });
-            }
-        });
-
-        const sortedSuppliers = Object.values(supplierMap).sort((a, b) => b.revenue - a.revenue).slice(0, 5);
-        const sortedProducts = Object.values(productMap).sort((a, b) => b.volume - a.volume).slice(0, 5);
-        const aov = allOrders.length > 0 ? (totalRev / allOrders.length) : 0;
-
-        return { topSuppliers: sortedSuppliers, topProducts: sortedProducts, avgOrderValue: aov };
-    }, [allOrders]);
-
-    if (activeNav === "Users") {
-        return <Userdashboard activeNav={activeNav} onNavChange={setActiveNav} />;
-    }
-
-    if (activeNav === "Suppliers") {
-        return <Supplierdashboard activeNav={activeNav} onNavChange={setActiveNav} />;
-    }
-
-    if (activeNav === "Orders") {
-        return (
-            <div className="ov-layout">
-                <aside className="ov-sidebar" style={{ display: 'flex', flexDirection: 'column' }}>
-                    <div className="ov-brand">
-                        <span className="ov-brand-name" style={{ fontFamily: "'NORD', sans-serif", fontWeight: 700, letterSpacing: '0.12em' }}>ANYWEAR</span>
-                    </div>
-                    <nav className="ov-nav">
-                        {navItems.map(item => (
-                            <button
-                                key={item.label}
-                                className={`ov-nav-item ${activeNav === item.label ? "ov-nav-item--active" : ""}`}
-                                onClick={() => setActiveNav(item.label)}
-                                style={{ fontFamily: "'Grift', sans-serif" }}
-                            >
-                                <span className="ov-nav-icon">{item.icon}</span>
-                                <span>{item.label}</span>
-                            </button>
-                        ))}
-                    </nav>
-                    <div style={{ marginTop: 'auto', padding: '20px 16px' }}>
-                        <button
-                            onClick={handleLogout}
-                            style={{
-                                width: '100%', padding: '12px 16px',
-                                background: 'transparent', border: '1px solid var(--ov-border)',
-                                borderRadius: '8px', fontFamily: "'Grift', sans-serif",
-                                fontSize: '14px', color: 'var(--ov-text-secondary)',
-                                cursor: 'pointer', display: 'flex', alignItems: 'center',
-                                gap: '10px', transition: 'all 0.2s ease'
-                            }}
-                            onMouseEnter={e => {
-                                e.currentTarget.style.background = '#fee2e2';
-                                e.currentTarget.style.borderColor = '#fca5a5';
-                                e.currentTarget.style.color = '#dc2626';
-                            }}
-                            onMouseLeave={e => {
-                                e.currentTarget.style.background = 'transparent';
-                                e.currentTarget.style.borderColor = 'var(--ov-border)';
-                                e.currentTarget.style.color = 'var(--ov-text-secondary)';
-                            }}
-                        >
-                            <span>↪</span>
-                            <span>Logout</span>
-                        </button>
-                    </div>
-                </aside>
-
-                <main className="ov-main">
-                    <header className="ov-topbar">
-                        <h1 className="ov-topbar-title">All Orders</h1>
-                        <div className="ov-topbar-user" style={{ position: 'relative' }}>
-                            <button
-                                className="ov-user-menu-button"
-                                onClick={() => setShowUserMenu(prev => !prev)}
-                                style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '10px',
-                                    border: 'none',
-                                    background: 'transparent',
-                                    cursor: 'pointer',
-                                    padding: 0
-                                }}
-                            >
-                                <div className="ov-user-avatar">{(adminUsername || "A")[0].toUpperCase()}</div>
-                                <div className="ov-user-info">
-                                    <span className="ov-user-name">{adminUsername}</span>
-                                    <span className="ov-user-role">admin</span>
-                                </div>
-                            </button>
-                            {showUserMenu && (
-                                <div className="ov-user-dropdown" style={{
-                                    position: 'absolute',
-                                    right: 0,
-                                    top: 'calc(100% + 8px)',
-                                    background: '#fff',
-                                    boxShadow: '0 10px 25px rgba(0,0,0,0.12)',
-                                    borderRadius: '8px',
-                                    zIndex: 20,
-                                    minWidth: '150px',
-                                    border: '1px solid #e5e5e5'
-                                }}>
-                                    <button
-                                        className="ov-user-dropdown-item"
-                                        onClick={handleLogout}
-                                        style={{
-                                            width: '100%',
-                                            border: 'none',
-                                            background: 'transparent',
-                                            padding: '10px 14px',
-                                            textAlign: 'left',
-                                            cursor: 'pointer'
-                                        }}
-                                    >
-                                        Logout
-                                    </button>
-                                </div>
-                            )}
-                        </div>
-                    </header>
-
-                    <div className="ov-content">
-                        <h2 className="ov-section-title">Customer Orders</h2>
-                        
-                        {ordersLoading ? (
-                            <div className="ov-table-card" style={{ padding: '48px', textAlign: 'center' }}>
-                                <p style={{ color: 'var(--ov-text-secondary)', fontSize: '14px' }}>Loading orders...</p>
-                            </div>
-                        ) : ordersError ? (
-                            <div className="ov-table-card" style={{ padding: '48px', textAlign: 'center' }}>
-                                <p style={{ color: '#dc2626', fontSize: '14px' }}>Error: {ordersError}</p>
-                                <button 
-                                    onClick={fetchAllOrders}
-                                    style={{ marginTop: '16px', padding: '10px 20px', background: '#1a1a1a', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer' }}
-                                >
-                                    Retry
-                                </button>
-                            </div>
-                        ) : allOrders.length === 0 ? (
-                            <div className="ov-table-card" style={{ padding: '48px', textAlign: 'center' }}>
-                                <p style={{ color: 'var(--ov-text-secondary)', fontSize: '14px' }}>No orders yet.</p>
-                            </div>
-                        ) : (
-                            <div className="orders-list-container">
-                                <div style={{ marginBottom: '20px', display: 'flex', justifyContent: 'flex-end' }}>
-                                    <div style={{ position: 'relative', width: '320px' }}>
-                                        <input 
-                                            type="text" 
-                                            placeholder="Search by Transaction ID..."
-                                            value={orderSearch}
-                                            onChange={(e) => setOrderSearch(e.target.value)}
-                                            style={{ 
-                                                padding: '12px 16px', 
-                                                borderRadius: '8px', 
-                                                border: '1px solid var(--border)', 
-                                                width: '100%', 
-                                                fontSize: '13px', 
-                                                fontFamily: '"NORD", sans-serif',
-                                                outline: 'none',
-                                                boxSizing: 'border-box'
-                                            }}
-                                        />
-                                    </div>
-                                </div>
-                                <div className="orders-list">
-                                    {Array.isArray(allOrders) && allOrders.filter(o => 
-                                        !orderSearch || (o?.transactionId || '').toLowerCase().includes(orderSearch.toLowerCase())
-                                    ).map((order) => (
-                                        <div key={order?.id || Math.random()} className="order-card" style={{
-                                        background: '#fff',
-                                        borderRadius: '12px',
-                                        border: '1px solid var(--ov-border)',
-                                        marginBottom: '20px',
-                                        overflow: 'hidden'
-                                    }}>
-                                        <div className="order-header" 
-                                            onClick={() => order?.id && toggleOrderExpand(order.id)}
-                                            style={{
-                                                display: 'flex',
-                                                justifyContent: 'space-between',
-                                                alignItems: 'center',
-                                                padding: '16px 20px',
-                                                background: expandedOrders.has(order?.id) ? '#fff' : '#f8f8f6',
-                                                borderBottom: expandedOrders.has(order?.id) ? '1px solid var(--border)' : 'none',
-                                                cursor: 'pointer',
-                                                transition: 'background 0.2s ease'
-                                            }}>
-                                            <div style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
-                                                <div>
-                                                    <p style={{ fontSize: '11px', color: '#888', margin: 0, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Transaction ID</p>
-                                                    <p style={{ fontSize: '14px', fontWeight: 600, margin: 0 }}>{order?.transactionId || 'N/A'}</p>
-                                                </div>
-                                                <div>
-                                                    <p style={{ fontSize: '11px', color: '#888', margin: 0, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Customer</p>
-                                                    <p style={{ fontSize: '14px', fontWeight: 600, margin: 0 }}>
-                                                        {order?.customer?.firstName || ''} {order?.customer?.lastName || ''}
-                                                    </p>
-                                                    <p style={{ fontSize: '12px', color: '#666', margin: 0 }}>{order?.customer?.username || 'N/A'}</p>
-                                                </div>
-                                                <div>
-                                                    <p style={{ fontSize: '11px', color: '#888', margin: 0, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Date</p>
-                                                    <p style={{ fontSize: '14px', fontWeight: 600, margin: 0 }}>
-                                                        {order?.createdAt ? new Date(order.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' }) : 'N/A'}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                                                <span style={{
-                                                    padding: '6px 14px',
-                                                    borderRadius: '100px',
-                                                    fontSize: '11px',
-                                                    fontWeight: 600,
-                                                    textTransform: 'uppercase',
-                                                    letterSpacing: '0.05em',
-                                                    background: '#dcfce7',
-                                                    color: '#16a34a',
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    gap: '4px'
-                                                }}>
-                                                    <span style={{ fontSize: '14px' }}>✓</span> PAID
-                                                </span>
-                                                <span style={{ fontSize: '16px', fontWeight: 700 }}>{fmtPrice(order?.finalAmount)}</span>
-                                                <span style={{ 
-                                                    marginLeft: '8px', 
-                                                    fontSize: '14px', 
-                                                    color: '#888',
-                                                    transform: expandedOrders.has(order?.id) ? 'rotate(180deg)' : 'rotate(0deg)', 
-                                                    transition: 'transform 0.3s ease' 
-                                                }}>▼</span>
-                                            </div>
-                                        </div>
-                                        {expandedOrders.has(order?.id) && (
-                                            <>
-                                                <div className="order-items" style={{ padding: '0 20px' }}>
-                                                    {Array.isArray(order?.orderItems) && order.orderItems.map((item, idx) => (
-                                                        <a href={`/product/${item?.product?.id}`} target="_blank" rel="noopener noreferrer" key={idx} style={{
-                                                            display: 'flex',
-                                                            alignItems: 'center',
-                                                            gap: '16px',
-                                                            padding: '20px 0',
-                                                            borderBottom: idx < (order?.orderItems?.length || 0) - 1 ? '1px solid #f0f0ee' : 'none',
-                                                            textDecoration: 'none',
-                                                            color: 'inherit',
-                                                            cursor: 'pointer',
-                                                            transition: 'background 0.2s ease'
-                                                        }}
-                                                        onMouseEnter={e => e.currentTarget.style.background = '#fafaf8'}
-                                                        onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                                                        >
-                                                            <div style={{
-                                                                width: '60px',
-                                                                height: '75px',
-                                                                borderRadius: '6px',
-                                                                overflow: 'hidden',
-                                                                background: '#f0f0ee',
-                                                                flexShrink: 0
-                                                            }}>
-                                                                {item?.product?.mainImagePath ? (
-                                                                    <img src={item.product.mainImagePath} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                                                                ) : (
-                                                                    <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', color: '#aaa' }}>No Img</div>
-                                                                )}
-                                                            </div>
-                                                            <div style={{ flex: 1 }}>
-                                                                <p style={{ fontSize: '14px', fontWeight: 600, margin: '0 0 4px' }}>{item?.product?.productName || 'Unknown Product'}</p>
-                                                                <p style={{ fontSize: '12px', color: '#666', margin: 0 }}>Size: {item?.size || 'N/A'} | Qty: {item?.quantity || 0}</p>
-                                                                <p style={{ fontSize: '12px', color: '#888', margin: '4px 0 0' }}>Supplier: {item?.product?.seller?.storeName || 'Unknown'}</p>
-                                                            </div>
-                                                            <div style={{ textAlign: 'right' }}>
-                                                                <p style={{ fontSize: '14px', fontWeight: 600, margin: 0 }}>{fmtPrice(item?.subtotal)}</p>
-                                                            </div>
-                                                        </a>
-                                                    ))}
-                                                </div>
-                                                <div className="order-footer" style={{
-                                                    padding: '12px 20px',
-                                                    background: '#fafaf8',
-                                                    borderTop: '1px solid var(--border)',
-                                                    display: 'flex',
-                                                    justifyContent: 'space-between',
-                                                    fontSize: '12px',
-                                                    color: '#666'
-                                                }}>
-                                                    <span>Payment: {order?.cardType || 'Card'} **** {order?.cardLastFour || '****'}</span>
-                                                    <span>Discount: {fmtPrice(order?.discountAmount)}</span>
-                                                </div>
-                                            </>
-                                        )}
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                        )}
-                    </div>
-                </main>
-            </div>
-        );
-    }
-
     return (
-        <div className="ov-layout">
-            {/* Sidebar */}
-            <aside className="ov-sidebar" style={{ display: 'flex', flexDirection: 'column' }}>
-                <div className="ov-brand">
-                    <span className="ov-brand-name" style={{ fontFamily: "'NORD', sans-serif", fontWeight: 700, letterSpacing: '0.12em' }}>ANYWEAR</span>
+        <div className="ad-layout">
+            {/* ── Sidebar ── */}
+            <aside className="ad-sidebar">
+                {/* Brand */}
+                <div className="ad-brand">
+                    <button className="ad-menu-btn"><Icon.menu /></button>
+                    <span className="ad-brand-name">ANYWEAR</span>
                 </div>
-                <nav className="ov-nav">
-                    {navItems.map(item => (
-                        <button
-                            key={item.label}
-                            className={`ov-nav-item ${activeNav === item.label ? "ov-nav-item--active" : ""}`}
-                            onClick={() => setActiveNav(item.label)}
-                            style={{ fontFamily: "'Grift', sans-serif" }}
-                        >
-                            <span className="ov-nav-icon">{item.icon}</span>
-                            <span>{item.label}</span>
-                        </button>
+
+                {/* Nav sections */}
+                <div className="ad-nav-scroll">
+                    {NAV.map(section => (
+                        <div key={section.section} className="ad-nav-section">
+                            <p className="ad-nav-section-label">{section.section}</p>
+                            {section.items.map(item => (
+                                <button
+                                    key={item.id}
+                                    className={`ad-nav-item ${activeNav === item.id ? "ad-nav-item--active" : ""}`}
+                                    onClick={() => setActiveNav(item.id)}
+                                >
+                                    <span className="ad-nav-icon">{Icon[item.icon]()}</span>
+                                    <span>{item.id}</span>
+                                </button>
+                            ))}
+                        </div>
                     ))}
-                </nav>
-                <div style={{ marginTop: 'auto', padding: '20px 16px' }}>
-                    <button
-                        onClick={handleLogout}
-                        style={{
-                            width: '100%', padding: '12px 16px',
-                            background: 'transparent', border: '1px solid var(--ov-border)',
-                            borderRadius: '8px', fontFamily: "'Grift', sans-serif",
-                            fontSize: '14px', color: 'var(--ov-text-secondary)',
-                            cursor: 'pointer', display: 'flex', alignItems: 'center',
-                            gap: '10px', transition: 'all 0.2s ease'
-                        }}
-                        onMouseEnter={e => {
-                            e.currentTarget.style.background = '#fee2e2';
-                            e.currentTarget.style.borderColor = '#fca5a5';
-                            e.currentTarget.style.color = '#dc2626';
-                        }}
-                        onMouseLeave={e => {
-                            e.currentTarget.style.background = 'transparent';
-                            e.currentTarget.style.borderColor = 'var(--ov-border)';
-                            e.currentTarget.style.color = 'var(--ov-text-secondary)';
-                        }}
-                    >
-                        <span>↪</span>
-                        <span>Logout</span>
+                </div>
+
+                {/* Footer — user + sign out */}
+                <div className="ad-sidebar-footer">
+                    <div className="ad-user-row">
+                        <div className="ad-user-avatar">{adminUsername[0]?.toUpperCase()}</div>
+                        <div className="ad-user-info">
+                            <span className="ad-user-name">{adminUsername}</span>
+                            <span className="ad-user-role">admin</span>
+                        </div>
+                    </div>
+                    <button className="ad-signout-btn" onClick={handleLogout}>
+                        <Icon.signout />
+                        Sign Out
                     </button>
                 </div>
             </aside>
 
-            {/* Main */}
-            <main className="ov-main">
-                {/* Topbar */}
-                <header className="ov-topbar">
-                    <h1 className="ov-topbar-title">Admin Dashboard</h1>
-                    <div className="ov-topbar-user" style={{ position: 'relative' }}>
-                        <button
-                            className="ov-user-menu-button"
-                            onClick={() => setShowUserMenu(prev => !prev)}
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '10px',
-                                border: 'none',
-                                background: 'transparent',
-                                cursor: 'pointer',
-                                padding: 0
-                            }}
-                        >
-                            <div className="ov-user-avatar">{(adminUsername || "A")[0].toUpperCase()}</div>
-                            <div className="ov-user-info">
-                                <span className="ov-user-name">{adminUsername}</span>
-                                <span className="ov-user-role">admin</span>
+            {/* ── Main Content ── */}
+            <main className="ad-main">
+                {activeNav === "Suppliers" ? (
+                    <Supplierdashboard activeNav={activeNav} onNavChange={setActiveNav} />
+                ) : (
+                    <>
+                        {/* Page header */}
+                        <div className="ad-page-header">
+                            <h1 className="ad-page-title">Platform Intelligence</h1>
+                            <p className="ad-page-subtitle">Real-time performance analytics for Anywear Vault.</p>
+                        </div>
+
+                        {/* ── Stat Cards ── */}
+                        <div className="ad-stats-row">
+                            {/* Card 1 — Total Gross Revenue */}
+                            <div className="ad-stat-card">
+                                <div className="ad-stat-top">
+                                    <div className="ad-stat-icon ad-stat-icon--green"><Icon.dollar /></div>
+                                    <span className="ad-stat-badge ad-stat-badge--green">+13%</span>
+                                </div>
+                                <p className="ad-stat-label">TOTAL GROSS REVENUE</p>
+                                <p className="ad-stat-value">LKR 88,884.40</p>
                             </div>
-                        </button>
-                        {showUserMenu && (
-                            <div className="ov-user-dropdown" style={{
-                                position: 'absolute',
-                                right: 0,
-                                top: 'calc(100% + 8px)',
-                                background: '#fff',
-                                boxShadow: '0 10px 25px rgba(0,0,0,0.12)',
-                                borderRadius: '8px',
-                                zIndex: 20,
-                                minWidth: '150px',
-                                border: '1px solid #e5e5e5'
-                            }}>
-                                <button
-                                    className="ov-user-dropdown-item"
-                                    onClick={handleLogout}
-                                    style={{
-                                        width: '100%',
-                                        border: 'none',
-                                        background: 'transparent',
-                                        padding: '10px 14px',
-                                        textAlign: 'left',
-                                        cursor: 'pointer'
-                                    }}
-                                >
-                                    Logout
+
+                            {/* Card 2 — Settled Transactions (dark) */}
+                            <div className="ad-stat-card ad-stat-card--dark">
+                                <div className="ad-stat-top">
+                                    <div className="ad-stat-icon ad-stat-icon--dark-inner"><Icon.check /></div>
+                                    <span className="ad-stat-badge ad-stat-badge--dark">+RANK</span>
+                                </div>
+                                <p className="ad-stat-label">SETTLED TRANSACTIONS</p>
+                                <p className="ad-stat-value">8</p>
+                            </div>
+
+                            {/* Card 3 — Avg Order Value */}
+                            <div className="ad-stat-card">
+                                <div className="ad-stat-top">
+                                    <div className="ad-stat-icon ad-stat-icon--orange"><Icon.cart /></div>
+                                    <span className="ad-stat-badge ad-stat-badge--green">+5.2%</span>
+                                </div>
+                                <p className="ad-stat-label">AVG. ORDER VALUE</p>
+                                <p className="ad-stat-value">LKR 11,110.55</p>
+                            </div>
+
+                            {/* Card 4 — Active Partners */}
+                            <div className="ad-stat-card">
+                                <div className="ad-stat-top">
+                                    <div className="ad-stat-icon ad-stat-icon--purple"><Icon.partners /></div>
+                                    <span className="ad-stat-badge ad-stat-badge--purple">+2.1%</span>
+                                </div>
+                                <p className="ad-stat-label">ACTIVE PARTNERS</p>
+                                <p className="ad-stat-value">2</p>
+                            </div>
+                        </div>
+
+                        {/* ── Middle Row: Revenue Chart + Top Suppliers ── */}
+                        <div className="ad-mid-row">
+                            {/* Revenue Velocity Chart */}
+                            <div className="ad-card ad-chart-card">
+                                <div className="ad-card-header">
+                                    <div>
+                                        <p className="ad-card-title">Revenue Velocity</p>
+                                        <p className="ad-card-subtitle">7-day gross volume tracking</p>
+                                    </div>
+                                    <button className="ad-card-icon-btn"><Icon.spark /></button>
+                                </div>
+
+                                {/* Y-axis labels + chart */}
+                                <div className="ad-chart-wrap">
+                                    <div className="ad-chart-ylabels">
+                                        <span>LKR 100</span>
+                                        <span>LKR 50</span>
+                                        <span>LKR 0</span>
+                                    </div>
+                                    <div className="ad-chart-area">
+                                        <RevenueChart />
+                                    </div>
+                                </div>
+
+                                {/* X-axis labels */}
+                                <div className="ad-chart-xlabels">
+                                    <span>May 6</span>
+                                    <span>Apr 7</span>
+                                    <span>Nov 21</span>
+                                </div>
+                            </div>
+
+                            {/* Top Suppliers */}
+                            <div className="ad-card ad-suppliers-card">
+                                <div className="ad-card-header">
+                                    <div>
+                                        <p className="ad-card-title">Top Suppliers</p>
+                                        <p className="ad-card-subtitle">Revenue leaderboard</p>
+                                    </div>
+                                    <button className="ad-card-icon-btn"><Icon.trophy /></button>
+                                </div>
+
+                                <div className="ad-supplier-list">
+                                    {SUPPLIERS.map((s, i) => (
+                                        <div key={s.name} className="ad-supplier-row">
+                                            <div className="ad-supplier-avatar">
+                                                <Icon.supplier_icon />
+                                            </div>
+                                            <div className="ad-supplier-info">
+                                                <span className="ad-supplier-name">{s.name}</span>
+                                                <span className="ad-supplier-sub">{s.sub}</span>
+                                            </div>
+                                            <div className="ad-supplier-right">
+                                                <span className="ad-supplier-revenue">{s.revenue}</span>
+                                                <span className={`ad-supplier-badge ${s.badgeClass}`}>{s.badge}</span>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* ── Bottom Row: Trending Catalog + Intelligence ── */}
+                        <div className="ad-bot-row">
+                            {/* Trending Catalog */}
+                            <div className="ad-card ad-catalog-card">
+                                <div className="ad-card-header">
+                                    <div>
+                                        <p className="ad-card-title">Trending Catalog</p>
+                                        <p className="ad-card-subtitle">Highest movement products</p>
+                                    </div>
+                                    <button className="ad-card-icon-btn"><Icon.tag /></button>
+                                </div>
+
+                                <div className="ad-product-grid">
+                                    {PRODUCTS.map(p => (
+                                        <div key={p.name} className="ad-product-row">
+                                            <ProductAvatar name={p.name} color={p.color} />
+                                            <div className="ad-product-info">
+                                                <span className="ad-product-name">{p.name}</span>
+                                                <span className="ad-product-units">{p.units}</span>
+                                            </div>
+                                            <span className="ad-product-price">{p.price}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Intelligence Widget */}
+                            <div className="ad-card ad-intel-card">
+                                <div className="ad-intel-header">
+                                    <span className="ad-intel-icon"><Icon.intel /></span>
+                                    <span className="ad-intel-label">Intelligence</span>
+                                </div>
+
+                                <div className="ad-intel-metrics">
+                                    <div className="ad-intel-metric">
+                                        <p className="ad-intel-metric-label">REVENUE AMOUNT</p>
+                                        <p className="ad-intel-metric-value">LKR 11,110.55</p>
+                                    </div>
+                                    <div className="ad-intel-metric">
+                                        <p className="ad-intel-metric-label">ACTIVE LOANS</p>
+                                        <p className="ad-intel-metric-value">1.2k</p>
+                                    </div>
+                                </div>
+
+                                <p className="ad-intel-body">
+                                    Platform growth is tracking <strong>14.2%</strong> above forecast for this quarter.
+                                </p>
+
+                                <button className="ad-intel-cta">
+                                    View Ledger Metrics <Icon.arrow />
                                 </button>
                             </div>
-                        )}
-                    </div>
-                </header>
-
-                {/* Content */}
-                <div className="ov-content">
-                    {/* Show Sales and Payment History for all tabs except Reviews */}
-                    {activeNav !== "Reviews" && (
-                        <>
-                            <h2 className="ov-section-title">Sales and Payment History</h2>
-
-                            {/* Stats */}
-                            <div className="ov-stats-grid">
-                                <div className="ov-stat-card ov-stat-card--wide">
-                                    <p className="ov-stat-label">Total Revenue</p>
-                                    <p className="ov-stat-value">{ordersLoading ? '...' : fmtPrice(allOrders.reduce((sum, o) => sum + (parseFloat(o?.finalAmount) || 0), 0))}</p>
-                                    <p className="ov-stat-growth">+{allOrders.length > 0 ? Math.round((allOrders.filter(o => new Date(o?.createdAt) > new Date(Date.now() - 30*24*60*60*1000)).length / allOrders.length) * 100) : 0}% from last month</p>
-                                </div>
-                                <div className="ov-stat-card">
-                                    <p className="ov-stat-label">Total Orders</p>
-                                    <p className="ov-stat-value">{ordersLoading ? '...' : allOrders.length}</p>
-                                </div>
-                                <div className="ov-stat-card">
-                                    <p className="ov-stat-label">New Users(M)</p>
-                                    <p className="ov-stat-value">{ordersLoading ? '...' : new Set(allOrders.map(o => o?.customer?.id)).size}</p>
-                                </div>
-                                <div className="ov-stat-card">
-                                    <p className="ov-stat-label">New Sellers(M)</p>
-                                    <p className="ov-stat-value">{ordersLoading ? '...' : new Set(allOrders.flatMap(o => o?.orderItems?.map(i => i?.product?.seller?.id) || [])).size}</p>
-                                </div>
-                            </div>
-                        </>
-                    )}
-
-                    {/* Component Rendering by Nav */}
-                    {activeNav === "Payments" && (
-                        <div className="ov-table-card">
-                        <div className="ov-table-header">
-                            <div>
-                                <p className="ov-table-title">Payment Transactions</p>
-                                <p className="ov-table-sub">A list of recent payments and sales</p>
-                            </div>
-                            <div className="ov-table-actions">
-                                <div className="ov-search-box">
-                                    <input
-                                        className="ov-search-input"
-                                        placeholder="Search"
-                                        value={search}
-                                        onChange={e => setSearch(e.target.value)}
-                                    />
-                                </div>
-                                <div className="ov-sort-wrapper">
-                                    <button className="ov-sort-btn" onClick={() => setShowSort(!showSort)}>
-                                        {sortBy} <span className="ov-sort-chevron">&#8964;</span>
-                                    </button>
-                                    {showSort && (
-                                        <div className="ov-sort-dropdown">
-                                            {sortOptions.map(opt => (
-                                                <button
-                                                    key={opt}
-                                                    className={`ov-sort-option ${sortBy === opt ? "ov-sort-option--active" : ""}`}
-                                                    onClick={() => { setSortBy(opt); setShowSort(false); }}
-                                                >
-                                                    {opt}
-                                                </button>
-                                            ))}
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
                         </div>
-
-                        <table className="ov-table">
-                            <thead>
-                            <tr>
-                                <th>Transaction ID</th>
-                                <th>Customer Name</th>
-                                <th>Date</th>
-                                <th>Payment Method</th>
-                                <th>Items Count</th>
-                                <th>Total Amount</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {sorted.map(o => (
-                                <tr key={o.id}>
-                                    <td>{o?.transactionId || 'N/A'}</td>
-                                    <td>{o?.customer?.firstName || ''} {o?.customer?.lastName || ''}</td>
-                                    <td>{o?.createdAt ? new Date(o.createdAt).toLocaleDateString('en-GB') : 'N/A'}</td>
-                                    <td>{o?.cardType || 'Card'} **** {o?.cardLastFour || '****'}</td>
-                                    <td>{o?.orderItems?.length || 0}</td>
-                                    <td className="ov-amount" style={{ fontWeight: 600 }}>{fmtPrice(o?.finalAmount)}</td>
-                                </tr>
-                            ))}
-                            </tbody>
-                        </table>
-                    </div>
-                    )}
-
-                    {activeNav === "Reviews" && (
-                        <div>
-                            <h2 className="ov-section-title">Customer Reviews Management</h2>
-                            
-                            {/* Rating Filter */}
-                            <div style={{ marginBottom: '24px', display: 'flex', gap: '12px', alignItems: 'center' }}>
-                                <span style={{ fontSize: '13px', fontWeight: 600 }}>Filter by Rating:</span>
-                                <select 
-                                    value={ratingFilter} 
-                                    onChange={(e) => setRatingFilter(e.target.value)}
-                                    style={{
-                                        padding: '8px 16px',
-                                        border: '1px solid #e5e7eb',
-                                        borderRadius: '6px',
-                                        fontSize: '13px',
-                                        cursor: 'pointer'
-                                    }}
-                                >
-                                    <option value="all">All Ratings</option>
-                                    <option value="5">5 Stars</option>
-                                    <option value="4">4 Stars</option>
-                                    <option value="3">3 Stars</option>
-                                    <option value="2">2 Stars</option>
-                                    <option value="1">1 Star</option>
-                                </select>
-                            </div>
-
-                            {/* Reviews Table */}
-                            <div className="ov-table-card">
-                                {reviewsLoading ? (
-                                    <div style={{ padding: '48px', textAlign: 'center' }}>
-                                        <p style={{ color: '#6b7280' }}>Loading reviews...</p>
-                                    </div>
-                                ) : allReviews.filter(r => ratingFilter === 'all' || r.rating === parseInt(ratingFilter)).length === 0 ? (
-                                    <div style={{ padding: '48px', textAlign: 'center' }}>
-                                        <p style={{ color: '#6b7280' }}>No reviews found.</p>
-                                    </div>
-                                ) : (
-                                    <table className="ov-table">
-                                        <thead>
-                                            <tr>
-                                                <th>Customer</th>
-                                                <th>Product</th>
-                                                <th>Seller</th>
-                                                <th>Rating</th>
-                                                <th>Review</th>
-                                                <th>Date</th>
-                                                <th>Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {allReviews
-                                                .filter(r => ratingFilter === 'all' || r.rating === parseInt(ratingFilter))
-                                                .map(review => (
-                                                <tr key={review.id}>
-                                                    <td>{review.customerName}</td>
-                                                    <td>
-                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                                            {review.productImage && (
-                                                                <img 
-                                                                    src={review.productImage} 
-                                                                    alt="" 
-                                                                    style={{ width: '32px', height: '32px', objectFit: 'cover', borderRadius: '4px' }} 
-                                                                />
-                                                            )}
-                                                            <span style={{ fontSize: '13px' }}>{review.productName}</span>
-                                                        </div>
-                                                    </td>
-                                                    <td>{review.sellerName}</td>
-                                                    <td>
-                                                        <span style={{ color: '#fbbf24' }}>
-                                                            {'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}
-                                                        </span>
-                                                    </td>
-                                                    <td style={{ maxWidth: '200px' }}>
-                                                        <p style={{ margin: 0, fontSize: '13px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                                            {review.reviewText || 'No written review'}
-                                                        </p>
-                                                    </td>
-                                                    <td>{new Date(review.createdAt).toLocaleDateString('en-GB')}</td>
-                                                    <td>
-                                                        <button
-                                                            onClick={() => handleDeleteReview(review.id)}
-                                                            style={{
-                                                                padding: '6px 12px',
-                                                                background: '#fee2e2',
-                                                                color: '#dc2626',
-                                                                border: '1px solid #fca5a5',
-                                                                borderRadius: '4px',
-                                                                fontSize: '12px',
-                                                                cursor: 'pointer'
-                                                            }}
-                                                        >
-                                                            Delete
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                )}
-                            </div>
-                        </div>
-                    )}
-
-                    {activeNav === "Overview" && (
-                        <div className="ov-widgets-container" style={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-                            gap: '24px',
-                            marginTop: '24px'
-                        }}>
-                            {/* Highest Earning Suppliers */}
-                            <div className="ov-widget-card" style={{ background: '#fff', borderRadius: '12px', border: '1px solid var(--border)', padding: '24px' }}>
-                                <h3 style={{ fontSize: '14px', margin: '0 0 20px', fontFamily: '"NORD", sans-serif', letterSpacing: '0.05em' }}>HIGHEST EARNING SUPPLIERS</h3>
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                                    {topSuppliers.length === 0 && <p style={{ fontSize: '13px', color: '#888' }}>No supplier data available.</p>}
-                                    {topSuppliers.map((sup, idx) => (
-                                        <div key={sup.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                            <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-                                                <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#1a1a1a', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', fontFamily: '"NORD", sans-serif' }}>{idx + 1}</div>
-                                                <div>
-                                                    <p style={{ margin: 0, fontSize: '14px', fontWeight: 600 }}>{sup.name}</p>
-                                                    <p style={{ margin: 0, fontSize: '12px', color: '#666' }}>{sup.sales} Sales Generated</p>
-                                                </div>
-                                            </div>
-                                            <p style={{ margin: 0, fontSize: '14px', fontWeight: 700 }}>{fmtPrice(sup.revenue)}</p>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Most Popular Products */}
-                            <div className="ov-widget-card" style={{ background: '#fff', borderRadius: '12px', border: '1px solid var(--border)', padding: '24px' }}>
-                                <h3 style={{ fontSize: '14px', margin: '0 0 20px', fontFamily: '"NORD", sans-serif', letterSpacing: '0.05em' }}>MOST POPULAR PRODUCTS</h3>
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                                    {topProducts.length === 0 && <p style={{ fontSize: '13px', color: '#888' }}>No product data available.</p>}
-                                    {topProducts.map((prod) => (
-                                        <div key={prod.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                            <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-                                                <div style={{ width: '40px', height: '40px', borderRadius: '6px', overflow: 'hidden', background: '#f8f8f6', flexShrink: 0 }}>
-                                                    {prod.img ? <img src={prod.img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', color: '#aaa' }}>No Img</div>}
-                                                </div>
-                                                <div style={{ overflow: 'hidden' }}>
-                                                    <p style={{ margin: 0, fontSize: '14px', fontWeight: 600, whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden', width: '140px' }}>{prod.name}</p>
-                                                    <p style={{ margin: 0, fontSize: '12px', color: '#666' }}>Volume: {prod.volume}</p>
-                                                </div>
-                                            </div>
-                                            <p style={{ margin: 0, fontSize: '14px', fontWeight: 700 }}>{fmtPrice(prod.revenue)}</p>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Platform Insights */}
-                            <div className="ov-widget-card" style={{ background: '#fff', borderRadius: '12px', border: '1px solid var(--border)', padding: '24px', display: 'flex', flexDirection: 'column' }}>
-                                <h3 style={{ fontSize: '14px', margin: '0 0 20px', fontFamily: '"NORD", sans-serif', letterSpacing: '0.05em' }}>PERFORMANCE INSIGHTS</h3>
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', flex: 1 }}>
-                                    <div>
-                                        <p style={{ fontSize: '11px', color: '#888', margin: '0 0 4px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Avg Order Value (AOV)</p>
-                                        <p style={{ fontSize: '28px', fontFamily: '"NORD", sans-serif', margin: 0, fontWeight: 700 }}>{fmtPrice(avgOrderValue)}</p>
-                                    </div>
-                                    <div style={{ flex: 1 }}>
-                                        <p style={{ fontSize: '11px', color: '#888', margin: '0 0 4px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Platform Health</p>
-                                        <div style={{ padding: '16px', background: '#f8f8f6', borderRadius: '8px', border: '1px solid #eee' }}>
-                                            <p style={{ fontSize: '13px', color: '#444', lineHeight: 1.6, margin: 0 }}>
-                                                {topSuppliers.length > 0 
-                                                    ? `Your top supplier, ${topSuppliers[0].name}, is driving significant revenue volume. Ensure stock health to maintain AOV trajectory.` 
-                                                    : `Collect more order data to unlock advanced platform insights.`}
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-                </div>
+                    </>
+                )}
             </main>
         </div>
     );
