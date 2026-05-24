@@ -1,0 +1,173 @@
+/* ============================================================
+   Register — Supplier Portal  (scoped, overrides global styles)
+   ============================================================ */
+
+.rg-page {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(ellipse 80% 70% at 38% 50%, #f9f9f9 0%, #ebebeb 55%, #e2e2e2 100%) !important;
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif !important;
+    padding: 60px 16px;
+    position: relative;
+    box-sizing: border-box;
+}
+
+.rg-back-btn {
+    position: fixed;
+    top: 18px;
+    left: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: none !important;
+    border: none !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    color: #111 !important;
+    cursor: pointer;
+    padding: 5px 8px;
+}
+
+.rg-card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+    max-width: 860px;
+    min-height: 520px;
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.11);
+    overflow: hidden;
+}
+
+.rg-form-panel {
+    padding: 32px 40px;
+    display: flex;
+    flex-direction: column;
+}
+
+.rg-brand-icon {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    margin-bottom: 12px;
+}
+
+.rg-heading-block {
+    margin-bottom: 24px;
+}
+.rg-title {
+    font-size: 22px !important;
+    font-weight: 800 !important;
+    color: #111 !important;
+    margin: 0 0 4px 0 !important;
+}
+.rg-subtitle {
+    font-size: 11px !important;
+    color: #888 !important;
+    margin: 0 !important;
+}
+
+.rg-form {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 16px;
+}
+
+.rg-form-row {
+    display: flex;
+    gap: 12px;
+}
+.rg-form-group {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 6px;
+}
+
+.rg-form-group label {
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    color: #111 !important;
+}
+
+.rg-input {
+    width: 100% !important;
+    padding: 10px 12px !important;
+    border: none !important;
+    border-radius: 8px !important;
+    font-size: 11.5px !important;
+    background: #f9f9f9 !important;
+    outline: none !important;
+    box-sizing: border-box;
+    transition: background 0.2s;
+}
+
+.rg-input:focus {
+    background: #f0f4fa !important;
+}
+.rg-input--blue {
+    background: #eef3ff !important;
+}
+.rg-input--error {
+    background: #fee2e2 !important;
+}
+
+.rg-error {
+    font-size: 9px !important;
+    color: #ef4444 !important;
+    min-height: 12px;
+}
+
+.rg-remember {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px !important;
+    font-weight: 500 !important;
+    color: #111 !important;
+    margin-top: 4px;
+}
+
+.rg-submit-btn {
+    width: 100%;
+    padding: 12px !important;
+    background-color: #111 !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 8px !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: background 0.2s;
+}
+.rg-submit-btn:hover {
+    background-color: #333 !important;
+}
+
+.rg-register-link {
+    font-size: 11px !important;
+    color: #888 !important;
+    text-align: center;
+    margin-top: 16px !important;
+}
+
+.rg-register-link button {
+    background: none !important;
+    border: none !important;
+    font-size: 11px !important;
+    font-weight: 800 !important;
+    color: #111 !important;
+    cursor: pointer;
+}
+
+.rg-image-panel {
+    background-size: cover;
+    background-position: center;
+    min-height: 100%;
+}

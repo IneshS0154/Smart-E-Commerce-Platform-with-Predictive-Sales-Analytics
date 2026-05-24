@@ -1,0 +1,337 @@
+/* ============================================================
+   Sign In — Supplier Portal  (scoped, overrides global styles)
+   ============================================================ */
+
+/* ── Page shell ──────────────────────────────────────────── */
+.si-page {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(ellipse 80% 70% at 38% 50%,
+            #f9f9f9 0%,
+            #ebebeb 55%,
+            #e2e2e2 100%) !important;
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif !important;
+    padding: 60px 16px;
+    position: relative;
+    box-sizing: border-box;
+}
+
+/* ── Back to Home ────────────────────────────────────────── */
+.si-back-btn {
+    position: fixed;
+    top: 18px;
+    left: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: none !important;
+    border: none !important;
+    outline: none !important;
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 400 !important;
+    color: #374151 !important;
+    cursor: pointer;
+    padding: 5px 8px;
+    border-radius: 5px;
+    transition: background-color 0.15s, color 0.15s;
+    z-index: 100;
+    letter-spacing: 0;
+}
+
+.si-back-btn:hover {
+    background-color: rgba(0, 0, 0, 0.07) !important;
+    color: #111827 !important;
+}
+
+/* ── Card ────────────────────────────────────────────────── */
+.si-card {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    width: 100%;
+    max-width: 760px;
+    min-height: 430px;
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow:
+        0 1px 3px rgba(0, 0, 0, 0.06),
+        0 8px 30px rgba(0, 0, 0, 0.11);
+    overflow: hidden;
+}
+
+/* ── Form panel (LEFT) ───────────────────────────────────── */
+.si-form-panel {
+    padding: 36px 40px 32px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ── Brand icon ──────────────────────────────────────────── */
+.si-brand-icon {
+    width: 32px;
+    height: 32px;
+    border: 1.5px solid #d1d5db;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #4b5563;
+    margin-bottom: 26px;
+    flex-shrink: 0;
+}
+
+/* ── Heading ─────────────────────────────────────────────── */
+.si-heading-block {
+    margin-bottom: 18px;
+}
+
+.si-title {
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif !important;
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    color: #111827 !important;
+    letter-spacing: -0.2px;
+    line-height: 1.25;
+    margin: 0 0 5px 0 !important;
+}
+
+.si-subtitle {
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif !important;
+    font-size: 12.5px !important;
+    font-weight: 400 !important;
+    color: #6b7280 !important;
+    line-height: 1.4;
+    margin: 0 !important;
+}
+
+/* ── Form ────────────────────────────────────────────────── */
+.si-form {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+/* ── Field ───────────────────────────────────────────────── */
+.si-field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 12px;
+}
+
+.si-field label {
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    color: #111827 !important;
+    margin-bottom: 5px;
+    display: block;
+}
+
+/* ── Inputs — reset everything, then style ───────────────── */
+.si-field input,
+.si-password-wrap input {
+    display: block;
+    width: 100% !important;
+    padding: 8px 11px !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 6px !important;
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 400 !important;
+    color: #111827 !important;
+    background: #ffffff !important;
+    outline: none !important;
+    box-shadow: none !important;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    appearance: none;
+    transition: border-color 0.15s;
+    margin: 0;
+}
+
+.si-field input::placeholder,
+.si-password-wrap input::placeholder {
+    color: #c0c7d0 !important;
+    font-size: 12.5px;
+}
+
+.si-field input:focus,
+.si-password-wrap input:focus {
+    border-color: #adb5bd !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+/* ── Password wrapper ────────────────────────────────────── */
+.si-password-wrap {
+    position: relative;
+}
+
+.si-password-wrap input {
+    padding-right: 36px !important;
+}
+
+.si-eye-btn {
+    position: absolute;
+    right: 9px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none !important;
+    border: none !important;
+    outline: none !important;
+    padding: 2px;
+    cursor: pointer;
+    color: #9ca3af;
+    display: flex;
+    align-items: center;
+    transition: color 0.15s;
+    box-shadow: none !important;
+}
+
+.si-eye-btn:hover {
+    color: #4b5563;
+}
+
+/* ── Forgot password row ─────────────────────────────────── */
+.si-forgot-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
+.si-forgot-btn {
+    background: none !important;
+    border: none !important;
+    outline: none !important;
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif !important;
+    font-size: 11.5px !important;
+    font-weight: 400 !important;
+    color: #6b7280 !important;
+    cursor: pointer;
+    padding: 0;
+    transition: color 0.15s;
+    text-decoration: none;
+}
+
+.si-forgot-btn:hover {
+    color: #111827 !important;
+}
+
+/* ── Remember me ─────────────────────────────────────────── */
+.si-remember {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    cursor: pointer;
+    margin-bottom: 14px;
+    user-select: none;
+}
+
+.si-remember input[type='checkbox'] {
+    width: 13px !important;
+    height: 13px !important;
+    border: 1.5px solid #d1d5db !important;
+    border-radius: 3px;
+    accent-color: #111827;
+    cursor: pointer;
+    flex-shrink: 0;
+    padding: 0 !important;
+    margin: 0;
+}
+
+.si-remember span {
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif !important;
+    font-size: 12px !important;
+    font-weight: 400 !important;
+    color: #374151 !important;
+}
+
+/* ── Sign In button ──────────────────────────────────────── */
+.si-submit-btn {
+    width: 100%;
+    padding: 10px 16px !important;
+    background-color: #111827 !important;
+    color: #ffffff !important;
+    border: none !important;
+    outline: none !important;
+    border-radius: 7px !important;
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif !important;
+    font-size: 13.5px !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.01em;
+    cursor: pointer;
+    box-shadow: none !important;
+    transition: background-color 0.18s, transform 0.1s;
+    margin-bottom: 16px;
+}
+
+.si-submit-btn:hover:not(:disabled) {
+    background-color: #1f2937 !important;
+}
+
+.si-submit-btn:active:not(:disabled) {
+    transform: scale(0.99);
+}
+
+.si-submit-btn:disabled {
+    opacity: 0.58;
+    cursor: default;
+}
+
+/* ── Register footer ─────────────────────────────────────── */
+.si-register-link {
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif !important;
+    font-size: 12px !important;
+    font-weight: 400 !important;
+    color: #6b7280 !important;
+    text-align: center;
+    margin: 0;
+}
+
+.si-register-link button {
+    background: none !important;
+    border: none !important;
+    outline: none !important;
+    padding: 0;
+    margin-left: 3px;
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    color: #111827 !important;
+    cursor: pointer;
+    text-decoration: none;
+    transition: opacity 0.15s;
+    box-shadow: none !important;
+}
+
+.si-register-link button:hover {
+    opacity: 0.7;
+}
+
+/* ── Image panel (RIGHT) ─────────────────────────────────── */
+.si-image-panel {
+    background-size: cover;
+    background-position: center;
+    border-radius: 0 14px 14px 0;
+    min-height: 100%;
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 640px) {
+    .si-card {
+        grid-template-columns: 1fr;
+        max-width: 400px;
+    }
+
+    .si-image-panel {
+        display: none;
+    }
+
+    .si-form-panel {
+        padding: 28px 24px 24px;
+    }
+}
